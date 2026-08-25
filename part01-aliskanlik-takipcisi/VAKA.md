@@ -4,7 +4,7 @@
 Alışkanlık edinmeye çalışan biri için, "kaç gündür üst üste yapıyorum?"
 sorusunu tek bakışta cevaplayan bir Android uygulaması.
 
-**Kod:** `<!-- ADIM 3'te repo linki -->` · **Süre:** 48 saat · **Yığın:** Flutter, Drift, path_provider
+**Kod:** [github.com/MRGNSs11/weekly-flutter-apps](https://github.com/MRGNSs11/weekly-flutter-apps/tree/main/part01-aliskanlik-takipcisi) · **Süre:** 48 saat · **Yığın:** Flutter, Drift, path_provider
 
 ![Liste ekranı](screenshots/liste.png)
 ![Detay ekranı](screenshots/detay.png)
@@ -103,4 +103,4 @@ gerekti. Yerelleştirme, dili çevirmekten ibaret değilmiş.
 ---
 
 Bu, her hafta sonu bir mobil uygulama bitirdiğim serinin 1. uygulaması.
-Diğerleri: `<!-- ADIM 3'te seri repo linki -->`
+Diğerleri: [github.com/MRGNSs11/weekly-flutter-apps](https://github.com/MRGNSs11/weekly-flutter-apps)
