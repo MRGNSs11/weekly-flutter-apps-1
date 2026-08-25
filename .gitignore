@@ -12,7 +12,19 @@ desktop.ini
 *.iml
 *.swp
 
-# ─── GÜVENLİK — bunlar asla depoya girmemeli (bkz. GUVENLIK.md) ───
+# ─── ÖZEL — bunlar Ömer'in kişisel çalışma belgeleri, PUBLIC OLMAZ ───
+# Diskte dururlar, depoya girmezler. Public repoda sadece uygulama kodu ve
+# uygulamaya özel vaka raporu bulunur.
+PLAN_REHBERI.md
+VAKA_REHBERI.md
+GUVENLIK.md
+FIKIRLER.md
+VITRIN_PLANI.md
+*/PLAN.md
+*/linkedin-gonderisi.md
+*/tasarimlar.html
+
+# ─── GÜVENLİK — bunlar asla depoya girmemeli ───
 # Bir uygulamanın kendi .gitignore'u eksik kalırsa buradaki kurallar yakalar.
 *.jks
 *.keystore
