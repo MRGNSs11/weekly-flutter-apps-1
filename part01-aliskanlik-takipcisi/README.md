@@ -4,9 +4,9 @@ Alışkanlık edinmeye çalışan biri için "kaç gündür üst üste yapıyoru
 tek bakışta cevaplayan, GitHub'ın katkı ısı haritasına benzer bir görselle
 seriyi gösteren bir Flutter uygulaması.
 
-Bu proje, CV/portföy için hafta sonlarında (48 saat) baştan sona bitirilen bir
-uygulama serisinin ilk halkası. Serinin tamamı:
-[weekly-flutter-apps](https://github.com/MRGNSs11/weekly-flutter-apps).
+Her hafta bir uygulamanın baştan sona bitirildiği bir serinin ilk halkası.
+Serinin tamamı:
+[weekly-flutter-apps-1](https://github.com/MRGNSs11/weekly-flutter-apps-1).
 
 **Vaka incelemesi:** [VAKA.md](VAKA.md) — neyi neden öyle yaptığımı anlattığım kısa yazı.
 
@@ -62,7 +62,7 @@ flutter run
 ## Testler
 
 Sadece saf mantık (streak hesabı, ısı haritası ızgara yerleşimi, tarih
-dönüşümleri) test edildi — widget testi yok, 48 saatlik kapsama girmedi.
+dönüşümleri) test edildi — widget testi yok, sabit kapsama girmedi.
 
 ```
 flutter test
@@ -72,7 +72,7 @@ flutter test
 
 ## Bu sürümde bilerek olmayanlar
 
-Kapsamı 48 saate sığdırmak için bilinçli olarak dışarıda bırakıldı:
+Kapsamı sabit tutmak için bilinçli olarak dışarıda bırakıldı:
 
 - Bildirim / hatırlatıcı
 - Haftalık hedef (ör. "haftada 3 gün")

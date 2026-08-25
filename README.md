@@ -1,6 +1,6 @@
 # Weekly Flutter Apps
 
-One small Flutter app, built end to end, every weekend.
+One small Flutter app, built end to end, every week.
 
 My main projects are commercial and closed source. This series is the opposite
 by design: **every line of code here is public.**
@@ -19,7 +19,7 @@ by design: **every line of code here is public.**
 
 ## How each app is built
 
-- **One weekend per app.** Scope is fixed before any code is written.
+- **One app per week.** Scope is fixed before any code is written.
 - **One new skill per app.** Each app demonstrates something the previous ones
   did not — breadth of capability over a pile of similar CRUD apps.
 - **No backend.** These apps consume APIs; they don't ship servers.

@@ -4,7 +4,7 @@
 Alışkanlık edinmeye çalışan biri için, "kaç gündür üst üste yapıyorum?"
 sorusunu tek bakışta cevaplayan bir Android uygulaması.
 
-**Kod:** [github.com/MRGNSs11/weekly-flutter-apps](https://github.com/MRGNSs11/weekly-flutter-apps/tree/main/part01-aliskanlik-takipcisi) · **Süre:** 48 saat · **Yığın:** Flutter, Drift, path_provider
+**Kod:** [github.com/MRGNSs11/weekly-flutter-apps-1](https://github.com/MRGNSs11/weekly-flutter-apps-1/tree/main/part01-aliskanlik-takipcisi) · **Yığın:** Flutter, Drift, path_provider
 
 ![Liste ekranı](screenshots/liste.png)
 ![Detay ekranı](screenshots/detay.png)
@@ -19,7 +19,7 @@ Geçmiş bir günü unuttuysan haritadan o güne dokunup sonradan ekleyebiliyors
 
 ---
 
-## 02 — 48 saatte neyi YAPMADIM
+## 02 — Neyi YAPMADIM
 
 - Bildirim / hatırlatıcı
 - Haftalık hedef ("haftada 3 gün")
@@ -30,8 +30,8 @@ Geçmiş bir günü unuttuysan haritadan o güne dokunup sonradan ekleyebiliyors
 - Açık/koyu tema seçici
 - Veri dışa aktarma
 
-Bunları zaman yetmediği için değil, **kapsamı Cumartesi sabahı dondurduğum
-için** yapmadım. Sekiz maddenin her biri tek başına bir hafta sonu eder. Biri
+Bunları zaman yetmediği için değil, **kapsamı kod yazmadan önce dondurduğum
+için** yapmadım. Sekiz maddenin her biri tek başına bir uygulama eder. Biri
 girseydi çekirdek akış yarım kalırdı; yarım kalan uygulamanın portföy değeri
 sıfırdır.
 
@@ -84,7 +84,7 @@ serinin başka bir haftasının konusu — aynı yeteneği iki kez göstermiyoru
 25 birim testi yazdım, hepsi saf mantık katmanında: seri hesabı, ısı haritası
 ızgara yerleşimi, tarih dönüşümleri.
 
-Widget testi **yazmadım.** 48 saate sığmazdı, ama asıl sebep şu: riskin olduğu
+Widget testi **yazmadım.** Kapsama sığmazdı, ama asıl sebep şu: riskin olduğu
 yer arayüz değil, tarih matematiğiydi. Ay ve yıl sınırlarını geçen seriler için
 ayrı regresyon testleri var.
 
@@ -102,5 +102,5 @@ gerekti. Yerelleştirme, dili çevirmekten ibaret değilmiş.
 
 ---
 
-Bu, her hafta sonu bir mobil uygulama bitirdiğim serinin 1. uygulaması.
-Diğerleri: [github.com/MRGNSs11/weekly-flutter-apps](https://github.com/MRGNSs11/weekly-flutter-apps)
+Bu, her hafta bir mobil uygulama bitirdiğim serinin 1. uygulaması.
+Diğerleri: [github.com/MRGNSs11/weekly-flutter-apps-1](https://github.com/MRGNSs11/weekly-flutter-apps-1)
