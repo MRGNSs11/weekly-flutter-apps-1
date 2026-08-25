@@ -1,0 +1,13 @@
+# Her uygulama klasörünün kendi .gitignore'u var (Flutter'ın ürettiği).
+# Burası sadece depo genelinde geçerli olanlar için.
+
+# İşletim sistemi
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editör
+.idea/
+.vscode/
+*.iml
+*.swp
