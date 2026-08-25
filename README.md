@@ -2,24 +2,8 @@
 
 One small Flutter app, built end to end, every weekend.
 
-I'm a final-year Computer Science student graduating in 2027. My main projects
-are commercial and closed source, so this series is the opposite by design:
-**every line of code here is public.** One app per weekend, 48 hours, shipped
-or not shipped — no half-finished repos.
-
----
-
-## The rules I hold myself to
-
-1. **48 hours.** Scope freezes Saturday morning. Whatever isn't done by Sunday
-   evening ships as a documented gap, not as an excuse.
-2. **One new skill per app.** Each week demonstrates something the previous
-   weeks did not. Breadth of capability beats a pile of similar CRUD apps.
-3. **No backend.** I consume APIs, I don't write servers. A server doesn't fit
-   in a weekend.
-4. **Every app carries a decision.** "Why X instead of Y?" — if I can't answer
-   that, the app was too easy and I pick a harder one next week.
-5. **Not published to Google Play.** These are portfolio pieces, not products.
+My main projects are commercial and closed source. This series is the opposite
+by design: **every line of code here is public.**
 
 ---
 
@@ -29,36 +13,24 @@ or not shipped — no half-finished repos.
 |---|-----|--------------------|------------|------|
 | 01 | **Habit Tracker** | Local database (Drift) + hand-written `CustomPainter` heatmap | [Read](part01-aliskanlik-takipcisi/VAKA.md) | [Source](part01-aliskanlik-takipcisi) |
 
-*More apps land here every weekend.*
+*More apps land here as they ship.*
 
 ---
 
-## How this repo is organised
+## How each app is built
 
-```
-weekly-flutter-apps/
-├── PLAN_REHBERI.md      # planning template — filled in before any code
-├── VAKA_REHBERI.md      # case study template — filled in after the app ships
-├── GUVENLIK.md          # security checklist — run before every push
-├── FIKIRLER.md          # the idea backlog I pick each week's app from
-├── .githooks/           # pre-commit secret scanning (gitleaks)
-└── partNN-<app>/
-    ├── PLAN.md          # this app's frozen scope + decisions log
-    ├── VAKA.md          # this app's case study
-    ├── README.md        # how to run it
-    ├── tasarimlar.html  # the design drafts I chose from
-    └── lib/ …
-```
+- **One weekend per app.** Scope is fixed before any code is written.
+- **One new skill per app.** Each app demonstrates something the previous ones
+  did not — breadth of capability over a pile of similar CRUD apps.
+- **No backend.** These apps consume APIs; they don't ship servers.
+- **Every app carries a decision.** Each case study answers one concrete
+  "why X instead of Y?" question.
+- **Not published to Google Play.** These are portfolio pieces, not products.
 
-**The planning documents are public on purpose.** Anyone can see a finished
-app; far fewer can see how the scope was frozen, what was deliberately left
-out, and which trade-offs were made along the way. `PLAN.md` in each folder
-carries a running decisions log written *while* the work happened, not
-reconstructed afterwards.
-
-> The planning and case study documents are written in **Turkish**.
-> English versions of each case study live on
-> [omergunes.vercel.app](https://omergunes.vercel.app).
+Each app folder contains a `VAKA.md` — a short case study covering what was
+built, what was deliberately left out, the technical decision behind it, and
+how it was verified. Written in Turkish; English versions are on
+[omergunes.vercel.app](https://omergunes.vercel.app).
 
 ---
 
@@ -72,13 +44,11 @@ reconstructed afterwards.
 ## Secret scanning
 
 Every commit is scanned by [gitleaks](https://github.com/gitleaks/gitleaks)
-through a pre-commit hook in `.githooks/`. If you clone this repo:
+through a pre-commit hook. If you clone this repo:
 
 ```bash
 git config core.hooksPath .githooks
 ```
-
-Rules and the pre-push checklist live in [GUVENLIK.md](GUVENLIK.md).
 
 ---
 

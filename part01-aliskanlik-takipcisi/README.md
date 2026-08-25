@@ -86,8 +86,7 @@ Kapsamı 48 saate sığdırmak için bilinçli olarak dışarıda bırakıldı:
 ## Tasarım
 
 "Organik / Toprak" yönü — toprak ve yeşil tonlar, serif başlıklar (Lora),
-yuvarlak ısı haritası noktaları. Altı taslak arasından seçildi; taslak
-görselleri ve seçim gerekçesi `PLAN.md` içinde.
+yuvarlak ısı haritası noktaları.
 
 ## Lisans
 
