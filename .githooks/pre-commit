@@ -1,0 +1,57 @@
+#!/bin/sh
+#
+# Sır sızıntısı koruması — her commit'ten ÖNCE otomatik çalışır.
+#
+# Ne yapar: commit'lemek üzere olduğun değişikliklerde API anahtarı, parola,
+# token gibi şeyler arar. Bulursa commit'i DURDURUR.
+#
+# Kurulum (bir kez, depo klonlandığında):
+#   git config core.hooksPath .githooks
+#
+# Bu hook'u atlamak için:  git commit --no-verify
+# (Sadece yanlış alarm olduğundan EMİNSEN kullan.)
+
+# gitleaks'i bul — önce PATH, sonra bilinen winget konumu
+if command -v gitleaks >/dev/null 2>&1; then
+  GITLEAKS="gitleaks"
+elif [ -x "$LOCALAPPDATA/Microsoft/WinGet/Packages/Gitleaks.Gitleaks_Microsoft.Winget.Source_8wekyb3d8bbwe/gitleaks.exe" ]; then
+  GITLEAKS="$LOCALAPPDATA/Microsoft/WinGet/Packages/Gitleaks.Gitleaks_Microsoft.Winget.Source_8wekyb3d8bbwe/gitleaks.exe"
+else
+  echo ""
+  echo "  UYARI: gitleaks bulunamadı — sır taraması YAPILMADI."
+  echo "  Kurmak için:  winget install --id Gitleaks.Gitleaks"
+  echo ""
+  echo "  Commit devam ediyor, ama korumasızsın."
+  echo ""
+  exit 0
+fi
+
+"$GITLEAKS" git --pre-commit --staged --redact --no-banner
+STATUS=$?
+
+if [ $STATUS -ne 0 ]; then
+  cat <<'EOF'
+
+  ═══════════════════════════════════════════════════════════
+   COMMIT DURDURULDU — muhtemel sır tespit edildi
+  ═══════════════════════════════════════════════════════════
+
+  Yukarıdaki dosyada API anahtarı / parola / token benzeri
+  bir şey var. Commit'lersen bu bilgi geçmişe kalıcı yazılır.
+
+  Ne yapmalısın:
+
+  1. Anahtarı koddan çıkar.
+  2. Ayrı bir dosyaya taşı ve o dosyayı .gitignore'a ekle.
+  3. Anahtarı zaten bir yere yapıştırdıysan, sağlayıcının
+     panelinden İPTAL ET ve yenisini üret.
+
+  Ayrıntı: GUVENLIK.md
+
+  Yanlış alarm olduğundan eminsen:  git commit --no-verify
+
+EOF
+  exit 1
+fi
+
+exit 0

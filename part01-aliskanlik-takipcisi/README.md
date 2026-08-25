@@ -91,4 +91,7 @@ görselleri ve seçim gerekçesi `PLAN.md` içinde.
 
 ## Lisans
 
-MIT — bkz. [LICENSE](LICENSE).
+Kod: MIT — bkz. [LICENSE](LICENSE).
+
+Yazı tipi: **Lora**, SIL Open Font License 1.1 ile dağıtılıyor —
+bkz. [assets/fonts/OFL.txt](assets/fonts/OFL.txt).

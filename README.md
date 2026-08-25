@@ -39,7 +39,9 @@ or not shipped — no half-finished repos.
 weekly-flutter-apps/
 ├── PLAN_REHBERI.md      # planning template — filled in before any code
 ├── VAKA_REHBERI.md      # case study template — filled in after the app ships
+├── GUVENLIK.md          # security checklist — run before every push
 ├── FIKIRLER.md          # the idea backlog I pick each week's app from
+├── .githooks/           # pre-commit secret scanning (gitleaks)
 └── partNN-<app>/
     ├── PLAN.md          # this app's frozen scope + decisions log
     ├── VAKA.md          # this app's case study
@@ -64,6 +66,19 @@ reconstructed afterwards.
 
 `Flutter` · `Dart` · Android first · offline by default · minimal dependencies
 (most apps ship with two or three packages)
+
+---
+
+## Secret scanning
+
+Every commit is scanned by [gitleaks](https://github.com/gitleaks/gitleaks)
+through a pre-commit hook in `.githooks/`. If you clone this repo:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Rules and the pre-push checklist live in [GUVENLIK.md](GUVENLIK.md).
 
 ---
 
