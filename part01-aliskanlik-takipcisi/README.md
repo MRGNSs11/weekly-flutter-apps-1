@@ -5,7 +5,10 @@ tek bakışta cevaplayan, GitHub'ın katkı ısı haritasına benzer bir görsel
 seriyi gösteren bir Flutter uygulaması.
 
 Bu proje, CV/portföy için hafta sonlarında (48 saat) baştan sona bitirilen bir
-uygulama serisinin ilk halkası. Serinin tamamı: [herhafta1](..).
+uygulama serisinin ilk halkası. Serinin tamamı:
+[weekly-flutter-apps](https://github.com/MRGNSs11/weekly-flutter-apps).
+
+**Vaka incelemesi:** [VAKA.md](VAKA.md) — neyi neden öyle yaptığımı anlattığım kısa yazı.
 
 | Liste | Detay + ısı haritası |
 |---|---|
