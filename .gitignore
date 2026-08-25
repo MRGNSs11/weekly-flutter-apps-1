@@ -11,3 +11,19 @@ desktop.ini
 .vscode/
 *.iml
 *.swp
+
+# ─── GÜVENLİK — bunlar asla depoya girmemeli (bkz. GUVENLIK.md) ───
+# Bir uygulamanın kendi .gitignore'u eksik kalırsa buradaki kurallar yakalar.
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+key.properties
+local.properties
+google-services.json
+GoogleService-Info.plist
+.env
+.env.*
+dart_define*.json
+secrets*.json
