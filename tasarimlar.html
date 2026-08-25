@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alışkanlık Takipçisi — Tasarım Taslakları</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#14161a;color:#e8eaed;
+  font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif;
+  padding:48px 32px 96px;
+}
+.page-head{max-width:1100px;margin:0 auto 56px}
+.page-head h1{font-size:30px;letter-spacing:-.02em;margin-bottom:10px}
+.page-head p{color:#9aa1ab;max-width:640px}
+.page-head .hint{margin-top:14px;font-size:13px;color:#6f7681}
+
+.variant{max-width:1100px;margin:0 auto 72px;padding-bottom:64px;border-bottom:1px solid #262a30}
+.variant:last-child{border-bottom:0}
+.vhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.vnum{font:600 13px/1 ui-monospace,monospace;color:#14161a;background:#e8eaed;padding:6px 9px;border-radius:5px}
+.vhead h2{font-size:22px;letter-spacing:-.01em}
+.vdesc{color:#9aa1ab;font-size:14px;max-width:680px;margin-bottom:24px}
+.vtags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:22px}
+.vtags span{font-size:11.5px;color:#9aa1ab;border:1px solid #2f343b;border-radius:100px;padding:4px 11px}
+.screens{display:flex;gap:26px;flex-wrap:wrap}
+.screen-wrap{display:flex;flex-direction:column;gap:9px}
+.screen-label{font-size:12px;color:#6f7681;text-align:center;letter-spacing:.04em;text-transform:uppercase}
+
+/* ---------- telefon çerçevesi ---------- */
+.phone{
+  width:300px;height:620px;border-radius:34px;overflow:hidden;position:relative;
+  background:var(--bg);color:var(--text);font-family:var(--font);
+  box-shadow:0 0 0 9px #22262c,0 0 0 10px #353a42,0 22px 48px rgba(0,0,0,.55);
+  display:flex;flex-direction:column;
+}
+.statusbar{display:flex;justify-content:space-between;padding:13px 20px 4px;font-size:11px;opacity:.55;flex-shrink:0}
+.body{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 18px}
+
+/* ---------- ortak öğeler ---------- */
+.apphead{padding:14px 0 18px;flex-shrink:0}
+.date{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.apphead h3{font:var(--h1);letter-spacing:-.02em}
+
+.rows{display:flex;flex-direction:column;gap:var(--gap);flex:1}
+.row{
+  display:flex;align-items:center;gap:13px;padding:var(--rowpad);
+  background:var(--surface);border-radius:var(--radius);border:var(--border);
+}
+.check{
+  width:26px;height:26px;border-radius:var(--checkradius);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--dot);font-size:13px;color:transparent;
+}
+.row.done .check{background:var(--dot);color:var(--oncheck);border-color:var(--dot)}
+.rowtext{flex:1;min-width:0}
+.rowtext b{display:block;font:var(--rowtitle);letter-spacing:-.01em}
+.rowtext small{font-size:11.5px;color:var(--muted)}
+.spark{display:flex;gap:2.5px;flex-shrink:0}
+.spark i{width:5px;height:15px;border-radius:1.5px;background:var(--sparkoff)}
+.spark i.on{background:var(--dot)}
+
+.fab{
+  position:absolute;right:20px;bottom:24px;width:54px;height:54px;
+  border-radius:var(--fabradius);background:var(--accent);color:var(--onaccent);
+  display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:300;
+  box-shadow:var(--fabshadow);border:var(--fabborder);
+}
+
+/* ---------- detay ---------- */
+.dethead{padding:12px 0 16px;flex-shrink:0}
+.back{font-size:17px;color:var(--muted);margin-bottom:12px}
+.dethead h3{font:var(--h1);letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+.swatch{width:11px;height:11px;border-radius:3px;background:var(--dot)}
+
+.stats{display:flex;gap:9px;margin-bottom:20px;flex-shrink:0}
+.stat{flex:1;background:var(--surface);border:var(--border);border-radius:var(--radius);padding:12px 10px;text-align:center}
+.stat b{display:block;font:var(--statnum);color:var(--statcolor);letter-spacing:-.03em}
+.stat small{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+
+.mapcard{background:var(--surface);border:var(--border);border-radius:var(--radius);padding:14px 13px 12px}
+.mapcard h4{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
+.months{display:flex;gap:2px;margin-bottom:5px;padding-left:0}
+.months span{width:40px;font-size:9.5px;color:var(--muted)}
+.heat{display:flex;gap:2px}
+.week{display:flex;flex-direction:column;gap:2px}
+.cell{width:8px;height:8px;border-radius:var(--cellradius);background:var(--l0)}
+.cell.l1{background:var(--l1)} .cell.l2{background:var(--l2)}
+.cell.l3{background:var(--l3)} .cell.l4{background:var(--l4)}
+.legend{display:flex;align-items:center;gap:4px;justify-content:flex-end;margin-top:11px;font-size:9.5px;color:var(--muted)}
+.legend i{width:8px;height:8px;border-radius:var(--cellradius);display:block}
+
+/* ================= 1 · SESSİZ MONO ================= */
+.mono{
+  --bg:#fbfbfa;--surface:#fff;--text:#16181c;--muted:#8b9096;
+  --accent:#16181c;--onaccent:#fff;--dot:#16181c;--oncheck:#fff;--sparkoff:#e6e7e9;
+  --font:'Iowan Old Style',Georgia,serif;
+  --h1:600 25px/1.2 'Iowan Old Style',Georgia,serif;
+  --rowtitle:500 15px/1.3 system-ui,sans-serif;
+  --statnum:600 25px/1.15 'Iowan Old Style',Georgia,serif;--statcolor:#16181c;
+  --radius:0;--border:0;--gap:0;--rowpad:15px 2px;--checkradius:50%;
+  --fabradius:50%;--fabshadow:0 6px 20px rgba(0,0,0,.22);--fabborder:0;
+  --cellradius:1px;--l0:#eeeeec;--l1:#c9cac6;--l2:#969793;--l3:#5b5c59;--l4:#16181c;
+}
+.mono .row{border-bottom:1px solid #ececea}
+.mono .row:last-child{border-bottom:0}
+.mono .stat{border:0;border-top:2px solid #16181c;border-radius:0;padding:11px 4px 0;text-align:left}
+.mono .stats{gap:16px}
+.mono .mapcard{border:0;padding:0}
+.mono .rowtext small{font-family:system-ui,sans-serif}
+
+/* ================= 2 · YUMUŞAK PASTEL ================= */
+.pastel{
+  --bg:#fdf6f0;--surface:#fff;--text:#3d3330;--muted:#a89a93;
+  --accent:#f0876a;--onaccent:#fff;--dot:#f0876a;--oncheck:#fff;--sparkoff:#f3e7e0;
+  --font:system-ui,-apple-system,sans-serif;
+  --h1:700 26px/1.2 system-ui,sans-serif;
+  --rowtitle:600 15px/1.3 system-ui,sans-serif;
+  --statnum:700 26px/1.15 system-ui,sans-serif;--statcolor:#f0876a;
+  --radius:20px;--border:0;--gap:11px;--rowpad:15px 16px;--checkradius:50%;
+  --fabradius:50%;--fabshadow:0 8px 22px rgba(240,135,106,.42);--fabborder:0;
+  --cellradius:2.5px;--l0:#f6eae2;--l1:#fbd3c2;--l2:#f8ac91;--l3:#f0876a;--l4:#d9563a;
+}
+.pastel .row{box-shadow:0 2px 10px rgba(180,140,120,.09)}
+.pastel .stat{box-shadow:0 2px 10px rgba(180,140,120,.09)}
+.pastel .mapcard{box-shadow:0 2px 10px rgba(180,140,120,.09)}
+
+/* ================= 3 · NEON KOYU ================= */
+.neon{
+  --bg:#0b0e13;--surface:#141922;--text:#e9edf3;--muted:#67707f;
+  --accent:#3ddc84;--onaccent:#04140a;--dot:#3ddc84;--oncheck:#04140a;--sparkoff:#1e2530;
+  --font:system-ui,-apple-system,sans-serif;
+  --h1:700 26px/1.2 system-ui,sans-serif;
+  --rowtitle:600 15px/1.3 system-ui,sans-serif;
+  --statnum:700 27px/1.15 system-ui,sans-serif;--statcolor:#3ddc84;
+  --radius:15px;--border:1px solid #1e2530;--gap:9px;--rowpad:14px 15px;--checkradius:9px;
+  --fabradius:17px;--fabshadow:0 0 26px rgba(61,220,132,.55);--fabborder:0;
+  --cellradius:2px;--l0:#161c25;--l1:#14432a;--l2:#1c7a45;--l3:#2bb267;--l4:#3ddc84;
+}
+.neon .row.done{border-color:rgba(61,220,132,.32);box-shadow:0 0 0 1px rgba(61,220,132,.1)}
+.neon .row.done .check{box-shadow:0 0 14px rgba(61,220,132,.65)}
+.neon .stat b{text-shadow:0 0 18px rgba(61,220,132,.5)}
+.neon .cell.l4{box-shadow:0 0 6px rgba(61,220,132,.55)}
+
+/* ================= 4 · BRUTALIST GRID ================= */
+.brut{
+  --bg:#f4f1ea;--surface:#fff;--text:#111;--muted:#6e6a62;
+  --accent:#ff5c1f;--onaccent:#fff;--dot:#111;--oncheck:#ff5c1f;--sparkoff:#ded9cf;
+  --font:ui-monospace,'Cascadia Mono',Consolas,monospace;
+  --h1:700 22px/1.15 ui-monospace,Consolas,monospace;
+  --rowtitle:700 14px/1.3 ui-monospace,Consolas,monospace;
+  --statnum:700 26px/1.1 ui-monospace,Consolas,monospace;--statcolor:#111;
+  --radius:0;--border:2px solid #111;--gap:-2px;--rowpad:14px 14px;--checkradius:0;
+  --fabradius:0;--fabshadow:4px 4px 0 #111;--fabborder:2px solid #111;
+  --cellradius:0;--l0:#e5e0d6;--l1:#ffd0ba;--l2:#ffa477;--l3:#ff5c1f;--l4:#111;
+}
+.brut .rows{gap:0}
+.brut .row{border-bottom-width:0}
+.brut .rows .row:last-child{border-bottom-width:2px}
+.brut .date{font-weight:700}
+.brut .apphead h3{text-transform:uppercase}
+.brut .stat{margin-right:-2px;text-align:left;padding:10px 11px}
+.brut .stats{gap:0}
+.brut .stat:last-child{margin-right:0}
+.brut .spark i{border-radius:0}
+.brut .row.done{background:#ff5c1f;color:#fff}
+.brut .row.done .rowtext small{color:rgba(255,255,255,.8)}
+.brut .row.done .check{border-color:#fff;background:#fff}
+
+/* ================= 5 · ORGANİK / TOPRAK ================= */
+.organik{
+  --bg:#f5f3ec;--surface:#fffefa;--text:#2b3226;--muted:#8d9483;
+  --accent:#5c8a4a;--onaccent:#fff;--dot:#5c8a4a;--oncheck:#fff;--sparkoff:#e4e6dc;
+  --font:'Iowan Old Style',Georgia,serif;
+  --h1:600 25px/1.2 'Iowan Old Style',Georgia,serif;
+  --rowtitle:500 15px/1.3 system-ui,sans-serif;
+  --statnum:600 26px/1.15 'Iowan Old Style',Georgia,serif;--statcolor:#5c8a4a;
+  --radius:14px;--border:1px solid #e6e5da;--gap:9px;--rowpad:14px 15px;--checkradius:50%;
+  --fabradius:50%;--fabshadow:0 7px 20px rgba(92,138,74,.32);--fabborder:0;
+  --cellradius:50%;--l0:#e7e8de;--l1:#c8dcbc;--l2:#96bd83;--l3:#5c8a4a;--l4:#37592c;
+}
+.organik .rowtext small{font-family:system-ui,sans-serif}
+.organik .mapcard{background:#fffefa}
+
+/* ================= 6 · CAM / GRADYAN ================= */
+.cam{
+  --bg:#1a1230;--surface:rgba(255,255,255,.075);--text:#f2eefb;--muted:#a99dc4;
+  --accent:#a78bfa;--onaccent:#1a1230;--dot:#a78bfa;--oncheck:#1a1230;--sparkoff:rgba(255,255,255,.12);
+  --font:system-ui,-apple-system,sans-serif;
+  --h1:700 26px/1.2 system-ui,sans-serif;
+  --rowtitle:600 15px/1.3 system-ui,sans-serif;
+  --statnum:700 27px/1.15 system-ui,sans-serif;--statcolor:#f2eefb;
+  --radius:19px;--border:1px solid rgba(255,255,255,.13);--gap:10px;--rowpad:14px 15px;--checkradius:50%;
+  --fabradius:50%;--fabshadow:0 8px 26px rgba(167,139,250,.5);--fabborder:0;
+  --cellradius:2px;--l0:rgba(255,255,255,.07);--l1:rgba(167,139,250,.3);
+  --l2:rgba(167,139,250,.55);--l3:#a78bfa;--l4:#e9d5ff;
+}
+.cam{background:radial-gradient(120% 80% at 15% 0%,#3b2166 0%,#1a1230 55%,#120c22 100%)}
+.cam .row,.cam .stat,.cam .mapcard{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Alışkanlık Takipçisi — 6 tasarım yönü</h1>
+  <p>Aynı iki ekran, altı farklı görsel dil. İçerik ve yerleşim sabit; değişen sadece
+     renk, tipografi, köşe yumuşaklığı ve ısı haritasının karakteri.</p>
+  <p class="hint">Birini seç. Seçilen yön uygulamanın tema tokenlarına birebir çevrilecek.
+     İstersen "3'ün rengi + 1'in tipografisi" gibi karma da söyleyebilirsin.</p>
+</div>
+
+<div id="out"></div>
+
+<script>
+const VARIANTS = [
+  {k:'mono', n:'Sessiz Mono', d:'Renk yok, çizgi yok, kutu yok. Sadece tipografi ve boşluk. Isı haritası griden siyaha. Sakin ve ciddi durur; ekran görüntüsü LinkedIn\'de "olgun" görünür. Riski: videoda az heyecanlı.', t:['Serif başlık','Siyah-beyaz','Ayraç çizgiler','Things / Bear tarzı']},
+  {k:'pastel', n:'Yumuşak Pastel', d:'Krem zemin, mercan vurgu, büyük yuvarlak köşeler, hafif gölge. Sıcak ve davetkâr. Alışkanlık uygulamalarının en tanıdık dili — kullanıcı ne yapacağını anında anlar.', t:['Krem + mercan','20px köşe','Yumuşak gölge','Fabulous tarzı']},
+  {k:'neon', n:'Neon Koyu', d:'Koyu zemin, neon yeşil vurgu, işaretlenen kutularda parıltı. Isı haritası doğrudan GitHub\'ı çağrıştırıyor — geliştirici kitlesi bunu anında tanır. Videoda en gösterişli duran seçenek.', t:['Koyu tema','Neon yeşil','Glow efekti','GitHub çağrışımı']},
+  {k:'brut', n:'Brutalist Grid', d:'Kalın siyah çerçeveler, sıfır köşe yumuşaklığı, mono font, tek turuncu vurgu. İşaretlenen satır tamamen turuncuya dönüyor. En akılda kalıcı, en riskli. Kimse ortada kalmaz: ya çok sever ya hiç.', t:['Mono font','2px siyah çerçeve','Sert köşe','Teenage Engineering tarzı']},
+  {k:'organik', n:'Organik / Toprak', d:'Toprak ve yeşil tonlar, serif başlık, yuvarlak ısı haritası noktaları. Seri büyüdükçe koyulaşan yeşil "büyüyen bitki" hissi veriyor. Alışkanlık temasıyla en uyumlu metafor.', t:['Toprak tonları','Yuvarlak noktalar','Serif başlık','Sakin + sıcak']},
+  {k:'cam', n:'Cam / Gradyan', d:'Mor gradyan zemin üstünde bulanık cam kartlar. En modern ve en "premium" duran seçenek. Riski: cam efekti düşük donanımlı Android cihazda performansı düşürebilir — o da videoda anlatılacak bir konu olur.', t:['Gradyan zemin','Bulanık cam','Mor vurgu','iOS 26 tarzı']},
+];
+
+const HABITS = [
+  {n:'Su iç',        s:'12 günlük seri', done:true,  sp:[1,1,1,1,1,1,1]},
+  {n:'Kitap oku',    s:'4 günlük seri',  done:true,  sp:[0,1,1,0,1,1,1]},
+  {n:'Yürüyüş',      s:'Bugün henüz yok',done:false, sp:[1,1,0,1,1,1,0]},
+  {n:'Erken uyu',    s:'2 günlük seri',  done:false, sp:[0,0,1,0,0,1,1]},
+  {n:'Dil çalış',    s:'7 günlük seri',  done:true,  sp:[1,0,1,1,1,1,1]},
+];
+
+function heatHTML(){
+  let h='';
+  for(let w=0;w<26;w++){
+    h+='<div class="week">';
+    for(let d=0;d<7;d++){
+      const i=w*7+d;
+      // gerçekçi bir dağılım: son haftalara doğru yoğunlaşıyor
+      const bias=w/26;
+      const r=Math.abs(Math.sin(i*12.9898)*43758.5453)%1;
+      let lvl=0;
+      if(r < .18+bias*.55) lvl=1;
+      if(r < .12+bias*.42) lvl=2;
+      if(r < .07+bias*.28) lvl=3;
+      if(r < .03+bias*.16) lvl=4;
+      if(w===25 && d>4) lvl=0; // bu hafta henüz gelmedi
+      h+=`<div class="cell${lvl?' l'+lvl:''}"></div>`;
+    }
+    h+='</div>';
+  }
+  return h;
+}
+
+function sparkHTML(sp){return '<div class="spark">'+sp.map(x=>`<i class="${x?'on':''}"></i>`).join('')+'</div>';}
+
+function listScreen(){
+  return `<div class="phone-inner">
+    <div class="statusbar"><span>9:41</span><span>▲ ▮▮▮ 84%</span></div>
+    <div class="body">
+      <div class="apphead">
+        <div class="date">Cumartesi, 29 Ağustos</div>
+        <h3>Alışkanlıklar</h3>
+      </div>
+      <div class="rows">
+        ${HABITS.map(x=>`<div class="row${x.done?' done':''}">
+          <div class="check">✓</div>
+          <div class="rowtext"><b>${x.n}</b><small>${x.s}</small></div>
+          ${sparkHTML(x.sp)}
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="fab">+</div>
+  </div>`;
+}
+
+function detailScreen(){
+  return `<div class="phone-inner">
+    <div class="statusbar"><span>9:41</span><span>▲ ▮▮▮ 84%</span></div>
+    <div class="body">
+      <div class="dethead">
+        <div class="back">←</div>
+        <h3><span class="swatch"></span>Su iç</h3>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>12</b><small>Şu an</small></div>
+        <div class="stat"><b>31</b><small>En uzun</small></div>
+        <div class="stat"><b>148</b><small>Toplam</small></div>
+      </div>
+      <div class="mapcard">
+        <h4>Son 6 ay</h4>
+        <div class="months"><span>Mar</span><span>Nis</span><span>May</span><span>Haz</span><span>Tem</span><span>Ağu</span></div>
+        <div class="heat">${heatHTML()}</div>
+        <div class="legend">az
+          <i class="cell"></i><i class="cell l1"></i><i class="cell l2"></i><i class="cell l3"></i><i class="cell l4"></i>
+        çok</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+document.getElementById('out').innerHTML = VARIANTS.map((v,i)=>`
+  <section class="variant">
+    <div class="vhead"><span class="vnum">${String(i+1).padStart(2,'0')}</span><h2>${v.n}</h2></div>
+    <p class="vdesc">${v.d}</p>
+    <div class="vtags">${v.t.map(t=>`<span>${t}</span>`).join('')}</div>
+    <div class="screens">
+      <div class="screen-wrap">
+        <div class="phone ${v.k}">${listScreen()}</div>
+        <div class="screen-label">Alışkanlık listesi</div>
+      </div>
+      <div class="screen-wrap">
+        <div class="phone ${v.k}">${detailScreen()}</div>
+        <div class="screen-label">Detay + ısı haritası</div>
+      </div>
+    </div>
+  </section>
+`).join('');
+
+// .phone-inner sarmalayıcısını kaldır (flex düzeni için)
+document.querySelectorAll('.phone-inner').forEach(el=>{
+  const p=el.parentElement;
+  while(el.firstChild) p.appendChild(el.firstChild);
+  el.remove();
+});
+</script>
+</body>
+</html>
