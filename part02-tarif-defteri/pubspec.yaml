@@ -1,0 +1,51 @@
+name: tarif_defteri
+description: "Annemin el yazısı tarif defteri için yapılmış, tamamen çevrimdışı bir tarif uygulaması."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Yerel veritabanı — tarifler yalnızca cihazda durur
+  drift: ^2.34.4
+  drift_flutter: ^0.3.1
+  path_provider: ^2.1.6
+
+  # Tarif okunurken ekranın kapanmaması için
+  wakelock_plus: ^1.8.0
+
+  # Yedek dosyasını dışa aktarmak için
+  share_plus: ^13.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  drift_dev: ^2.34.6
+  build_runner: ^2.15.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    # Uydurma demo tarifler — depoya giren TEK tarif dosyası budur.
+    - assets/demo_recipes.json
+    # assets/recipes.json (gerçek tarifler) .gitignore'dadır ve yalnızca
+    # Ömer'in yerel derlemesinde bulunur; kod iki dosyayı da aynı şekilde okur.
+
+  # Fontlar pakete gömülüdür. google_fonts KULLANILMAZ — o paket fontu çalışma
+  # anında internetten indirir, bu uygulama ise tamamen çevrimdışıdır.
+  fonts:
+    - family: Caveat
+      fonts:
+        - asset: assets/fonts/Caveat-Variable.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
