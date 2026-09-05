@@ -47,6 +47,28 @@ void main() {
     });
   });
 
+  group('toUpperCaseTurkish', () {
+    test('küçük i büyük İ olur', () {
+      // 'tarifin'.toUpperCase() → 'TARIFIN' verir; ekranda "TARIFIN ADI"
+      // yazması bu yüzden.
+      expect(toUpperCaseTurkish('tarifin adı'), 'TARİFİN ADI');
+      expect(toUpperCaseTurkish('kategori'), 'KATEGORİ');
+    });
+
+    test('noktasız ı büyük I olur', () {
+      expect(toUpperCaseTurkish('yapılışı'), 'YAPILIŞI');
+      expect(toUpperCaseTurkish('sık yaptıkların'), 'SIK YAPTIKLARIN');
+    });
+
+    test('diğer Türkçe harfler doğru büyür', () {
+      expect(toUpperCaseTurkish('çorbalar'), 'ÇORBALAR');
+      expect(toUpperCaseTurkish('göz'), 'GÖZ');
+      expect(toUpperCaseTurkish('şeker'), 'ŞEKER');
+      expect(toUpperCaseTurkish('ürün'), 'ÜRÜN');
+      expect(toUpperCaseTurkish('ağız'), 'AĞIZ');
+    });
+  });
+
   group('buildSearchText', () {
     test('ad ile malzemeleri birleştirir', () {
       final text = buildSearchText('Mercimek Çorbası', [

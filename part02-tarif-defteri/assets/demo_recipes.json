@@ -1,5 +1,211 @@
 {
   "surum": 1,
-  "kategoriler": [],
-  "tarifler": []
+  "kategoriler": [
+    { "ad": "Çorbalar", "sira": 0 },
+    { "ad": "Ana Yemek", "sira": 1 },
+    { "ad": "Hamur İşi", "sira": 2 },
+    { "ad": "Tatlılar", "sira": 3 },
+    { "ad": "Salatalar", "sira": 4 },
+    { "ad": "Zeytinyağlı", "sira": 5 },
+    { "ad": "Kahvaltılık", "sira": 6 },
+    { "ad": "Turşu & Reçel", "sira": 7 }
+  ],
+  "tarifler": [
+    {
+      "ad": "Mercimek Çorbası",
+      "kategori": "Çorbalar",
+      "favori": true,
+      "malzemeler": [
+        "1 su bardağı kırmızı mercimek",
+        "1 adet soğan",
+        "1 adet havuç",
+        "1 yemek kaşığı un",
+        "2 yemek kaşığı tereyağı",
+        "1 tatlı kaşığı salça",
+        "6 su bardağı sıcak su",
+        "Tuz, karabiber, kuru nane"
+      ],
+      "adimlar": [
+        "Soğanı ve havucu küçük küçük doğra.",
+        "Tereyağını erit, soğanı pembeleşene kadar kavur, salçayı ekleyip bir dakika daha karıştır.",
+        "Unu ekle, kokusu çıkana kadar kavurmaya devam et.",
+        "Yıkanmış mercimeği ve sıcak suyu ekle, kapağı kapat.",
+        "Mercimek dağılana kadar kısık ateşte pişir, blenderdan geçir, tuz ve baharatı ekle."
+      ],
+      "not": "Üstüne kızdırılmış tereyağında nane gezdirilir."
+    },
+    {
+      "ad": "Ezogelin Çorbası",
+      "kategori": "Çorbalar",
+      "malzemeler": [
+        "Yarım su bardağı kırmızı mercimek",
+        "2 yemek kaşığı pirinç",
+        "2 yemek kaşığı ince bulgur",
+        "1 adet soğan",
+        "1 yemek kaşığı salça",
+        "7 su bardağı su",
+        "Tuz, pul biber, nane"
+      ],
+      "adimlar": [
+        "Soğanı yağda kavur, salçayı ekle.",
+        "Mercimek, pirinç ve bulguru ilave et.",
+        "Suyu ekleyip taneler yumuşayana kadar pişir.",
+        "Tuz ve baharatları ekleyip beş dakika daha kaynat."
+      ]
+    },
+    {
+      "ad": "Karnıyarık",
+      "kategori": "Ana Yemek",
+      "favori": true,
+      "malzemeler": [
+        "6 adet patlıcan",
+        "300 gram kıyma",
+        "2 adet soğan",
+        "2 adet domates",
+        "2 adet sivri biber",
+        "1 yemek kaşığı salça",
+        "Tuz, karabiber",
+        "Kızartmak için sıvı yağ"
+      ],
+      "adimlar": [
+        "Patlıcanları alacalı soy, tuzlu suda on dakika beklet.",
+        "Patlıcanları kızart ve kağıt havluya al.",
+        "Soğanı kavur, kıymayı ekleyip suyunu çektir.",
+        "Doğranmış domates, biber ve salçayı ekle, tuzla, beş dakika pişir.",
+        "Patlıcanları yar, harcı doldur, üzerine domates ve biber koy.",
+        "Bir su bardağı sıcak su ekleyip 180 derecede 25 dakika pişir."
+      ]
+    },
+    {
+      "ad": "Su Böreği",
+      "kategori": "Hamur İşi",
+      "favori": true,
+      "malzemeler": [
+        "5 adet yufka",
+        "400 gram beyaz peynir",
+        "1 demet maydanoz",
+        "3 adet yumurta",
+        "1 su bardağı süt",
+        "1 su bardağı sıvı yağ",
+        "100 gram tereyağı"
+      ],
+      "adimlar": [
+        "Yumurta, süt ve yağı çırparak sos hazırla.",
+        "Tepsiyi yağla, iki yufkayı sossuz ser.",
+        "Kalan yufkaları soslayarak üst üste diz.",
+        "Ortaya peynir ve maydanoz harcını yay.",
+        "Üstünü kalan yufkalarla kapat, eritilmiş tereyağını gezdir.",
+        "180 derecede üzeri kızarana kadar pişir."
+      ],
+      "not": "Yufkaları ıslatmadan önce kısa süre haşlarsan daha yumuşak olur."
+    },
+    {
+      "ad": "Menemen",
+      "kategori": "Kahvaltılık",
+      "malzemeler": [
+        "3 adet yumurta",
+        "3 adet domates",
+        "2 adet sivri biber",
+        "2 yemek kaşığı tereyağı",
+        "Tuz, pul biber"
+      ],
+      "adimlar": [
+        "Biberleri tereyağında kavur.",
+        "Kabuğu soyulmuş domatesleri ekle, suyunu çektir.",
+        "Yumurtaları kırıp karıştır, tuzunu at.",
+        "Fazla karıştırmadan, yumurta tutar tutmaz ocaktan al."
+      ]
+    },
+    {
+      "ad": "İrmik Helvası",
+      "kategori": "Tatlılar",
+      "malzemeler": [
+        "2 su bardağı irmik",
+        "1 su bardağı toz şeker",
+        "2 su bardağı süt",
+        "100 gram tereyağı",
+        "Yarım su bardağı dolmalık fıstık"
+      ],
+      "adimlar": [
+        "Tereyağında fıstıkları hafif kavur.",
+        "İrmiği ekle, kısık ateşte pembeleşene kadar kavur.",
+        "Sıcak süt ve şekeri ekle, karıştır.",
+        "Suyunu çekince ocaktan al, kapağı kapalı on beş dakika demlendir."
+      ]
+    },
+    {
+      "ad": "Sütlaç",
+      "kategori": "Tatlılar",
+      "malzemeler": [
+        "1 litre süt",
+        "Yarım su bardağı pirinç",
+        "1 su bardağı toz şeker",
+        "2 yemek kaşığı pirinç unu",
+        "1 paket vanilin"
+      ],
+      "adimlar": [
+        "Pirinci az suyla yumuşayana kadar haşla.",
+        "Sütü ekle, kaynamaya bırak.",
+        "Pirinç ununu az sütle ez, çorbaya ekleyip koyulaştır.",
+        "Şekeri ve vanilini ekle, beş dakika daha kaynat.",
+        "Kaselere paylaştır, soğuyunca buzdolabına al."
+      ]
+    },
+    {
+      "ad": "Çoban Salatası",
+      "kategori": "Salatalar",
+      "malzemeler": [
+        "3 adet domates",
+        "2 adet salatalık",
+        "1 adet kuru soğan",
+        "1 adet sivri biber",
+        "Maydanoz",
+        "Zeytinyağı, limon, tuz"
+      ],
+      "adimlar": [
+        "Bütün sebzeleri küçük küçük doğra.",
+        "Maydanozu ince kıy.",
+        "Zeytinyağı, limon ve tuzu ekleyip karıştır."
+      ]
+    },
+    {
+      "ad": "Kısır",
+      "kategori": "Salatalar",
+      "malzemeler": [
+        "1 su bardağı ince bulgur",
+        "1 su bardağı sıcak su",
+        "2 yemek kaşığı salça",
+        "1 demet maydanoz",
+        "3 dal taze soğan",
+        "1 adet limonun suyu",
+        "Zeytinyağı, nar ekşisi, tuz"
+      ],
+      "adimlar": [
+        "Bulgurun üzerine sıcak suyu döküp on beş dakika beklet.",
+        "Salça ve zeytinyağını ekleyip iyice yoğur.",
+        "İnce kıyılmış yeşillikleri ekle.",
+        "Limon, nar ekşisi ve tuzla tatlandır."
+      ]
+    },
+    {
+      "ad": "Zeytinyağlı Yaprak Sarma",
+      "kategori": "Zeytinyağlı",
+      "malzemeler": [
+        "40 adet asma yaprağı",
+        "2 su bardağı pirinç",
+        "3 adet soğan",
+        "Yarım su bardağı zeytinyağı",
+        "1 yemek kaşığı kuş üzümü",
+        "Nane, dereotu, tuz, karabiber"
+      ],
+      "adimlar": [
+        "Soğanları ince doğrayıp zeytinyağında kavur.",
+        "Yıkanmış pirinci ekle, baharatları ve kuş üzümünü karıştır.",
+        "Yaprakları haşla, harcı koyup sıkı sıkı sar.",
+        "Tencereye diz, üzerine su ve zeytinyağı ekle, ağırlık koy.",
+        "Kısık ateşte suyunu çekene kadar pişir."
+      ],
+      "not": "Soğuyunca limonla servis edilir."
+    }
+  ]
 }

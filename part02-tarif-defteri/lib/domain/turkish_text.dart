@@ -57,6 +57,26 @@ String normalizeTurkish(String input) {
   return buffer.toString().trim().replaceAll(RegExp(r'\s+'), ' ');
 }
 
+/// Metni Türkçe kurallarına göre büyük harfe çevirir.
+///
+/// `toUpperCase()` burada da yanlış: `'tarifin'.toUpperCase()` → `'TARIFIN'`
+/// veriyor, doğrusu `'TARİFİN'`. Küçük harfe çevirmenin tersi olan bu hata
+/// arayüzdeki bölüm başlıklarında görünür.
+///
+/// Sadece iki harf farklı: `i → İ` ve `ı → I`.
+String toUpperCaseTurkish(String input) {
+  final buffer = StringBuffer();
+  for (final rune in input.runes) {
+    final char = String.fromCharCode(rune);
+    buffer.write(switch (char) {
+      'i' => 'İ',
+      'ı' => 'I',
+      _ => char.toUpperCase(),
+    });
+  }
+  return buffer.toString();
+}
+
 /// Bir tarifin aranabilir metnini üretir: adı + bütün malzemeleri.
 ///
 /// Yapılış adımları bilerek dışarıda bırakıldı. Aksi halde "tuz ekle"
