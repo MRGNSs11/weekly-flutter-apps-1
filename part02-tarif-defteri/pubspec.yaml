@@ -35,10 +35,12 @@ flutter:
   uses-material-design: true
 
   assets:
-    # Uydurma demo tarifler — depoya giren TEK tarif dosyası budur.
-    - assets/demo_recipes.json
-    # assets/recipes.json (gerçek tarifler) .gitignore'dadır ve yalnızca
-    # Ömer'in yerel derlemesinde bulunur; kod iki dosyayı da aynı şekilde okur.
+    # Klasörün tamamı bilerek verildi, tek tek dosya değil.
+    # Depoda yalnızca demo_recipes.json (uydurma tarifler) bulunur.
+    # recipes.json (annemin gerçek tarifleri) .gitignore'dadır; yalnızca benim
+    # derlememde vardır. Dosya adı tek tek yazılsaydı, dosya yokken derleme
+    # hata verirdi — klasör verildiğinde var olan ne varsa paketlenir.
+    - assets/
 
   # Fontlar pakete gömülüdür. google_fonts KULLANILMAZ — o paket fontu çalışma
   # anında internetten indirir, bu uygulama ise tamamen çevrimdışıdır.
