@@ -2,7 +2,7 @@
 
 Annemin el yazısı tarif defterini telefona taşıyan, tamamen çevrimdışı çalışan
 bir Flutter uygulaması. Tek bir kişinin, tek bir telefonda kullanması için
-yapıldı: hesap yok, sunucu yok, internet yok.
+yapıldı.
 
 Her hafta bir uygulamanın baştan sona bitirildiği bir serinin ikinci halkası.
 Serinin tamamı:
@@ -19,7 +19,7 @@ Kategoriyi seç veya ara → tarifi aç → malzemeleri tikle → adım adım pi
 ## Depoda tarif yok
 
 Bu uygulamanın en önemli kararı kod mimarisinde değil, deponun içeriğinde:
-**annemin tarifleri buraya hiç girmiyor.**
+**gerçek tarifler bu depoya hiç girmiyor.**
 
 ```
 depo (public)                             telefon
