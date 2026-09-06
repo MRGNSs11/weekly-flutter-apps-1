@@ -12,6 +12,7 @@ by design: **every line of code here is public.**
 | # | App | Skill demonstrated | Case study | Code |
 |---|-----|--------------------|------------|------|
 | 01 | **Habit Tracker** | Local database (Drift) + hand-written `CustomPainter` heatmap | [Read](part01-aliskanlik-takipcisi/VAKA.md) | [Source](part01-aliskanlik-takipcisi) |
+| 02 | **Recipe Book** | Turkish-specific text normalization &amp; search + keeping private data out of a public repo | [Read](part02-tarif-defteri/VAKA.md) | [Source](part02-tarif-defteri) |
 
 *More apps land here as they ship.*
 
