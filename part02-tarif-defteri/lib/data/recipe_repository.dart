@@ -243,9 +243,13 @@ class RecipeRepository {
     final existing = await _db.select(_db.recipes).get();
     if (existing.isNotEmpty) return false;
 
+    // Varsayılanlar yalnızca yükleme dosyası kendi kategorilerini vermediğinde
+    // devreye girer. İkisi birden eklenirse annem ana ekranda hiç tarifi
+    // olmayan kategoriler görür — tarifler defterden geldiğinde kategori
+    // listesi de defterden gelmeli.
     final categoryNames = <String>[
       ...data.categories.map((c) => c.name),
-      ...defaultCategories,
+      if (data.categories.isEmpty) ...defaultCategories,
       ...data.recipes.map((r) => r.categoryName).whereType<String>(),
     ];
 
