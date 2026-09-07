@@ -109,6 +109,22 @@ void main() {
       expect(adlar, contains('Çorbalar')); // varsayılanlar da açılır
     });
 
+    test('dosya kendi kategorilerini verirse varsayılanlar eklenmez', () async {
+      // Defterden gelen tarifler kendi kategori listesiyle birlikte geliyor.
+      // Varsayılanlar da eklenirse ana ekranda boş kategoriler görünür.
+      await repo.seedIfEmpty(
+        const BackupData(
+          categories: [CategoryData(name: 'Tatlılar'), CategoryData(name: 'Börek')],
+          recipes: [RecipeData(name: 'Su Böreği', categoryName: 'Börek')],
+        ),
+      );
+
+      final adlar = (await repo.watchCategories().first).map((c) => c.name);
+      expect(adlar, containsAll(<String>['Tatlılar', 'Börek']));
+      expect(adlar, isNot(contains('Çorbalar')));
+      expect(adlar, hasLength(2));
+    });
+
     test('veritabanı doluysa üzerine yazmaz', () async {
       await repo.insertRecipe(name: 'Annemin tarifi');
 
