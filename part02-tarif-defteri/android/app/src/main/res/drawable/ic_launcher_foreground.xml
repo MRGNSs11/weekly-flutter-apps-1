@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Uygulama ikonunun ön planı: kulplu tencere.
+
+  Adaptive ikonda 108dp'lik alanın yalnızca ortadaki 66dp'si her cihazda
+  görünür; gerisi kırpılabilir. Çizim bu yüzden bir grup içinde küçültülüp
+  ortalandı — kulpların uçları en dar kırpmada bile kesilmiyor.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <group
+        android:pivotX="256"
+        android:pivotY="256"
+        android:scaleX="0.82"
+        android:scaleY="0.82"
+        android:translateY="-10">
+
+        <!-- Gövde -->
+        <path
+            android:fillColor="#1E2B4D"
+            android:pathData="M144,212h224a26,26 0 0 1 26,26v128a26,26 0 0 1 -26,26h-224a26,26 0 0 1 -26,-26v-128a26,26 0 0 1 26,-26z" />
+
+        <!-- Kapak -->
+        <path
+            android:fillColor="#1E2B4D"
+            android:pathData="M113,176h286a17,17 0 0 1 0,34h-286a17,17 0 0 1 0,-34z" />
+
+        <!-- Kapak tutamağı -->
+        <path
+            android:fillColor="#1E2B4D"
+            android:pathData="M256,140m-16,0a16,16 0 1 0 32,0a16,16 0 1 0 -32,0z" />
+        <path
+            android:fillColor="#1E2B4D"
+            android:pathData="M240,140h32v42h-32z" />
+
+        <!-- Kulplar -->
+        <path
+            android:strokeColor="#B4322C"
+            android:strokeWidth="17"
+            android:strokeLineCap="round"
+            android:pathData="M118,268h-42a26,26 0 0 0 0,52h42" />
+        <path
+            android:strokeColor="#B4322C"
+            android:strokeWidth="17"
+            android:strokeLineCap="round"
+            android:pathData="M394,268h42a26,26 0 0 1 0,52h-42" />
+    </group>
+</vector>

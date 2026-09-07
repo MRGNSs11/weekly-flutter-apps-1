@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Uygulama ikonunun arka planı: defter kağıdı.
+
+  Android 8'den itibaren ikonun arka planı, cihazın seçtiği şekle (daire,
+  yuvarlak kare, damla) göre kırpılır. Bu yüzden çizgiler kenarlara kadar
+  sürer — hangi noktadan kesilirse kesilsin kağıt görüntüsü bozulmaz.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <path
+        android:fillColor="#F6F1E4"
+        android:pathData="M0,0h512v512h-512z" />
+
+    <path android:strokeColor="#DFE3EE" android:strokeWidth="9" android:pathData="M0,50h512" />
+    <path android:strokeColor="#DFE3EE" android:strokeWidth="9" android:pathData="M0,140h512" />
+    <path android:strokeColor="#DFE3EE" android:strokeWidth="9" android:pathData="M0,230h512" />
+    <path android:strokeColor="#DFE3EE" android:strokeWidth="9" android:pathData="M0,320h512" />
+    <path android:strokeColor="#DFE3EE" android:strokeWidth="9" android:pathData="M0,410h512" />
+    <path android:strokeColor="#DFE3EE" android:strokeWidth="9" android:pathData="M0,500h512" />
+</vector>
