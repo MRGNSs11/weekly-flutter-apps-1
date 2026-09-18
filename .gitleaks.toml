@@ -1,0 +1,35 @@
+# gitleaks ayarları — .githooks/pre-commit bunu kullanır.
+#
+# Varsayılan kurallar korunur, üstüne bu depoya özel kurallar eklenir.
+# Sebep: TMDB'nin v3 anahtarı 32 haneli düz hex'tir; hiçbir ön eki
+# ("sk-", "ghp_" gibi) olmadığı için gitleaks'in hazır kuralları görmez.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "tmdb-api-key-v3"
+description = "TMDB v3 API anahtarı (32 haneli hex)"
+regex = '''(?i)(tmdb[_-]?(api[_-]?)?key|api_key)["'\s:=]{1,10}([a-f0-9]{32})'''
+secretGroup = 3
+keywords = ["tmdb", "api_key"]
+
+[[rules]]
+id = "tmdb-api-read-access-token"
+description = "TMDB v4 okuma jetonu (JWT)"
+regex = '''eyJhbGciOiJIUzI1NiJ9\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}'''
+keywords = ["eyJhbGciOiJIUzI1NiJ9"]
+
+[allowlist]
+description = "Yanlış alarmlar"
+regexes = [
+  # Maskeleme testindeki uydurma anahtar. Dosyanın tamamını değil, sadece
+  # bu değeri muaf tutuyoruz — aynı dosyada gerçek bir anahtar yine yakalanır.
+  '''0123456789abcdef0123456789abcdef''',
+]
+paths = [
+  # Örnek betikte gerçek anahtar yok, yer tutucu var.
+  '''calistir\.ps1\.ornek''',
+  # Kuralların kendisi anahtar örüntüsü içeriyor.
+  '''\.gitleaks\.toml''',
+]
