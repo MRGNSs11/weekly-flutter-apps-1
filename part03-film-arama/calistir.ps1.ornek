@@ -1,0 +1,13 @@
+# Örnek çalıştırma betiği.
+#
+# Kullanım:
+#   1. Bu dosyayı "calistir.ps1" adıyla kopyala.
+#   2. Aşağıdaki BURAYA_ANAHTARINI_YAZ kısmını kendi TMDB anahtarınla değiştir.
+#   3. .\calistir.ps1
+#
+# "calistir.ps1" .gitignore'da — anahtarlı hâli asla depoya girmez.
+# Anahtar almak için: themoviedb.org → Settings → API → API Key (v3 auth)
+
+$key = "BURAYA_ANAHTARINI_YAZ"
+
+flutter run --dart-define=TMDB_KEY=$key
