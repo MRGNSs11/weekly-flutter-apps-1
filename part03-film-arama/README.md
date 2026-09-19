@@ -48,6 +48,23 @@ Anahtarın sızarsa TMDB panelinden tek tıkla yenileyebilirsin.
 | Günlüklerde anahtar yıldızlanır | `RedactingLogInterceptor` |
 | Commit öncesi sır taraması | depo kökü `.githooks/pre-commit` + `.gitleaks.toml` |
 | Veri toplama yok | analytics/crash SDK'sı yok, favoriler sadece cihazda |
+| Cihaz yedeği kapalı | `allowBackup` + `fullBackupContent` + `dataExtractionRules` |
+
+"Favoriler cihazda kalıyor" cümlesi ilk yazıldığında **doğru değildi**:
+Android varsayılan olarak uygulama verisini kullanıcının Google hesabına
+yedekler ve bunu kapatan bir şey yoktu. Üç satır birlikte kapatıyor — biri
+yetmiyor, çünkü Android 12'den itibaren cihazdan cihaza aktarım ayrı bir yol
+ve onu yalnızca `dataExtractionRules` kapatıyor.
+
+Bedeli küçük: telefon değişince birkaç film id'si kaybolur, kullanıcı yeniden
+kalbe basar. Doğrulama:
+
+```bash
+flutter build apk --release
+grep -oE 'uses-permission android:name="[^"]*"|android:allowBackup="[^"]*"' \
+  build/app/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml
+# → allowBackup="false", tek gerçek izin INTERNET
+```
 
 ## Ekranlar
 

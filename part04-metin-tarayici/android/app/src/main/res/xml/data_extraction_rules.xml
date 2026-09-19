@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Bu uygulamanın kalıcı verisi zaten YOK: veritabanı, ayar dosyası, günlük
+  yok; çekilen kare sonuç ekranı kapanınca siliniyor
+  (lib/camera/gecici_kare.dart).
+
+  Yine de yedeği kapatıyoruz. Sebep: "diskte hiçbir şey kalmıyor" iddiasının
+  tek istisnası, bir kare henüz silinmeden uygulamanın öldürülmesi olurdu —
+  o kare de yedeğe girmesin.
+
+  `allowBackup="false"` tek başına yetmiyor: Android 12'den itibaren buluta
+  yedekleme ile cihazdan cihaza aktarım AYRI iki yol, ikincisini yalnızca
+  bu dosya kapatıyor.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>

@@ -1,8 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Yedek BİLEREK açık — serideki tek uygulama.
+         Bu uygulamanın değeri biriken seri geçmişinde: 200 günlük bir seri,
+         telefon değiştirdi diye sıfırlanırsa uygulamanın tüm anlamı gider.
+         Dışa aktarma özelliği de yok, yani yedek kapatılırsa kullanıcının
+         hiçbir kurtarma yolu kalmıyor.
+         Bedeli: alışkanlık verisi kullanıcının Google hesabına yedekleniyor.
+         Bu README'de açıkça yazılı — "veriler telefonda kalıyor" DENMEZ.
+         Diğer üç uygulamada yedek kapalı (bkz. GUVENLIK.md). -->
     <application
         android:label="aliskanlik_takipcisi"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

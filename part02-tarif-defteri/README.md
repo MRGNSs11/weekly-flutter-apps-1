@@ -37,6 +37,28 @@ Dosya adı `pubspec.yaml`'da tek tek yazılsaydı, dosya yokken derleme hata
 verirdi. Bu yüzden `assets/` klasörünün tamamı veriliyor: var olan ne varsa
 paketleniyor, olmayan sorun çıkarmıyor.
 
+### Depodan çıkmıyor, telefondan da çıkmıyor
+
+Yukarıdaki mimari tarifleri **depodan** uzak tutuyor. Ama bir açık kalmıştı:
+Android varsayılan olarak uygulama veritabanını kullanıcının Google hesabına
+yedekler. Yani tarifler GitHub'a girmiyordu ama buluta gidiyordu.
+
+Yedekleme kapatıldı — üç satır birlikte, çünkü biri yetmiyor: `allowBackup`
+eski sürümler için, `fullBackupContent` API 30 ve altı için,
+`dataExtractionRules` ise Android 12+'ta ayrı bir yol olan cihazdan cihaza
+aktarım için. Veri kaybı riski yok: uygulamanın kendi JSON yedeği var, yani
+yedek Google'ın değil annemin elinde.
+
+Uygulamanın **hiç izni yok** — internet izni dahil. İkisi de tek komutla
+kontrol edilebilir:
+
+```bash
+flutter build apk --release
+grep -oE 'uses-permission android:name="[^"]*"|android:allowBackup="[^"]*"' \
+  build/app/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml
+# → allowBackup="false", gerçek izin yok
+```
+
 ## Türkçe arama — `toLowerCase()` neden yetmiyor?
 
 Annem "çorba" yazmak zorunda kalmamalı; "corba" da aynı sonucu vermeli. Bunun

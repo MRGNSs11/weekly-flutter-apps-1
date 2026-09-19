@@ -57,6 +57,11 @@ yere işaret ediyorsa hiçbir şey silinmiyor — yanlış dosya silmektense
 
 Okunan metin hiç diske yazılmıyor; veritabanı, ayar dosyası, günlük yok.
 
+Cihaz yedeği de kapalı (`allowBackup` + `fullBackupContent` +
+`dataExtractionRules`). Yedeklenecek kalıcı veri zaten yok; kapatmanın sebebi
+tek istisnayı da kapamak: bir kare silinmeye fırsat bulamadan uygulama
+öldürülürse o kare de buluta gitmesin.
+
 ## İzinler: manifest'e izin yazmamak yetmiyor
 
 "Ağa çıkmıyoruz" demek kolay. Bunu doğrulanabilir yapmak için birleşmiş

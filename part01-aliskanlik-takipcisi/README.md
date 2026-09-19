@@ -51,6 +51,31 @@ uygulamada dış paket eklemek yerine Flutter'ın kendi `StreamBuilder` /
 paketi yerine elle `CustomPainter` ile çizildi; amaç zaten o yeteneği
 göstermekti.
 
+## Verilerin nerede durduğu
+
+Alışkanlıklar ve işaretlenen günler telefondaki SQLite veritabanında tutulur.
+Sunucu, hesap, ağ isteği yok — uygulamanın **hiç izni yok**, internet izni
+dahil.
+
+Ama tam hikâye şu: **cihaz yedeği bilerek açık bırakıldı.** Android bu
+veritabanını kullanıcının Google hesabına yedekler. Yani "veriler telefondan
+çıkmıyor" demiyorum, çünkü doğru olmaz.
+
+Bu bir tercih: bu uygulamanın tüm değeri biriken seri geçmişinde. 200 günlük
+bir seri telefon değiştirildi diye sıfırlanırsa uygulamanın anlamı kalmıyor,
+dışa aktarma özelliği de yok. Yedeği kapatmak kullanıcıyı hiçbir kurtarma
+yolu olmadan bırakırdı. Serideki diğer üç uygulamada yedek **kapalı** —
+karar uygulamaya göre veriliyor, gerekçesi manifest'te yazılı.
+
+İddiayı kontrol etmek isteyen için:
+
+```bash
+flutter build apk --release
+grep -o 'uses-permission android:name="[^"]*"' \
+  build/app/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml
+# → androidx'in imza-seviyesi iç izni dışında hiçbir şey yok
+```
+
 ## Çalıştırma
 
 ```
