@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../camera/gecici_kare.dart';
 import '../../ocr/metin_tanima.dart';
 import '../theme/app_theme.dart';
 
@@ -41,6 +42,9 @@ class _ResultScreenState extends State<ResultScreen> {
     _metin.dispose();
     // Modeli serbest bırakmazsak her çekimde bellekte bir tanıyıcı birikir.
     _tanima.kapat();
+    // Kare diskte kalmasın: bu ekran kapanınca fotoğrafın işi bitiyor.
+    // Metin zaten sadece bellekte; kullanıcı kopyalamadıysa o da gidiyor.
+    GeciciKare.sil(widget.karePath).ignore();
     super.dispose();
   }
 

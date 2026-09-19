@@ -104,22 +104,32 @@ Beşini de `tools:node="remove"` ile çıkardım —
 Release derlemesinin birleşmiş manifest'inde artık sadece `CAMERA` var; komut
 README'de yazıyor, okuyan kendi kontrol edebilir.
 
-Buradan çıkan ders, haftanın OCR'dan daha kalıcı parçası: **bir uygulamanın ne
-istediğini kendi manifest'i söylemez, birleşmiş manifest söyler.** Gizlilik
-iddiası yazan herkesin bir kez bakması gereken dosya orası.
+Aynı gözle diske de baktım ve ikinci bir açık çıktı: `takePicture()` fotoğrafı
+uygulamanın önbelleğine yazıyor, `image_picker` de seçileni oraya kopyalıyor.
+"Hiçbir yere kaydedilmiyor" diye yazmıştım ama her çekim diskte birikiyordu.
+Sonuç ekranı kapanınca kare siliniyor artık —
+[lib/camera/gecici_kare.dart](lib/camera/gecici_kare.dart). Silmenin tek bir
+sınırı var: uygulama yalnızca kendi klasöründeki dosyaya dokunuyor, yani
+galeriden seçilende silinen şey kopya, kullanıcının fotoğrafı değil.
+
+Buradan çıkan ders, haftanın OCR'dan daha kalıcı parçası: **gizlilik iddiası
+yazmak kolay, doğrulamak ayrı bir iş.** "Ağa çıkmıyor" birleşmiş manifest'ten,
+"diskte kalmıyor" da dosyaları gerçekten silen bir koddan okunabiliyor olmalı.
+İkisini de yazarken iddiam yanlıştı.
 
 ---
 
 ## 05 — Nasıl doğruladım
 
-27 test. Hepsi
-[test/okunan_metin_test.dart](test/okunan_metin_test.dart) ve
-[test/camera_permission_test.dart](test/camera_permission_test.dart) içinde.
+36 test — metin düzenleme, izin halleri ve dosya silme kuralı.
 
 Kamerayı ve modeli test etmedim — ikisi de cihaza bağlı, orada benim kodum yok.
 Test edilen yer ikisinin arasındaki dönüşüm: satırlar doğru sırayla mı
 birleşiyor, yan yana iki sütun soldan sağa mı okunuyor, `eko-` + `nomi`
 birleşirken `Ankara-` + `İstanbul` ve `2024-` + `2025` bozulmadan duruyor mu.
+
+Dosya silme de test edildi, ama tersinden: asıl tutulması gereken şey silmenin
+**çalışması** değil, kullanıcının galerisindeki fotoğrafı asla silememesi.
 
 Blok sıralamasında bir testin kendisi tasarımı değiştirdi: "dikey örtüşüyorsa
 sola göre, yoksa yukarıya göre sırala" karşılaştırması geçişli değil, yani
