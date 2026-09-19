@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Uygulama ikonunun ön planı: film şeridinin tek karesi.
+
+  Adaptive ikonda 108dp'lik alanın yalnızca ortadaki 66dp çapındaki dairesi
+  her cihazda görünür; gerisi kırpılabilir. Çizim bu yüzden 32-76 aralığına
+  sıkıştırıldı — en uzak köşe merkezden 30dp uzakta, yani en dar kırpmada
+  bile kesilmiyor.
+
+  Renk uygulamanın vurgu rengi (#F5B301, AppTheme._accent).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Şeridin gövdesi -->
+    <path
+        android:fillColor="#F5B301"
+        android:pathData="M32,34h44v40h-44z" />
+
+    <!-- Sol kenardaki dişli delikleri -->
+    <path android:fillColor="#0E1013" android:pathData="M35,37h6v6h-6z" />
+    <path android:fillColor="#0E1013" android:pathData="M35,47h6v6h-6z" />
+    <path android:fillColor="#0E1013" android:pathData="M35,56h6v6h-6z" />
+    <path android:fillColor="#0E1013" android:pathData="M35,65h6v6h-6z" />
+
+    <!-- Sağ kenardaki dişli delikleri -->
+    <path android:fillColor="#0E1013" android:pathData="M67,37h6v6h-6z" />
+    <path android:fillColor="#0E1013" android:pathData="M67,47h6v6h-6z" />
+    <path android:fillColor="#0E1013" android:pathData="M67,56h6v6h-6z" />
+    <path android:fillColor="#0E1013" android:pathData="M67,65h6v6h-6z" />
+
+    <!-- Karenin penceresi -->
+    <path android:fillColor="#0E1013" android:pathData="M45,42h18v25h-18z" />
+</vector>
