@@ -7,7 +7,8 @@ Kâğıttaki yazıyı kamerayla okuyup metne çeviren Flutter uygulaması.
 (Google ML Kit, Latin metin tanıma) ve çalışma anı izin yönetimi.
 
 Uygulamanın **internet izni yoktur.** Model APK'nın içinde çalışır; fotoğraf da
-metin de cihazdan çıkmaz, hiçbir yere kaydedilmez.
+metin de cihazdan çıkmaz. Veritabanı, ayar dosyası, günlük yok — okunan metin
+yalnızca bellekte durur, çekilen kare ise sonuç ekranı kapanınca silinir.
 
 ## Çalıştırma
 
@@ -40,6 +41,21 @@ kimliğini tutacağı düşünülürse üçüncüsü kabul edilemezdi.
 
 Bedeli ölçüldü: **modelin kendisi +27 MB** (boş projede debug APK 147 → 174 MB,
 paketten önce ve sonra derlenip fark alındı). Release APK 77 MB.
+
+## Diskte ne kalıyor?
+
+Hiçbir şey — ama bu bedavaya gelmiyor. `takePicture()` fotoğrafı uygulamanın
+özel önbelleğine **yazıyor**, `image_picker` da galeriden seçileni oraya
+**kopyalıyor**. Hiç dokunmasan her çekim diskte birikirdi.
+
+`lib/camera/gecici_kare.dart` sonuç ekranı kapanınca kareyi siliyor. Silme
+kuralının tek bir sınırı var: **uygulama yalnızca kendi klasöründeki dosyaya
+dokunur.** Galeriden seçilende silinen şey `image_picker`'ın aldığı kopya;
+kullanıcının galerisindeki asıl fotoğraf yerinde kalıyor. Yol beklenmedik bir
+yere işaret ediyorsa hiçbir şey silinmiyor — yanlış dosya silmektense
+önbellekte dosya bırakmak yeğdir. Kural yedi testle tutuluyor.
+
+Okunan metin hiç diske yazılmıyor; veritabanı, ayar dosyası, günlük yok.
 
 ## İzinler: manifest'e izin yazmamak yetmiyor
 
@@ -99,7 +115,7 @@ düzenlenebilir bırakıldı.
 
 ```bash
 flutter analyze   # temiz
-flutter test      # 27 test
+flutter test      # 36 test
 ```
 
 Kamera ve model test edilmiyor (ikisi de cihaza bağlı, orada bu projenin kodu
