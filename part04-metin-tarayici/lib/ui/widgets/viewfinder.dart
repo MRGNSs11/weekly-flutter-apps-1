@@ -11,9 +11,12 @@ class Viewfinder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Önizleme tam ekran olunca nişangah ekran kenarlarına dayanıyordu;
+    // üstteki başlık ve alttaki deklanşörün altında kalıyordu. Artık
+    // çubukların arasındaki gerçek kadrajı gösteriyor.
     return IgnorePointer(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+        padding: const EdgeInsets.fromLTRB(28, 110, 28, 190),
         child: Stack(
           children: const [
             Positioned(top: 0, left: 0, child: _Kose(ust: true, sol: true)),

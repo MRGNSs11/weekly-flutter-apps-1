@@ -137,6 +137,23 @@ sonuç blokların geliş sırasına göre değişiyordu. Önce bantlara ayırıp
 bandı kendi içinde sıralamaya geçtim; "sıralama geliş sırasına göre değişmez"
 testi bunu tutuyor.
 
+**Testlerin yakalayamadığı taraf.** Asıl doğrulama cihazda oldu ve testlerin
+göremeyeceği dört şey oradan çıktı: R8'in metin tanımayı bozması, telefon yan
+çevrilince düzenin dağılması, 720p önizlemenin pikselli görünmesi, ve
+önizlemenin oranının yanlış hesaplanıp görüntüyü yatay ezmesi. Dördü de
+"kodun doğru olması" ile ilgili değildi — kodun dışındaki gerçekle ilgiliydi.
+
+İzin iddiası da cihazda doğrulandı, manifest'e bakarak değil, telefonun kendi
+kaydına bakarak:
+
+```
+adb shell dumpsys package com.omergunes.metin_tarayici
+  → requested permissions: android.permission.CAMERA
+```
+
+Tek satır. `INTERNET` yok, ve uygulama sorunsuz çalışıyor — telemetri
+kütüphanesinin ağa çıkamaması bir şeyi bozmadı.
+
 ---
 
 ## 06 — Ne öğrendim
@@ -154,15 +171,42 @@ modelleri eklemek her biri için bir 27 MB daha demekti; `-dontwarn` ile
 susturdum. Debug bunu göstermiyor çünkü R8 orada çalışmıyor — "derleniyor"
 demeden önce release almak gerekiyormuş.
 
+**Asıl ders bir adım sonra geldi.** `-dontwarn` sonrası release derlendi,
+"tamam" dedim. Telefona kurunca metin tanıma hiç çalışmadı:
+
+```
+MethodChannel#google_mlkit_text_recognizer: Failed to handle method call
+java.lang.NullPointerException: Attempt to invoke virtual method
+'java.lang.Class java.lang.Object.getClass()' on a null object reference
+```
+
+`-dontwarn` **uyarıyı** susturmuş, **sebebi** çözmemişti. ML Kit sınıflarını
+yansımayla çözüyor; R8 yansımayla ulaşılan sınıfı kullanılmıyor sanıp atıyor,
+geriye null kalıyor. Derleme yeşile döndüğü için hata çalışma anına ertelendi
+ve ben iki gün boyunca "release ✅" diye not almıştım. Çözüm `-keep`
+kuralları — [android/app/proguard-rules.pro](android/app/proguard-rules.pro).
+
+Bir uyarıyı susturmak onu çözmek değil. Yeşil derleme, çalışan uygulama
+demek değil.
+
 Türkçe yine ayak kaydırdı. Tireli kelime birleştirme "sonraki satır küçük harfle
 başlıyorsa" şartına bakıyor; `toLowerCase()` ile yazsaydım `I` ve `İ` yanlış
 tarafa düşerdi (Part 02'de aynısını `toUpperCase()` ile yaşamıştım). Harf
 listesini elle yazdım.
 
-Modelin okuma hatalarını **düzeltmiyorum.** `ı` yerine `i` görürse öyle
-kalıyor. Sözlükle düzeltme denemek cazipti ama yanlış düzeltme, yanlış
-okumadan beterdir: kullanıcı yanlış okumayı görür, yanlış düzeltmeyi
-göremez. Onun yerine metni düzenlenebilir bıraktım.
+Modelin okuma hatalarını **düzeltmiyorum.** Sözlükle düzeltme denemek cazipti
+ama yanlış düzeltme, yanlış okumadan beterdir: kullanıcı yanlış okumayı görür,
+yanlış düzeltmeyi göremez. Onun yerine metni düzenlenebilir bıraktım.
+
+Bu kararın ne kadar doğru olduğunu cihaz testi gösterdi. Temiz basılı bir
+sayfada model Türkçe'yi neredeyse kusursuz okudu — `Kâğıdın Yolculuğu`,
+`Şehirlerde`, `yaygınlaştıkça`, `değişmeden`; `â ğ ı ş ç ö ü` hepsi yerinde.
+Ama aynı metni bir bilgisayar ekranından okuttuğumda `ş` harfi `$` çıktı.
+
+Yani hata modelde sabit bir kusur değil, **girdi kalitesine bağlı.** Sözlükle
+"`$` görürsem `ş` yaparım" deseydim, gerçek bir fiyat listesindeki dolar
+işaretlerini bozardım — üstelik kullanıcı bunu fark edemezdi. Okunan metni
+düzenlenebilir bırakmak, tahmin etmekten iyi.
 
 ---
 Bu, her hafta bir mobil uygulama bitirdiğim serinin 4. uygulaması.

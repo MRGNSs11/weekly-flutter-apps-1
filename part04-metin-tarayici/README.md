@@ -25,9 +25,13 @@ flutter run
 
 | Ekran | Ne yapar |
 |---|---|
-| Kamera | Canlı önizleme, kadraj nişangahı, deklanşör; ışık, kamera çevirme, galeriden seçme |
+| Kamera | Tam ekran canlı önizleme, kadraj nişangahı, deklanşör; ışık, kamera çevirme, galeriden seçme |
 | Sonuç | Çekilen kare + okunan metin (düzenlenebilir); kopyala, paylaş, yeniden çek |
 | İzin | Kamera izni yokken ne olduğunu söyler; kalıcı redde "Ayarları aç" |
+
+Üçü de dikey; uygulama yön değiştirmiyor. Telefonu yan çevirince önizleme
+ince bir şeride sıkışıyor ve nişangah anlamsız yerlere düşüyordu — yatay
+düzen hiç tasarlanmadığı için göstermek yerine kapattık.
 
 ![Kamera ekranı](screenshots/01-kamera.png)
 ![Okunan metin](screenshots/02-sonuc.png)
@@ -144,12 +148,35 @@ Panoya kopyalama Flutter'ın kendi `Clipboard`'ıyla yapılıyor, paket yok.
 
 ## Release derlemesi için ProGuard notu
 
-`google_mlkit_text_recognition` eklentisi beş betiği de çağırabiliyor (Latin,
-Çince, Devanagari, Japonca, Korece) ama biz yalnızca Latin modelini bağımlılık
-olarak alıyoruz. Diğer dördünün sınıfları APK'da olmadığı için R8 release
-derlemesini "eksik sınıf" diye durduruyordu. `android/app/proguard-rules.pro`
-o dört paketi `-dontwarn` ile susturuyor — sınıfları eklemek her biri için
+İki ayrı sorun, ikisi de `android/app/proguard-rules.pro` içinde çözülü.
+
+**1. Eksik betik sınıfları.** Eklenti beş betiği de çağırabiliyor (Latin,
+Çince, Devanagari, Japonca, Korece) ama yalnızca Latin modeli bağımlılık
+olarak alınıyor. Diğer dördünün sınıfları APK'da yok, R8 derlemeyi
+durduruyordu. `-dontwarn` ile susturuldu — sınıfları eklemek her biri için
 ayrı model, yani bir 27 MB daha demekti.
+
+**2. R8'in yansımayla ulaşılan sınıfları atması.** Yukarıdaki `-dontwarn`
+sonrası release **derlendi ama çalışmadı**: metin tanıma ilk çağrıda
+`NullPointerException` atıyordu. ML Kit sınıflarını yansımayla çözüyor;
+R8 onları kullanılmıyor sanıp atmış. Çözüm `-keep` kuralları.
+
+> Bu ikisi arasındaki fark bu haftanın en pahalı dersi: **`-dontwarn` uyarıyı
+> susturur, sebebi çözmez.** Derleme yeşile döndüğü için hata çalışma anına
+> ertelendi ve iki gün "release ✅" diye not alındı. Debug derlemesi bunu
+> göstermiyor çünkü R8 orada hiç çalışmıyor.
+
+## Cihazda bulunanlar
+
+Emülatörde ve masaüstünde görünmeyen, yalnızca gerçek telefonda ortaya çıkan
+dört şey:
+
+| Sorun | Çözüm |
+|---|---|
+| Metin tanıma release'de çalışmıyor | Yukarıdaki `-keep` kuralları |
+| Önizleme yatay eziliyor | `value.aspectRatio` Android'de sensörün **yatay** oranını veriyor; ekran oranıyla çarpılıp kırpma katsayısı hesaplanıyor |
+| Önizleme pikselli, küçük yazı okunmuyor | `ResolutionPreset.high` (720p) → `veryHigh` (1080p) |
+| Telefon yan çevrilince düzen dağılıyor | Dikey kilit — yatay düzen hiç tasarlanmadı |
 
 ## Kurulum notu
 
