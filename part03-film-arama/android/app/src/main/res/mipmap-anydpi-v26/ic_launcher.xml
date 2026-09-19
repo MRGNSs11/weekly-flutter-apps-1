@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 8 ve üstü bu dosyayı kullanır: arka plan ve ön plan ayrı katmanlar
+  olduğu için başlatıcı ikona kendi şeklini uygulayabilir. Daha eski sürümler
+  mipmap-*/ic_launcher.png dosyalarına düşer.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>

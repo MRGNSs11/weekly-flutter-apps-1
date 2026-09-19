@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Uygulama ikonunun ön planı: kadraj nişangahının içindeki "A" harfi.
+
+  Harf yazı tipiyle konulamıyor — vector drawable metin desteklemiyor,
+  yalnızca yol. Bu yüzden "A" üç dörtgenle çizildi (iki çapraz + orta çizgi)
+  ve altına iki küçük serif ayağı kondu. Taslaktaki Georgia'nın birebir
+  kopyası değil, ama aynı karakterde: kalın gövde, düz tepe, serif ayak.
+
+  Adaptive ikonda 108dp'lik alanın yalnızca ortadaki 66dp çapındaki dairesi
+  her cihazda görünür. Harf 33-75 aralığında, nişangah köşeleri 30-78'de —
+  en uzak nokta merkezden 34dp, yani köşelerin uçları en dar kırpmada
+  hafifçe yuvarlanabilir. Harfin kendisi hiçbir kırpmada kesilmiyor.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- "A" — sol çapraz -->
+    <path
+        android:fillColor="#D8F24B"
+        android:pathData="M51,36 L57,36 L44,66 L36,66 Z" />
+
+    <!-- "A" — sağ çapraz -->
+    <path
+        android:fillColor="#D8F24B"
+        android:pathData="M51,36 L57,36 L72,66 L64,66 Z" />
+
+    <!-- "A" — orta çizgi -->
+    <path
+        android:fillColor="#D8F24B"
+        android:pathData="M43,53h22v6h-22z" />
+
+    <!-- Serif ayaklar -->
+    <path android:fillColor="#D8F24B" android:pathData="M33,66h14v4h-14z" />
+    <path android:fillColor="#D8F24B" android:pathData="M61,66h14v4h-14z" />
+
+    <!-- Kadraj nişangahı: dört köşe -->
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="5" android:strokeLineCap="square"
+        android:pathData="M30,42 L30,30 L42,30" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="5" android:strokeLineCap="square"
+        android:pathData="M66,30 L78,30 L78,42" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="5" android:strokeLineCap="square"
+        android:pathData="M78,66 L78,78 L66,78" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="5" android:strokeLineCap="square"
+        android:pathData="M42,78 L30,78 L30,66" />
+</vector>
