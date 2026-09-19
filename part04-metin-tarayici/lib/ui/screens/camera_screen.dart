@@ -94,9 +94,12 @@ class _CameraScreenState extends State<CameraScreen>
         return;
       }
 
+      // veryHigh = 1080p. `high` (720p) ile başlamıştık; cihazda hem önizleme
+      // pikselli görünüyordu hem de küçük yazı için çözünürlük düşüktü —
+      // bu bir metin tarayıcı, çekilen karenin detayı işin kendisi.
       final kontrol = CameraController(
         _kameralar[_kameraSirasi % _kameralar.length],
-        ResolutionPreset.high,
+        ResolutionPreset.veryHigh,
         enableAudio: false,
       );
       await kontrol.initialize();
@@ -214,50 +217,96 @@ class _CameraScreenState extends State<CameraScreen>
     }
   }
 
+  /// Kamera ekranı: önizleme ekranın tamamını kaplar, denetimler üstünde durur.
+  ///
+  /// Taslaktan SAPMA (Ömer'in isteği, cihazda görüldükten sonra): maket
+  /// beyaz üst/alt çubuklu, önizleme ortada bir kutu. Gerçek cihazda bu
+  /// "kamera penceresi" gibi duruyordu. Artık önizleme tam ekran; çubuklar
+  /// üstüne biniyor. Koyu yazı canlı görüntü üzerinde okunmayacağı için
+  /// çubuklara koyu degrade perde kondu, yazılar beyaza döndü.
+  /// Fosforlu sarı (nişangah, deklanşör, açık ışık) aynen duruyor —
+  /// taslağın kimlik rengi o.
   Widget _kameraEkrani() {
     final kontrol = _kontrol;
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            _UstCubuk(
-              baslik: 'Yazıyı çerçeveye al',
-              onGaleri: _galeridenSec,
-            ),
-            Expanded(
-              child: ColoredBox(
-                color: AppColors.preview,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    if (kontrol != null && kontrol.value.isInitialized)
-                      _Onizleme(kontrol: kontrol),
-                    const Viewfinder(),
-                  ],
+      backgroundColor: AppColors.preview,
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (kontrol != null && kontrol.value.isInitialized)
+            _Onizleme(kontrol: kontrol),
+          const Viewfinder(),
+          const _Perde(ustte: true),
+          const _Perde(ustte: false),
+          SafeArea(
+            child: Column(
+              children: [
+                _UstCubuk(
+                  baslik: 'Yazıyı çerçeveye al',
+                  onGaleri: _galeridenSec,
                 ),
-              ),
+                const Spacer(),
+                _AltCubuk(
+                  isikAcik: _isikAcik,
+                  cevrilebilir: _kameralar.length > 1,
+                  cekilebilir: kontrol != null && !_cekiliyor,
+                  onIsik: _isigiDegistir,
+                  onCevir: _kamerayiCevir,
+                  onCek: _cek,
+                ),
+              ],
             ),
-            _AltCubuk(
-              isikAcik: _isikAcik,
-              cevrilebilir: _kameralar.length > 1,
-              cekilebilir: kontrol != null && !_cekiliyor,
-              onIsik: _isigiDegistir,
-              onCevir: _kamerayiCevir,
-              onCek: _cek,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Üst ve alt kenardaki koyu degrade perde.
+///
+/// Tek işi yazıyı okunur tutmak: canlı kamera görüntüsü açık da olabilir
+/// koyu da, sabit bir yazı rengi tek başına güvenli değil.
+class _Perde extends StatelessWidget {
+  const _Perde({required this.ustte});
+
+  final bool ustte;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: ustte ? Alignment.topCenter : Alignment.bottomCenter,
+      child: IgnorePointer(
+        child: Container(
+          height: ustte ? 180 : 260,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: ustte ? Alignment.topCenter : Alignment.bottomCenter,
+              end: ustte ? Alignment.bottomCenter : Alignment.topCenter,
+              colors: [
+                AppColors.preview.withValues(alpha: 0.75),
+                AppColors.preview.withValues(alpha: 0),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// Önizlemeyi kırparak dolduruyor.
+/// Önizlemeyi ekranın tamamına, oranını bozmadan yayar.
 ///
-/// Kamera 4:3 veriyor, ekran daha uzun. Siyah bantla ortalamak taslağın
-/// havasını bozardı; kadrajı nişangah belirlediği için kırpmak sorun değil
-/// (PLAN.md B2.4 / 2).
+/// İlk sürüm `boyut.maxWidth / kontrol.value.aspectRatio` ile yükseklik
+/// hesaplıyordu ve görüntü yatay eziliyordu. Sebep: Android'de
+/// `value.aspectRatio` sensörün YATAY oranını veriyor (ör. 4:3 → 1.333),
+/// önizleme ise dikey çiziliyor. İkisini karıştırınca ölçek yanlış çıkıyor.
+///
+/// Doğrusu: ekran oranıyla sensör oranını çarp. Sonuç 1'in altındaysa
+/// tersini al — bulduğun katsayı, kısa kenarı taşıracak kadar büyütmeyi
+/// veriyor. Taşan kısım kırpılıyor; kadrajı zaten nişangah belirliyor.
 class _Onizleme extends StatelessWidget {
   const _Onizleme({required this.kontrol});
 
@@ -265,24 +314,16 @@ class _Onizleme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, boyut) {
-        return ClipRect(
-          child: OverflowBox(
-            maxWidth: double.infinity,
-            maxHeight: double.infinity,
-            alignment: Alignment.center,
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                width: boyut.maxWidth,
-                height: boyut.maxWidth / kontrol.value.aspectRatio,
-                child: CameraPreview(kontrol),
-              ),
-            ),
-          ),
-        );
-      },
+    final ekran = MediaQuery.sizeOf(context);
+    var olcek = ekran.aspectRatio * kontrol.value.aspectRatio;
+    if (olcek < 1) olcek = 1 / olcek;
+
+    return ClipRect(
+      child: Transform.scale(
+        scale: olcek,
+        alignment: Alignment.center,
+        child: Center(child: CameraPreview(kontrol)),
+      ),
     );
   }
 }
@@ -300,7 +341,14 @@ class _UstCubuk extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(baslik, style: Theme.of(context).textTheme.titleMedium),
+          // Perdenin üstünde: beyaz yazı. Taslakta ink'ti, tam ekran
+          // önizlemeye geçince koyu yazı okunmaz oldu.
+          Text(
+            baslik,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: AppColors.bg),
+          ),
           _YanDugme(etiket: 'Galeri', onTap: onGaleri),
         ],
       ),
@@ -377,7 +425,10 @@ class _YanDugme extends StatelessWidget {
     return TextButton(
       onPressed: onTap,
       style: TextButton.styleFrom(
-        foregroundColor: vurgulu ? AppColors.ink : AppColors.muted,
+        // Vurgulu hâl (ışık açık) sarı zeminde koyu yazı — taslaktaki gibi.
+        // Normal hâl artık koyu perdenin üstünde, o yüzden gri yerine
+        // kırık beyaz: `muted` canlı görüntüde kayboluyordu.
+        foregroundColor: vurgulu ? AppColors.onAccent : Colors.white70,
         backgroundColor: vurgulu ? AppColors.accent : null,
         textStyle: const TextStyle(fontSize: 13),
         shape: const StadiumBorder(),
