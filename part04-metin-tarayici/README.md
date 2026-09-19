@@ -33,8 +33,8 @@ flutter run
 ince bir şeride sıkışıyor ve nişangah anlamsız yerlere düşüyordu — yatay
 düzen hiç tasarlanmadığı için göstermek yerine kapattık.
 
-![Kamera ekranı](screenshots/01-kamera.png)
-![Okunan metin](screenshots/02-sonuc.png)
+![Okunan metin](screenshots/01-sonuc.png)
+![İzin ekranı](screenshots/02-izin.png)
 
 ## Neden bulut OCR değil?
 

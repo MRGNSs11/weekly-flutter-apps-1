@@ -7,9 +7,8 @@ release derlemesinin tek izni `CAMERA`, internet izni yok.
 
 **Kod:** [github.com/MRGNSs11/weekly-flutter-apps-1](https://github.com/MRGNSs11/weekly-flutter-apps-1/tree/main/part04-metin-tarayici) · **Yığın:** Flutter, camera, Google ML Kit (on-device), share_plus
 
-![Kamera ekranı](screenshots/01-kamera.png)
-![Okunan metin](screenshots/02-sonuc.png)
-![İzin ekranı](screenshots/03-izin.png)
+![Okunan metin](screenshots/01-sonuc.png)
+![İzin ekranı](screenshots/02-izin.png)
 
 ---
 
