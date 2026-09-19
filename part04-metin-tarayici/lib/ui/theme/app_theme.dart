@@ -75,6 +75,18 @@ class AppTheme {
           color: AppColors.muted,
         ),
       ),
+      // Taslaktaki sarı <mark> buraya düşüyor: seçilen metin vurgulanıyor.
+      // Renk dekor değil, "şu an neye dokunuyorsun"un karşılığı.
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: AppColors.ink,
+        selectionColor: AppColors.accent,
+        selectionHandleColor: AppColors.ink,
+      ),
+      snackBarTheme: const SnackBarThemeData(
+        backgroundColor: AppColors.preview,
+        contentTextStyle: TextStyle(fontSize: 14, color: AppColors.bg),
+        behavior: SnackBarBehavior.floating,
+      ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: AppColors.accent,

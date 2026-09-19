@@ -14,6 +14,7 @@ by design: **every line of code here is public.**
 | 01 | **Habit Tracker** | Local database (Drift) + hand-written `CustomPainter` heatmap | [Read](part01-aliskanlik-takipcisi/VAKA.md) | [Source](part01-aliskanlik-takipcisi) |
 | 02 | **Recipe Book** | Turkish-specific text normalization &amp; search + keeping private data out of a public repo | [Read](part02-tarif-defteri/VAKA.md) | [Source](part02-tarif-defteri) |
 | 03 | **Movie Search** | REST API layer: debounced search, request cancellation, pagination, explicit loading/error/empty states | [Read](part03-film-arama/VAKA.md) | [Source](part03-film-arama) |
+| 04 | **Text Scanner** | Camera + **on-device ML** (ML Kit OCR), runtime permission lifecycle, and auditing the *merged* Android manifest down to a single permission | [Read](part04-metin-tarayici/VAKA.md) | [Source](part04-metin-tarayici) |
 
 *More apps land here as they ship.*
 

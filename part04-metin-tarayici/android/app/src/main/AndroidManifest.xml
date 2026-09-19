@@ -1,10 +1,33 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Tek izin kamera. INTERNET izni BİLEREK yok: uygulama ağa hiç
          çıkmıyor, metin tanıma cihazda çalışıyor. İstesek de gönderemeyiz —
          bu dosya bunun kanıtı. (Flutter'ın debug derlemesi hot reload için
          INTERNET ekler; release derlemede yoktur.) -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
+
+    <!-- Bu dosyaya izin yazmamak yetmiyor: eklentilerin manifest'leri
+         birleşince kendi izinlerini getiriyor. Kullanmadığımız beşini
+         açıkça çıkarıyoruz, yoksa uygulama "mikrofon" ve "internet"
+         istiyor görünüyor.
+
+         RECORD_AUDIO + WRITE/READ_EXTERNAL_STORAGE : camera_android_camerax
+           (video kaydı için; biz `enableAudio: false` ile tek kare alıyoruz)
+         ACCESS_NETWORK_STATE : androidx.media3-common
+           (camerax'in bağımlısı; bu uygulamada ağ diye bir şey yok)
+         INTERNET : com.google.android.datatransport (ML Kit'in bağımlısı)
+           Metin tanıma cihazda çalışıyor; bu izin modelin kendisi için
+           değil, Google'ın kullanım telemetrisi için geliyor. İstemiyoruz.
+
+         Doğrulama: release derlemesinden sonra
+         build/app/intermediates/merged_manifest/ altındaki birleşmiş
+         manifest'te bu beş izin görünmemeli. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove"/>
 
     <application
         android:label="Metin Tarayıcı"

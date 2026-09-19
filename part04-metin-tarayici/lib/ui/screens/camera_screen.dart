@@ -1,5 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../camera/camera_permission.dart';
 import '../theme/app_theme.dart';
@@ -20,6 +22,7 @@ enum _Durum { hazirlaniyor, izinYok, hazir, hata }
 class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   static const _izin = CameraPermission();
+  final ImagePicker _galeri = ImagePicker();
 
   _Durum _durum = _Durum.hazirlaniyor;
   CameraAccess _access = CameraAccess.denied;
@@ -161,17 +164,37 @@ class _CameraScreenState extends State<CameraScreen>
     try {
       final kare = await kontrol.takePicture();
       if (!mounted) return;
-      await Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (context) => ResultScreen(karePath: kare.path),
-        ),
-      );
+      await _sonucaGit(kare.path);
     } on CameraException catch (error) {
       if (!mounted) return;
       _hataVer('Fotoğraf çekilemedi: ${error.description ?? error.code}');
     } finally {
       if (mounted) setState(() => _cekiliyor = false);
     }
+  }
+
+  /// Galeriden seçilen fotoğraf da aynı sonuç ekranına gidiyor — ML Kit
+  /// için karenin nereden geldiği fark etmiyor, ikisi de dosya yolu.
+  ///
+  /// Android 13+ sistem fotoğraf seçicisini kullanıyor: galeri izni
+  /// istemiyoruz, kullanıcı yalnızca seçtiği tek kareyi veriyor.
+  Future<void> _galeridenSec() async {
+    try {
+      final secilen = await _galeri.pickImage(source: ImageSource.gallery);
+      if (secilen == null || !mounted) return;
+      await _sonucaGit(secilen.path);
+    } on PlatformException catch (error) {
+      if (!mounted) return;
+      _hataVer('Galeri açılamadı: ${error.message ?? error.code}');
+    }
+  }
+
+  Future<void> _sonucaGit(String karePath) {
+    return Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => ResultScreen(karePath: karePath),
+      ),
+    );
   }
 
   @override
@@ -198,7 +221,10 @@ class _CameraScreenState extends State<CameraScreen>
       body: SafeArea(
         child: Column(
           children: [
-            const _UstCubuk(baslik: 'Yazıyı çerçeveye al'),
+            _UstCubuk(
+              baslik: 'Yazıyı çerçeveye al',
+              onGaleri: _galeridenSec,
+            ),
             Expanded(
               child: ColoredBox(
                 color: AppColors.preview,
@@ -262,20 +288,20 @@ class _Onizleme extends StatelessWidget {
 }
 
 class _UstCubuk extends StatelessWidget {
-  const _UstCubuk({required this.baslik});
+  const _UstCubuk({required this.baslik, required this.onGaleri});
 
   final String baslik;
+  final VoidCallback onGaleri;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSizes.kenar,
-        vertical: 14,
-      ),
+      padding: const EdgeInsets.fromLTRB(AppSizes.kenar, 14, 8, 14),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(baslik, style: Theme.of(context).textTheme.titleMedium),
+          _YanDugme(etiket: 'Galeri', onTap: onGaleri),
         ],
       ),
     );
