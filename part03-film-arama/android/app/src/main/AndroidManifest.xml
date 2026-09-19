@@ -3,11 +3,18 @@
          derlemelerine kendisi ekler; release'de burada yazılı olması gerekir. -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- Favoriler telefonda kalıyor: buluta yedekleme ve cihazdan cihaza
+         aktarım kapalı. Üç satır birlikte gerekiyor — allowBackup eski
+         sürümler için, dataExtractionRules Android 12+ için, fullBackupContent
+         API 30 ve altı için. Gerekçe: res/xml/data_extraction_rules.xml -->
     <application
         android:label="Film Arama"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="false">
+        android:usesCleartextTraffic="false"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".MainActivity"
             android:exported="true"

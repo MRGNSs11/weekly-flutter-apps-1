@@ -44,10 +44,31 @@ how it was verified. Written in Turkish; English versions are on
 
 ---
 
-## Secret scanning
+## Security checks
 
-Every commit is scanned by [gitleaks](https://github.com/gitleaks/gitleaks)
-through a pre-commit hook. If you clone this repo:
+Security here is not "being careful" — it's running a command. A claim you
+can't verify with a command doesn't go in a README.
+
+`guvenlik-kontrol.ps1` runs four checks before every push:
+
+| # | Check | Tool |
+|---|-------|------|
+| 1 | Secrets, across the full git history | [gitleaks](https://github.com/gitleaks/gitleaks) |
+| 2 | Known vulnerabilities in dependencies | [osv-scanner](https://github.com/google/osv-scanner) on each `pubspec.lock` |
+| 3 | Real permissions + backup settings | the **merged** Android manifest of a release build |
+| 4 | Repo hygiene | forbidden files, commit emails, working tree |
+
+Check 3 is the one worth explaining. **Writing no permissions in your own
+`AndroidManifest.xml` does not mean the app requests none** — plugins merge
+their own in at build time. One app here declared a single `CAMERA` line and
+the merged manifest carried five more, including an `INTERNET` permission that
+came from the telemetry library bundled alongside an on-device ML model. Only
+the release build tells the truth; debug builds add `INTERNET` for hot reload.
+
+Every app documents what it stores, what leaves the device, and the command
+that proves it.
+
+If you clone this repo, the pre-commit secret scan needs one setup step:
 
 ```bash
 git config core.hooksPath .githooks

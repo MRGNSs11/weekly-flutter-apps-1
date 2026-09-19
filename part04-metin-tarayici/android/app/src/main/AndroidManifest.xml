@@ -29,10 +29,18 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
     <uses-permission android:name="android.permission.INTERNET" tools:node="remove"/>
 
+    <!-- Kalıcı veri zaten yok, yine de yedek kapalı: silinmeye fırsat
+         bulamamış bir kare de buluta gitmesin. Üç satır birlikte gerekiyor —
+         allowBackup eski sürümler için, dataExtractionRules Android 12+ için,
+         fullBackupContent API 30 ve altı için.
+         Gerekçe: res/xml/data_extraction_rules.xml -->
     <application
         android:label="Metin Tarayıcı"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name=".MainActivity"
             android:exported="true"

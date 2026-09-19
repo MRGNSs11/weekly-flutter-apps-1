@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Favoriler telefonda kalıyor — VAKA.md'de yazan cümlenin karşılığı bu dosya.
+
+  `allowBackup="false"` tek başına yetmiyor: Android 12'den itibaren
+  buluta yedekleme ile cihazdan cihaza aktarım AYRI iki yol ve ikincisini
+  yalnızca bu dosya kapatıyor.
+
+  Bedeli küçük: telefon değişince birkaç film id'si kaybolur, kullanıcı
+  yeniden kalbe basar.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>

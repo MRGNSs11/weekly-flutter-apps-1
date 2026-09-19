@@ -17,7 +17,8 @@ künyesine ulaşma problemini çözen bir Android uygulaması. Veriyi TMDB'den
 
 Arama kutusuna yazıyorsun, yazmayı bırakmandan kısa süre sonra poster ızgarası
 doluyor. Bir postere dokununca künye açılıyor: yıl, süre, tür, puan, özet.
-Beğendiğin filmi kalple kaydediyorsun, favoriler telefonda kalıyor.
+Beğendiğin filmi kalple kaydediyorsun, favoriler telefonda kalıyor — bunu
+sonradan cihaz yedeğini kapatarak gerçekten doğru hale getirdim, aşağıda.
 
 Kutu boşken popüler filmler duruyor, yani ekran hiçbir zaman bomboş değil.
 Aşağı kaydırdıkça sonraki sayfalar ekleniyor.
@@ -97,6 +98,16 @@ Riverpod 3'te `valueOrNull` kalkmış, `value` zaten null dönüyor — sürüm 
 okumadan yazmaya başlayınca on dakika kaybettim. Bir de `Uri`, sorgu
 değerindeki yıldızı `%2A` diye kodluyor; günlükte anahtarı yıldızla
 gizlemeye çalışırken çıktı okunmaz hâle geldi, maskeyi düz sözcüğe çevirdim.
+
+**Sonradan eklenen ders (Part 04'ten geri dönüp):** yukarıda "favoriler
+telefonda kalıyor" yazmıştım ve bu doğru değildi. Android varsayılan olarak
+uygulama verisini kullanıcının Google hesabına yedekler; hiçbir şey yazmazsan
+yedek açıktır. Kod doğruydu — kodun dışındaki platform varsayılanı farklıydı.
+Üç satırlık manifest değişikliğiyle kapatıldı.
+
+Buradan öğrendiğim şey teknik değil: **gizlilik cümlesi yazmak kolay,
+doğrulamak ayrı bir iş.** Artık her iddianın yanına onu kanıtlayan komutu
+koyuyorum; okuyan kendi çalıştırıp görebilsin.
 
 ---
 Bu, her hafta bir mobil uygulama bitirdiğim serinin 3. uygulaması.
