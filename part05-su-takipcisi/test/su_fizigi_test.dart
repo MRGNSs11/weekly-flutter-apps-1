@@ -72,6 +72,23 @@ void main() {
     expect(sag - sol, closeTo(400 * .3, 1));
   });
 
+  test('gökyüzüne dokunmak halka açmaz, suya dokunmak açar', () {
+    final f = _sahne(); // taban 700
+    f.dokun(200, 300);
+    expect(f.dokunmaHalkalari, isEmpty);
+    f.dokun(200, 750);
+    expect(f.dokunmaHalkalari, hasLength(1));
+  });
+
+  test('en fazla 4 dokunma halkası; beşincide en eskisi düşer', () {
+    final f = _sahne();
+    for (var i = 0; i < 5; i++) {
+      f.dokun(i * 10.0, 750);
+    }
+    final xler = f.dokunmaHalkalari.map((h) => h.x).toList();
+    expect(xler, [10, 20, 30, 40]);
+  });
+
   test('hareket azaltılınca efekt oluşmaz, seviye anında oturur', () {
     final f = _sahne()
       ..hareketAzaltilmis = true
