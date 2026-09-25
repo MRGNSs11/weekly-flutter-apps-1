@@ -46,6 +46,14 @@ void main() {
     expect(f.sallanma, greaterThan(.5));
   });
 
+  test('damla suya değince çarpma bildirimi tam bir kez gelir', () {
+    var carpma = 0;
+    final f = _sahne()..carpinca = () => carpma++;
+    f.damlaBirak();
+    _sure(f, 3);
+    expect(carpma, 1);
+  });
+
   test('halka ve sıçrama zamanla kaybolur', () {
     final f = _sahne()
       ..damlaBirak()

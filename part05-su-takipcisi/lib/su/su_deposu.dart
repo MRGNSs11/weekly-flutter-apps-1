@@ -17,6 +17,7 @@ class SuDeposu {
   static const anahtarHedef = 'hedef';
   static const anahtarBardakMl = 'bardakMl';
   static const anahtarTarih = 'tarih';
+  static const anahtarSes = 'ses';
 
   /// Kaydı okur ve bugüne göre düzeltir (gün değiştiyse sayı 0).
   static Future<GunlukDurum> oku({DateTime? simdi}) async {
@@ -40,6 +41,14 @@ class SuDeposu {
     await HomeWidget.saveWidgetData<String>(anahtarTarih, durum.tarih);
     await HomeWidget.updateWidget(qualifiedAndroidName: widgetAlicisi);
   }
+
+  /// Ayarlar → Ses. Widget bunu okumaz; aynı dosyada durması yeni paket
+  /// (shared_preferences) eklememek için.
+  static Future<bool> sesAcikMi() async =>
+      await HomeWidget.getWidgetData<bool>(anahtarSes) ?? true;
+
+  static Future<void> sesiAyarla(bool acik) =>
+      HomeWidget.saveWidgetData<bool>(anahtarSes, acik);
 
   /// Oku → değiştir → yaz.
   static Future<GunlukDurum> degistir(
