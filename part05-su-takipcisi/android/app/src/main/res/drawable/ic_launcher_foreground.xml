@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  İkon ön planı: "Cam Damla" (ikon-secenekleri.html → 1). Buzlu camdan bir
+  damla, içinde dalgalanan su. Damla 28–82 aralığında; merkezde her cihazda
+  görünen 66dp'lik güvenli dairenin (21–87) içinde kalıyor.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Cam: beyaz %22 dolgu -->
+    <path
+        android:fillColor="#38FFFFFF"
+        android:pathData="M54,28 C54,28 35,50 35,63 A19,19 0 0 0 73,63 C73,50 54,28 54,28 Z" />
+
+    <!-- İçteki su: damlanın şekliyle kırpılmış dalga -->
+    <group>
+        <clip-path android:pathData="M54,28 C54,28 35,50 35,63 A19,19 0 0 0 73,63 C73,50 54,28 54,28 Z" />
+        <path
+            android:fillColor="#FFE8FBFF"
+            android:pathData="M30,64 Q42,57 54,64 T78,64 L78,90 L30,90 Z" />
+    </group>
+
+    <!-- Cam çerçevesi -->
+    <path
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M54,28 C54,28 35,50 35,63 A19,19 0 0 0 73,63 C73,50 54,28 54,28 Z" />
+
+    <!-- Parlama -->
+    <path
+        android:strokeColor="#CCFFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M44,58 Q45,50 50,45" />
+</vector>
