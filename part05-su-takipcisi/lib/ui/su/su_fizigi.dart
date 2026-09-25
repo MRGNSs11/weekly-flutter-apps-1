@@ -33,6 +33,9 @@ class SuFizigi {
   /// Suyun en fazla çıkabileceği oran (ekran yüksekliğine göre).
   double enFazlaOran = .8;
 
+  /// Damla suya değdiği anda çağrılır (ses buradan çalar).
+  void Function()? carpinca;
+
   /// Hareket azaltma açıksa her şey anında yerine oturur, dalga durur.
   bool hareketAzaltilmis = false;
 
@@ -130,6 +133,7 @@ class SuFizigi {
       if (d.y >= yuzeyHizasi) {
         d.bitti = true;
         sallanma = 1;
+        carpinca?.call();
         halkalar.add(Halka(x: d.x, y: yuzeyHizasi, yuzey: true));
         for (var i = 0; i < 8; i++) {
           sicrama.add(

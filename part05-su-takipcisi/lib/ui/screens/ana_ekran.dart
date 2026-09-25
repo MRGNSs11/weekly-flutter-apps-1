@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../../ses/ses.dart';
 import '../../su/gunluk_durum.dart';
 import '../../su/su_deposu.dart';
 import '../su/egim.dart';
@@ -36,6 +37,7 @@ class _AnaEkranState extends State<AnaEkran>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _fizik.carpinca = Ses.carp;
     _ticker = createTicker(_tik)..start();
     _ivmeyiAc();
     _yukle(ilk: true);
@@ -91,6 +93,7 @@ class _AnaEkranState extends State<AnaEkran>
 
   Future<void> _yukle({bool ilk = false}) async {
     final yeni = await SuDeposu.oku();
+    Ses.acik = await SuDeposu.sesAcikMi();
     if (!mounted) return;
     final eski = _durum;
     setState(() => _durum = yeni);
@@ -109,6 +112,12 @@ class _AnaEkranState extends State<AnaEkran>
 
   Future<void> _ekle() async {
     HapticFeedback.lightImpact();
+    // Hareket azaltılmışsa damla düşmez; çarpma sesi hemen çalsın.
+    if (_fizik.hareketAzaltilmis) {
+      Ses.carp();
+    } else {
+      Ses.birak();
+    }
     _fizik.damlaBirak();
     final yeni = await SuDeposu.degistir((d) => d.ekle());
     if (!mounted) return;

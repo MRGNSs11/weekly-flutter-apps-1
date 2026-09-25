@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../ses/ses.dart';
 import '../../su/gunluk_durum.dart';
 import '../../su/su_deposu.dart';
 import '../theme/app_theme.dart';
@@ -13,6 +14,7 @@ class AyarlarEkrani extends StatefulWidget {
 
 class _AyarlarEkraniState extends State<AyarlarEkrani> {
   GunlukDurum? _durum;
+  bool _ses = Ses.acik;
 
   @override
   void initState() {
@@ -20,6 +22,16 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
     SuDeposu.oku().then((d) {
       if (mounted) setState(() => _durum = d);
     });
+    SuDeposu.sesAcikMi().then((a) {
+      if (mounted) setState(() => _ses = a);
+    });
+  }
+
+  Future<void> _sesiDegistir(bool acik) async {
+    setState(() => _ses = acik);
+    Ses.acik = acik;
+    await SuDeposu.sesiAyarla(acik);
+    if (acik) Ses.carp(); // açınca nasıl duyulacağını hemen duysun
   }
 
   Future<void> _degistir(GunlukDurum Function(GunlukDurum) islem) async {
@@ -130,6 +142,31 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
                                   ),
                                 ),
                             ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    _Satir(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Ses', style: sora(12.5, kalinlik: 600)),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Damla suya değince ses çıksın',
+                                  style: sora(11, renk: Renk.muted),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Switch(
+                            value: _ses,
+                            onChanged: _sesiDegistir,
+                            activeThumbColor: Colors.white,
+                            activeTrackColor: Renk.accent,
                           ),
                         ],
                       ),
