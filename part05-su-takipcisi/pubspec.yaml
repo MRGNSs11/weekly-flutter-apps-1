@@ -1,0 +1,27 @@
+name: su_takipcisi
+description: "Ana ekran widget'ından tek dokunuşla su sayan uygulama."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  home_widget: ^0.10.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    # Değişken font: kalınlık FontVariation('wght', …) ile seçilir (100–800).
+    - family: Sora
+      fonts:
+        - asset: assets/fonts/Sora-Variable.ttf
