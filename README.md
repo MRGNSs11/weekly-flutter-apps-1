@@ -15,6 +15,7 @@ by design: **every line of code here is public.**
 | 02 | **Recipe Book** | Turkish-specific text normalization &amp; search + keeping private data out of a public repo | [Read](part02-tarif-defteri/VAKA.md) | [Source](part02-tarif-defteri) |
 | 03 | **Movie Search** | REST API layer: debounced search, request cancellation, pagination, explicit loading/error/empty states | [Read](part03-film-arama/VAKA.md) | [Source](part03-film-arama) |
 | 04 | **Text Scanner** | Camera + **on-device ML** (ML Kit OCR), runtime permission lifecycle, and auditing the *merged* Android manifest down to a single permission | [Read](part04-metin-tarayici/VAKA.md) | [Source](part04-metin-tarayici) |
+| 05 | **Water Tracker** | Android home-screen widget (Jetpack Glance) sharing data with Flutter; a custom platform channel, a GPU ripple shader, accelerometer-tilted water | [Read](part05-su-takipcisi/VAKA.md) | [Source](part05-su-takipcisi) |
 
 *More apps land here as they ship.*
 
@@ -39,7 +40,7 @@ how it was verified. Written in Turkish; English versions are on
 
 ## Stack
 
-`Flutter` · `Dart` · Android first · offline by default · minimal dependencies
+`Flutter` · `Dart` · `Kotlin` where Android needs it (widgets) · Android first · offline by default · minimal dependencies
 (most apps ship with two or three packages)
 
 ---
