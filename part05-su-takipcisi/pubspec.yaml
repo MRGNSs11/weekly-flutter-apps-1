@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   home_widget: ^0.10.0
+  sensors_plus: ^7.1.0
 
 dev_dependencies:
   flutter_test:
@@ -19,6 +20,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # Dokununca halka: sahneyi büken GPU çizimi (ImageFilter.shader).
+  shaders:
+    - shaders/halka.frag
 
   fonts:
     # Değişken font: kalınlık FontVariation('wght', …) ile seçilir (100–800).

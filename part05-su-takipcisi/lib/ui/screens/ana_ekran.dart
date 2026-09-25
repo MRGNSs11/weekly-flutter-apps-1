@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../su/gunluk_durum.dart';
 import '../../su/su_deposu.dart';
+import '../su/egim.dart';
+import '../su/halka_suzgeci.dart';
 import '../su/su_boyaci.dart';
 import '../su/su_fizigi.dart';
 import '../theme/app_theme.dart';
@@ -25,12 +30,14 @@ class _AnaEkranState extends State<AnaEkran>
   Duration _onceki = Duration.zero;
 
   GunlukDurum? _durum;
+  StreamSubscription<AccelerometerEvent>? _ivme;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _ticker = createTicker(_tik)..start();
+    _ivmeyiAc();
     _yukle(ilk: true);
   }
 
@@ -38,11 +45,13 @@ class _AnaEkranState extends State<AnaEkran>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _fizik.hareketAzaltilmis = MediaQuery.disableAnimationsOf(context);
+    if (_fizik.hareketAzaltilmis) _ivmeyiKapat();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _ivmeyiKapat();
     _ticker.dispose();
     _kare.dispose();
     super.dispose();
@@ -52,7 +61,32 @@ class _AnaEkranState extends State<AnaEkran>
   /// ya da gece yarısı geçmiş olabilir.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _yukle();
+    if (state == AppLifecycleState.resumed) {
+      _yukle();
+      _ivmeyiAc();
+    } else {
+      _ivmeyiKapat(); // arka planda sensör pil yemesin
+    }
+  }
+
+  /// Telefon eğilince su da eğilir. 50 Hz (oyun hızı) yeter; yay fiziği
+  /// sarsıntıyı zaten yumuşatıyor.
+  void _ivmeyiAc() {
+    if (_ivme != null || _fizik.hareketAzaltilmis) return;
+    _ivme =
+        accelerometerEventStream(
+          samplingPeriod: SensorInterval.gameInterval,
+        ).listen(
+          (o) => _fizik.egimHedef = Egim.hesapla(o.x, o.y),
+          onError: (Object _) => _ivmeyiKapat(), // sensörü olmayan cihaz
+          cancelOnError: true,
+        );
+  }
+
+  void _ivmeyiKapat() {
+    _ivme?.cancel();
+    _ivme = null;
+    _fizik.egimHedef = 0;
   }
 
   Future<void> _yukle({bool ilk = false}) async {
@@ -134,9 +168,13 @@ class _AnaEkranState extends State<AnaEkran>
                           d.localPosition.dx,
                           d.localPosition.dy,
                         ),
-                        child: RepaintBoundary(
-                          child: CustomPaint(
-                            painter: SuBoyaci(_fizik, kare: _kare),
+                        child: HalkaSuzgeci(
+                          fizik: _fizik,
+                          kare: _kare,
+                          child: RepaintBoundary(
+                            child: CustomPaint(
+                              painter: SuBoyaci(_fizik, kare: _kare),
+                            ),
                           ),
                         ),
                       ),

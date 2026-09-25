@@ -68,10 +68,19 @@ class SuFizigi {
     damlalar.add(Damla(x: genislik * (.42 + _rnd.nextDouble() * .16), y: -12));
   }
 
+  /// Aynı anda en fazla bu kadar dokunma halkası (shader'da 4 yuva var).
+  static const enFazlaDokunmaHalkasi = 4;
+
+  /// Yalnız suya dokununca halka oluşur; gökyüzüne dokunmak bir şey yapmaz.
   void dokun(double x, double y) {
-    if (hareketAzaltilmis) return;
+    if (hareketAzaltilmis || y < taban) return;
+    final eskiler = halkalar.where((h) => !h.yuzey).toList();
+    if (eskiler.length >= enFazlaDokunmaHalkasi) halkalar.remove(eskiler.first);
     halkalar.add(Halka(x: x, y: y, yuzey: false));
   }
+
+  /// Shader'a gidecek dokunma halkaları (en yenisi sonda).
+  Iterable<Halka> get dokunmaHalkalari => halkalar.where((h) => !h.yuzey);
 
   void sallan() => sallanma = 1;
 
