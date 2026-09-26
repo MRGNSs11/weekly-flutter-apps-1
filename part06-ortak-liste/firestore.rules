@@ -1,0 +1,132 @@
+rules_version = '2';
+
+// Ortak Liste — Firestore güvenlik kuralları.
+//
+// Uygulamanın içindeki Firebase anahtarı gizli DEĞİL: APK'yı açan herkes görür.
+// Veritabanını koruyan şey bu dosya. Her iddia kural-testi/ altında testle
+// kanıtlanıyor (`npm test`, emülatörde).
+//
+//   listeler/{listeId}                   uyeler, kod, olusturan, olusturma
+//   listeler/{listeId}/urunler/{id}      ad, alindi, ekleyen, olusturma
+//   listeler/{listeId}/katilimlar/{uid}  kod   ← "kodu biliyorum" kanıtı
+//   kodlar/{kod}                         listeId
+
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function girisli() {
+      return request.auth != null;
+    }
+
+    function ben() {
+      return request.auth.uid;
+    }
+
+    function listeYolu(id) {
+      return /databases/$(db)/documents/listeler/$(id);
+    }
+
+    function uyeMi(id) {
+      return girisli() && ben() in get(listeYolu(id)).data.uyeler;
+    }
+
+    // Uygulamadaki Kod.alfabe ile aynı: 0/O, 1/I/L yok.
+    function kodGecerli(k) {
+      return k is string && k.matches('^[ABCDEFGHJKMNPQRSTUVWXYZ2-9]{6}$');
+    }
+
+    // ── Kodlar: tek tek sorulabilir, TARANAMAZ ──
+    match /kodlar/{kod} {
+      allow get: if girisli();
+      allow list: if false;
+
+      // Yalnız liste oluşturulurken, aynı toplu yazmada, listenin sahibi yazar.
+      // Aynı kod zaten varsa bu yazma "update" sayılır ve aşağıda reddedilir —
+      // kod çakışması böyle yakalanıyor, istemci yeni kodla tekrar dener.
+      allow create: if girisli()
+        && kodGecerli(kod)
+        && request.resource.data.keys().hasOnly(['listeId'])
+        && getAfter(listeYolu(request.resource.data.listeId)).data.kod == kod
+        && getAfter(listeYolu(request.resource.data.listeId)).data.olusturan == ben();
+
+      allow update, delete: if false;
+    }
+
+    match /listeler/{listeId} {
+
+      function degisen() {
+        return request.resource.data.diff(resource.data).affectedKeys();
+      }
+
+      function katilimKaniti() {
+        return getAfter(/databases/$(db)/documents/listeler/$(listeId)/katilimlar/$(ben()));
+      }
+
+      // Üye olmayan biri yalnız KENDİNİ ekleyebilir, başka alana dokunamaz,
+      // ve aynı yazmada listenin kodunu içeren katılım belgesini de yazmış
+      // olmalı. listeId'yi bir yolla öğrenen ama kodu bilmeyen katılamaz.
+      function katilma() {
+        let eski = resource.data.uyeler;
+        let yeni = request.resource.data.uyeler;
+        return !(ben() in eski)
+          && degisen().hasOnly(['uyeler'])
+          && yeni == eski.concat([ben()])
+          && yeni.size() <= 10
+          && katilimKaniti().data.kod == resource.data.kod;
+      }
+
+      // Üye yalnız kendini çıkarabilir.
+      function ayrilma() {
+        return ben() in resource.data.uyeler
+          && degisen().hasOnly(['uyeler'])
+          && request.resource.data.uyeler == resource.data.uyeler.removeAll([ben()]);
+      }
+
+      // `list`: uygulama "hangi listedeyim?" diye uyeler array-contains uid
+      // sorgusu atıyor; kural sorgunun yalnız üyesi olunan listeleri
+      // döndürebileceğini kanıtlayabildiği için izin veriyor.
+      allow get, list: if girisli() && ben() in resource.data.uyeler;
+
+      allow create: if girisli()
+        && request.resource.data.keys().hasOnly(['uyeler', 'kod', 'olusturan', 'olusturma'])
+        && request.resource.data.uyeler == [ben()]
+        && request.resource.data.olusturan == ben()
+        && request.resource.data.olusturma == request.time
+        && kodGecerli(request.resource.data.kod)
+        && getAfter(/databases/$(db)/documents/kodlar/$(request.resource.data.kod)).data.listeId == listeId;
+
+      allow update: if girisli() && (katilma() || ayrilma());
+      allow delete: if false;
+
+      match /katilimlar/{uid} {
+        // Ayrılıp yeniden katılan kişinin belgesi zaten var → update de açık.
+        allow create, update: if girisli()
+          && uid == ben()
+          && request.resource.data.keys().hasOnly(['kod'])
+          && request.resource.data.kod == get(listeYolu(listeId)).data.kod
+          && ben() in getAfter(listeYolu(listeId)).data.uyeler;
+        allow read, delete: if false;
+      }
+
+      match /urunler/{urunId} {
+        allow read: if uyeMi(listeId);
+
+        allow create: if uyeMi(listeId)
+          && request.resource.data.keys().hasOnly(['ad', 'alindi', 'ekleyen', 'olusturma'])
+          && request.resource.data.ad is string
+          && request.resource.data.ad.size() >= 1
+          && request.resource.data.ad.size() <= 60
+          && request.resource.data.alindi == false
+          && request.resource.data.ekleyen == ben()
+          && request.resource.data.olusturma == request.time;
+
+        // Ürün adı sonradan değişmez; yalnız "alındı" işareti.
+        allow update: if uyeMi(listeId)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['alindi'])
+          && request.resource.data.alindi is bool;
+
+        allow delete: if uyeMi(listeId);
+      }
+    }
+  }
+}
