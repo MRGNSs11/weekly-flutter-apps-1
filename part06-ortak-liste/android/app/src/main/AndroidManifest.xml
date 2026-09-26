@@ -1,8 +1,39 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Serinin ilk internetli uygulaması: liste Firestore'da (Google sunucusu)
+         duruyor, iki telefon oradan eşitleniyor. INTERNET bu yüzden şart ve
+         burada açıkça yazılı — Firebase eklentisi de ekliyor, gizli kalmasın. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Birleşmiş manifest'e eklentilerden gelen iki fazla izin:
+         ACCESS_NETWORK_STATE : Firestore / Play Services ağ durumunu izlemek için
+         READ_GSERVICES       : Firebase Auth → Play Services bağımlılığı
+         İkisini de istemiyoruz. Kaldırmanın yan etkisi cihazda denendi
+         (bkz. README → Güvenlik): giriş, anlık akış, uçak modu sonrası eşitleme.
+
+         Doğrulama: release derlemesinden sonra
+           aapt dump permissions build/app/outputs/flutter-apk/app-release.apk -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" tools:node="remove"/>
+
+    <!-- Yedek KAPALI. Asıl veri zaten bulutta; telefonda kalan tek şey Firestore'un
+         önbelleği ve anonim oturum. Bunları yedeklemenin faydası yok, yeni telefonda
+         geri gelen eski oturum da güvenilir değil. Bedeli: telefon değişince
+         listeye kodla yeniden katılmak gerekir.
+         Üç satır birlikte gerekiyor — allowBackup eski sürümler için,
+         dataExtractionRules Android 12+ için, fullBackupContent API 30 ve altı için. -->
     <application
-        android:label="ortak_liste"
+        android:label="Ortak Liste"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules">
+        <!-- Firebase Auth, Google/telefon girişi için dışarıdan açılabilen iki
+             ekran getiriyor (derin bağlantı). Anonim girişte ikisi de kullanılmıyor;
+             dışarıya açık kapı olarak durmasınlar. Dışa açık tek ekran MainActivity. -->
+        <activity android:name="com.google.firebase.auth.internal.GenericIdpActivity" tools:node="remove"/>
+        <activity android:name="com.google.firebase.auth.internal.RecaptchaActivity" tools:node="remove"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
