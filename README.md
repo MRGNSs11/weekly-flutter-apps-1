@@ -16,6 +16,7 @@ by design: **every line of code here is public.**
 | 03 | **Movie Search** | REST API layer: debounced search, request cancellation, pagination, explicit loading/error/empty states | [Read](part03-film-arama/VAKA.md) | [Source](part03-film-arama) |
 | 04 | **Text Scanner** | Camera + **on-device ML** (ML Kit OCR), runtime permission lifecycle, and auditing the *merged* Android manifest down to a single permission | [Read](part04-metin-tarayici/VAKA.md) | [Source](part04-metin-tarayici) |
 | 05 | **Water Tracker** | Android home-screen widget (Jetpack Glance) sharing data with Flutter; a custom platform channel, a GPU ripple shader, accelerometer-tilted water | [Read](part05-su-takipcisi/VAKA.md) | [Source](part05-su-takipcisi) |
+| 06 | **Shared List** | Firebase: anonymous auth, real-time Firestore sync between two phones, and **security rules proven by 21 emulator tests** (the join code is verified server-side) | [Read](part06-ortak-liste/VAKA.md) | [Source](part06-ortak-liste) |
 
 *More apps land here as they ship.*
 
