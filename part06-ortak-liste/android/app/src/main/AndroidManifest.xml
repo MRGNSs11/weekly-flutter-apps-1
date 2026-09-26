@@ -5,15 +5,17 @@
          burada açıkça yazılı — Firebase eklentisi de ekliyor, gizli kalmasın. -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <!-- Birleşmiş manifest'e eklentilerden gelen iki fazla izin:
-         ACCESS_NETWORK_STATE : Firestore / Play Services ağ durumunu izlemek için
-         READ_GSERVICES       : Firebase Auth → Play Services bağımlılığı
-         İkisini de istemiyoruz. Kaldırmanın yan etkisi cihazda denendi
-         (bkz. README → Güvenlik): giriş, anlık akış, uçak modu sonrası eşitleme.
+    <!-- ACCESS_NETWORK_STATE KALIYOR. Önce kaldırıldı, uygulama açılışta çöktü:
+         Firestore bağlantı değişimini ConnectivityManager.registerDefaultNetworkCallback
+         ile izliyor ve bu izin olmadan SecurityException fırlıyor (SM-A566B, 2026-09-26).
+         İzin yalnız "internet var mı" bilgisini okur, kullanıcı verisine erişmez.
+         Firebase eklentisi zaten ekliyor; burada gerekçesiyle açıkça yazılı. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+    <!-- READ_GSERVICES: Firebase Auth → Play Services bağımlılığından geliyor,
+         anonim girişte gerekmiyor. Kaldırıldı; yan etkisi cihazda denendi.
          Doğrulama: release derlemesinden sonra
            aapt dump permissions build/app/outputs/flutter-apk/app-release.apk -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" tools:node="remove"/>
 
     <!-- Yedek KAPALI. Asıl veri zaten bulutta; telefonda kalan tek şey Firestore'un

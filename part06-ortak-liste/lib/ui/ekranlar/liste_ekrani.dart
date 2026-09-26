@@ -24,7 +24,7 @@ class _ListeEkraniState extends State<ListeEkrani> {
   static const _kademe = Duration(milliseconds: 90);
   static const _yerDegistirme = Duration(milliseconds: 560);
 
-  late final Stream<List<Urun>> _akis = widget.depo.urunAkisi(widget.liste.id);
+  late Stream<List<Urun>> _akis = widget.depo.urunAkisi(widget.liste.id);
   final _girdi = TextEditingController();
   final _girdiOdak = FocusNode();
 
@@ -163,8 +163,12 @@ class _ListeEkraniState extends State<ListeEkrani> {
                   stream: _akis,
                   builder: (context, s) {
                     if (s.hasError) {
-                      return const _Bilgi(
+                      // Firestore dinleyicisi hatadan sonra kapanır; yenisi açılır.
+                      return _Bilgi(
                         'Liste yüklenemedi.\nİnterneti kontrol et.',
+                        onTekrar: () => setState(
+                          () => _akis = widget.depo.urunAkisi(widget.liste.id),
+                        ),
                       );
                     }
                     if (!s.hasData) {
@@ -405,19 +409,36 @@ class _EkleDugmesiState extends State<_EkleDugmesi> {
 }
 
 class _Bilgi extends StatelessWidget {
-  const _Bilgi(this.metin);
+  const _Bilgi(this.metin, {this.onTekrar});
 
   final String metin;
+  final VoidCallback? onTekrar;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.only(right: 26),
-        child: Text(
-          metin,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 15, color: Renk.soluk),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              metin,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 15, color: Renk.soluk),
+            ),
+            if (onTekrar != null)
+              TextButton(
+                onPressed: onTekrar,
+                child: const Text(
+                  'Tekrar dene',
+                  style: TextStyle(
+                    color: Renk.kiraz,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
