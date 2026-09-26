@@ -24,7 +24,9 @@ tasarim-secenekleri.html
 ikon-secenekleri.html
 */PLAN.md
 */linkedin-gonderisi.md
-*/tasarimlar.html
+*/tasarimlar*.html
+LINKEDIN_REHBERI.md
+*/linkedin-karusel.*
 
 # ─── GÜVENLİK — bunlar asla depoya girmemeli ───
 # Bir uygulamanın kendi .gitignore'u eksik kalırsa buradaki kurallar yakalar.
