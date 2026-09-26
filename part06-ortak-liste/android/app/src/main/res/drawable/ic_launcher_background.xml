@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İkon zemini: E3'ün nane kapısı (100° gradyan, tasarimlar-6.html). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M0,0 L108,0 L108,108 L0,108 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="0" android:startY="44"
+                android:endX="108" android:endY="64">
+                <item android:offset="0" android:color="#FFCFE6DA" />
+                <item android:offset="0.45" android:color="#FFC2DDCF" />
+                <item android:offset="0.7" android:color="#FFD3E9DE" />
+                <item android:offset="1" android:color="#FFBFD9CB" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>
