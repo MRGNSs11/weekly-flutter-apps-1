@@ -1,0 +1,11 @@
+// Bu dosyanın gerçeği (firebase_options.dart) depoda YOK — benim Firebase
+// projeme ait. Kendi projeni bağlamak için:
+//
+//   dart pub global activate flutterfire_cli
+//   flutterfire configure --platforms=android
+//
+// Bu komut lib/firebase_options.dart ve android/app/google-services.json
+// dosyalarını senin projen için üretir. Ayrıntı: README → "Çalıştırma".
+//
+// İçindeki apiKey gizli bir şey değil (APK'yı açan herkes görür);
+// veritabanını koruyan firestore.rules. Ayrıntı: README → "Güvenlik".
