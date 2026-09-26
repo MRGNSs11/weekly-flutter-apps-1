@@ -26,7 +26,6 @@ ekleniyor, bağlantı gelince eşitleniyor.
 - Birden çok liste
 - Paylaşım linki ya da QR ile katılma
 - Bildirim
-- Kaba kuvvete özel koruma (App Check) — README'de sınırlılık olarak yazılı
 
 Uygulamanın tek işi iki telefonu aynı listede tutmak. Gerisi bu işi kanıtlamaktan
 vakit çalardı.
@@ -42,23 +41,20 @@ dosya [`firestore.rules`](firestore.rules). Kuralları emülatörde (bilgisayard
 
 ## 04 — Aldığım karar
 
-**Katılma kodunu neden istemci değil sunucu doğruluyor?**
+**Neden Google ile giriş değil de anonim giriş ve kod?**
 
-İlk tasarım basitti: kodu yazan kişi `kodlar` koleksiyonundan listenin
-kimliğini öğrenir, kendini üyelere ekler. Kural da "yalnız kendini
-ekleyebilirsin" der. Kâğıt üstünde yeterli görünüyordu.
+Google ile giriş daha "gerçek" görünüyordu. Telefon değişince hesap kalır,
+kimin kim olduğu bellidir. Ama bunun için dördüncü bir paket, imza parmak izi
+ve Google Cloud ayarı gerekiyordu. Kurulum tek başına yarım gün alırdı.
 
-Ama bu tasarımda kodun kendisi hiç doğrulanmıyor. Kural yalnız "kendini mi
-ekliyorsun" diye bakıyor. Liste kimliği bir yolla sızarsa, örneğin bir hata
-mesajında ya da bir ekran görüntüsünde, kodu bilmeyen biri de katılabilir.
+Asıl soru şuydu: bu uygulamada kimin kim olduğunu bilmem gerekiyor mu?
+Gerekmiyor. İki kişinin aynı listeyi görmesi yetiyor. Anonim giriş her
+telefona sessizce bir kimlik veriyor, kullanıcı hiçbir şey doldurmuyor.
+Listeye katılmak için 6 haneli kod yetiyor.
 
-Şimdi katılma tek toplu yazma: kendini üyelere eklersin ve aynı anda bir
-"katılım" belgesine kodu yazarsın. Kural, o belgedeki kodun listenin koduyla
-aynı olup olmadığına bakıyor. Bunu test 6 kanıtlıyor: liste kimliğini bilen
-ama kodu yanlış yazan kişi reddediliyor.
-
-Bedeli, bir belge ve kuralda iki satır daha. Karşılığında "kodu bilmeyen
-katılamaz" cümlesi bir umut olmaktan çıkıp kanıta dönüştü.
+Bedeli, uygulama silinince kimliğin de gitmesi. Listeye kodla yeniden
+katılmak gerekiyor. Karşılığında uygulama ilk açılışta hiçbir şey sormadan
+çalışıyor ve isim, e-posta tutmuyor.
 
 ## 05 — Nasıl doğruladım
 
@@ -74,13 +70,15 @@ takıldı.
 
 ## 06 — Ne öğrendim
 
-Firebase anahtarı gizli bir şey değil. Uygulamayı açan herkes görür. Güvenliği
-anahtarı saklamak değil, kuralları yazmak ve test etmek sağlıyor.
-
-Bir de: "gereksiz izni kaldırdım" demek için önce kaldırıp denemek gerekiyor.
+"Gereksiz izni kaldırdım" demek için önce kaldırıp denemek gerekiyor.
 `ACCESS_NETWORK_STATE`'i kaldırdım, uygulama açılmadı. İzin geri geldi,
 gerekçesi manifest'e yazıldı. Bir iddiayı cihazda doğrulamadan yazmamak,
 bu seride yine işe yaradı.
+
+Bir de: Firestore yeni bir kaydı sunucu onaylamadan ekrana veriyor. Uygulama
+hızlı görünsün diye güzel bir özellik. Ama o kayda bağlı ikinci bir istek,
+sunucuda kayıt henüz yokken gidince reddediliyor. Yeni listeyi ancak sunucu
+onaylayınca "var" saymak gerekti.
 
 ---
 Bu, her hafta bir mobil uygulama bitirdiğim serinin 6. uygulaması.
