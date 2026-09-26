@@ -13,6 +13,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // firebase_options.dart depoda yok → lib/firebase_options.dart.ornek
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Kapı ekranın altına kadar uzansın; gezinme çubuğu siyah şerit olmasın.
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(const OrtakListe());
 }
 
@@ -25,6 +27,8 @@ class OrtakListe extends StatelessWidget {
       value: SystemUiOverlayStyle.dark.copyWith(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarContrastEnforced: false,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: MaterialApp(
         title: 'Ortak Liste',

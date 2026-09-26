@@ -46,13 +46,19 @@ class ListeDeposu {
 
   /// Üyesi olduğum liste; yoksa null. Telefonda "hangi listedeyim" kaydı
   /// tutulmuyor, soru her açılışta Firestore'a soruluyor.
+  ///
+  /// Sunucu henüz onaylamamış liste YOK sayılır. Firestore yeni listeyi
+  /// yazma bitmeden telefonda gösteriyor; ekran o anda ürünleri dinlemeye
+  /// başlarsa sunucuda liste henüz olmadığı için kural reddediyor ve akış
+  /// kırılıyordu (cihazda görüldü, 2026-09-26).
   Stream<Liste?> listemAkisi() => _listeler
       .where('uyeler', arrayContains: uid)
       .limit(1)
-      .snapshots()
+      .snapshots(includeMetadataChanges: true)
       .map((s) {
-        if (s.docs.isEmpty) return null;
-        final d = s.docs.first;
+        final onayli = s.docs.where((d) => !d.metadata.hasPendingWrites);
+        if (onayli.isEmpty) return null;
+        final d = onayli.first;
         return Liste(
           id: d.id,
           kod: d.data()['kod'] as String? ?? '',
