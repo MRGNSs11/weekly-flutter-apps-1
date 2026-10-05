@@ -60,6 +60,9 @@ class _AnaEkranState extends State<AnaEkran>
   @override
   void initState() {
     super.initState();
+    // Veri gelmeden de şerit "şimdi"yi göstersin (yoksa 1 Ocak 1970 yazar).
+    _oynatT.value = _simdi;
+    _haritaAni.value = _simdi;
     _yukle();
     _ticker.start();
   }
@@ -158,6 +161,8 @@ class _AnaEkranState extends State<AnaEkran>
     _simdide = false;
     _birakilma = _simdi.toInt();
     _ayarla(e.ms.toDouble(), haritaHemen: true);
+    // ±1,5 saatte daha büyüğü olsa da dokunulan deprem gösterilir.
+    _secili.value = e;
   }
 
   @override
