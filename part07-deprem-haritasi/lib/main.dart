@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'ui/ana_ekran.dart';
 import 'ui/tema.dart';
 
 void main() => runApp(const DepremUygulamasi());
@@ -12,6 +13,6 @@ class DepremUygulamasi extends StatelessWidget {
     title: 'Deprem',
     debugShowCheckedModeBanner: false,
     theme: temaKur(),
-    home: const Scaffold(),
+    home: const AnaEkran(),
   );
 }
