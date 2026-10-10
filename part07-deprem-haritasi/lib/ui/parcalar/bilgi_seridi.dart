@@ -29,9 +29,19 @@ class BilgiSeridi extends StatelessWidget {
 
   Widget _satir(String dev, String ust, String alt, {Color? devRenk}) => Row(
     children: [
+      // Bricolage 800 Instrument Serif'ten geniş: kutu büyüdü, yine de
+      // sığmayan bir değer olursa kesilmek yerine küçülür.
       SizedBox(
-        width: 84,
-        child: Text(dev, style: Yazi.dev.copyWith(color: devRenk), maxLines: 1),
+        width: 100,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            dev,
+            style: Yazi.dev.copyWith(color: devRenk),
+            maxLines: 1,
+          ),
+        ),
       ),
       const SizedBox(width: 14),
       Expanded(
