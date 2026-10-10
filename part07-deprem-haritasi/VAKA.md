@@ -74,13 +74,6 @@ parametresi sonuçları sıralamadan önce kesiyor. "Son 100 deprem" istediğimd
 en yeniler gelmiyordu. 7 günün tamamını çekip sıralamayı uygulamada yapmak
 çözdü; zaten yalnız 220 KB.
 
-**Ölçmeden hızlandırma.** Emülatördeki 20 ms beni haritanın gri tonunu yeniden
-yazmaya itiyordu. Telefonda ölçünce sorunun emülatörün yazılım ekran kartı
-olduğu çıktı. Plan yazıldı ama gerekmedi.
-
-Bir de telefonda yazı tipini değiştirdim. Yeni yazı daha genişti ve büyük sayı
-"2." diye kesildi. Ekran görüntüsü almasaydım görmeyecektim.
-
 ---
 Bu, her hafta bir mobil uygulama bitirdiğim serinin 7. uygulaması.
 Diğerleri: [github.com/MRGNSs11/weekly-flutter-apps-1](https://github.com/MRGNSs11/weekly-flutter-apps-1)
