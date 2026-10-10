@@ -17,6 +17,7 @@ by design: **every line of code here is public.**
 | 04 | **Text Scanner** | Camera + **on-device ML** (ML Kit OCR), runtime permission lifecycle, and auditing the *merged* Android manifest down to a single permission | [Read](part04-metin-tarayici/VAKA.md) | [Source](part04-metin-tarayici) |
 | 05 | **Water Tracker** | Android home-screen widget (Jetpack Glance) sharing data with Flutter; a custom platform channel, a GPU ripple shader, accelerometer-tilted water | [Read](part05-su-takipcisi/VAKA.md) | [Source](part05-su-takipcisi) |
 | 06 | **Shared List** | Firebase: anonymous auth, real-time Firestore sync between two phones, and **security rules proven by 21 emulator tests** (the join code is verified server-side) | [Read](part06-ortak-liste/VAKA.md) | [Source](part06-ortak-liste) |
+| 07 | **Earthquake Map** | Map + live open data (AFAD) + a **draggable seismogram drawn from the data** with `CustomPainter`: every quake is a peak, drag back 7 days and the map follows. flutter_map + OpenStreetMap, no API key | [Read](part07-deprem-haritasi/VAKA.md) | [Source](part07-deprem-haritasi) |
 
 *More apps land here as they ship.*
 
