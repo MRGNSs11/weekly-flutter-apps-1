@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  İkon ön planı: beyaz sismogram dalgası (ikon-secenekleri.html → 6).
+  tool/ikon_uret.py üretir. Başlatıcı 108dp'nin yalnız ortadaki 72dp'sini
+  gösterdiği için dalga %68'e küçültüldü; sayfadaki önizlemeyle aynı oranda durur.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group android:pivotX="54" android:pivotY="56" android:scaleX="0.68" android:scaleY="0.68" android:translateY="-2">
+        <path
+            android:strokeColor="#FFFFFFFF"
+            android:strokeWidth="2.6"
+            android:strokeLineJoin="round"
+            android:strokeLineCap="round"
+            android:pathData="M22.0,56.0 L24.2,55.3 L26.4,57.1 L28.6,54.8 L30.8,57.0 L33.0,55.2 L35.2,57.2 L37.4,54.5 L39.6,57.5 L41.8,53.5 L44.0,61.3 L46.2,47.9 L48.4,63.9 L50.6,42.3 L52.8,74.8 L55.0,39.6 L57.2,65.6 L59.4,44.3 L61.6,65.0 L63.8,51.5 L66.0,58.3 L68.2,53.9 L70.4,57.5 L72.6,55.1 L74.8,56.9 L77.0,54.8 L79.2,57.1 L81.4,55.3 L83.6,57.0 L85.8,54.8 L86.0,56.0" />
+    </group>
+</vector>
