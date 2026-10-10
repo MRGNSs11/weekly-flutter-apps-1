@@ -53,14 +53,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
-    - family: InstrumentSerif
+    - family: BricolageGrotesque
       fonts:
-        - asset: assets/fonts/InstrumentSerif-Regular.ttf
-        - asset: assets/fonts/InstrumentSerif-Italic.ttf
-          style: italic
-    - family: InstrumentSans
-      fonts:
-        - asset: assets/fonts/InstrumentSans.ttf
+        - asset: assets/fonts/BricolageGrotesque.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
