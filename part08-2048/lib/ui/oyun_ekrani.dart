@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter, lerpDouble;
+import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -146,16 +146,9 @@ class _OyunEkraniState extends ConsumerState<OyunEkrani>
         return Stack(
           alignment: Alignment.center,
           children: [
-            ImageFiltered(
-              imageFilter: ImageFilter.blur(
-                sigmaX: 0.75 * gri,
-                sigmaY: 0.75 * gri,
-              ),
-              child: ColorFiltered(
-                colorFilter: _doygunluk(1 - gri),
-                child: child,
-              ),
-            ),
+            // Plandaki hafif bulanıklık (ImageFiltered) kaldırıldı: tüm tahtayı
+            // her karede bulanıklaştırmak telefonda pahalı (PLAN B2.5/3).
+            ColorFiltered(colorFilter: _doygunluk(1 - gri), child: child),
             IgnorePointer(
               child: Transform.rotate(
                 angle: isaretAci * math.pi / 180,
