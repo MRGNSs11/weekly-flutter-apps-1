@@ -32,6 +32,7 @@ jobs:
           - part05-su-takipcisi
           - part06-ortak-liste
           - part07-deprem-haritasi
+          - part08-2048
     defaults:
       run:
         working-directory: ${{ matrix.app }}

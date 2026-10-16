@@ -18,6 +18,7 @@ by design: **every line of code here is public.**
 | 05 | **Water Tracker** | Android home-screen widget (Jetpack Glance) sharing data with Flutter; a custom platform channel, a GPU ripple shader, accelerometer-tilted water | [Read](part05-su-takipcisi/VAKA.md) | [Source](part05-su-takipcisi) |
 | 06 | **Shared List** | Firebase: anonymous auth, real-time Firestore sync between two phones, and **security rules proven by 21 emulator tests** (the join code is verified server-side) | [Read](part06-ortak-liste/VAKA.md) | [Source](part06-ortak-liste) |
 | 07 | **Earthquake Map** | Map + live open data (AFAD) + a **draggable seismogram drawn from the data** with `CustomPainter`: every quake is a peak, drag back 7 days and the map follows. flutter_map + OpenStreetMap, no API key | [Read](part07-deprem-haritasi/VAKA.md) | [Source](part07-deprem-haritasi) |
+| 08 | **2048** | State management with Riverpod over an **immutable** game state: undo is just the previous object, no reverse logic. Unit, widget and on-device integration tests; a neumorphic look drawn by a single painter | [Read](part08-2048/VAKA.md) | [Source](part08-2048) |
 
 *More apps land here as they ship.*
 
