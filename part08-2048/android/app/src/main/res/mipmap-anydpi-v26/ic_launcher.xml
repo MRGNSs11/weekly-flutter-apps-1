@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 8+: zemin vektör, ön plan PNG (kabarık gölge vektörde yapılamıyor).
+     Başlatıcı kendi şeklini (daire, yumuşak kare…) uygular; Android 13+ temalı
+     ikonda tek renk katman kullanılır. Eski sürümler mipmap-*/ic_launcher.png'ye düşer. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
+</adaptive-icon>
