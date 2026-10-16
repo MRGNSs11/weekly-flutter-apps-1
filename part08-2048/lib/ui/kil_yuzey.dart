@@ -12,10 +12,8 @@ import 'tema.dart';
 /// Uygulamadaki animasyonların çoğu bu tek sayının animasyonu: kare
 /// çukurdan doğar (−3 → +g), yoğrulur (+g → −4 → +g), kurşunlaşır (→ −3).
 ///
-/// Flutter'ın `BoxShadow`'unda iç gölge yok; içe basıklık "delikli
-/// dikdörtgen" yöntemiyle çizilir: yüzeyin dışını kaplayan, ortasında yüzey
-/// biçiminde bir delik olan şekil kaydırılıp bulanıklaştırılır ve yüzeyin
-/// içine kırpılır. Deliğin kenarından taşan gölge, iç gölge olarak görünür.
+/// Flutter'ın `BoxShadow`'unda iç gölge yok; içe basıklık, yüzeyin içine
+/// kırpılmış üç yuvarlak dikdörtgenle çizilir (aşağıda).
 class KilYuzey extends StatelessWidget {
   const KilYuzey({
     super.key,
@@ -92,31 +90,28 @@ class KilBoyaci extends CustomPainter {
     canvas.drawRRect(rr, Paint()..color = renk);
 
     if (g < -0.05) {
+      // İç gölge yalnız yuvarlak dikdörtgen bulanıklığıyla çizilir: telefonun
+      // GPU'su bunu hızlı yoldan (analitik) çizer. Önceki "delikli yol"
+      // yöntemi her seferinde yüzeyin 9 katı alanı bulanıklaştırıyordu.
+      //   1) yüzeyin tamamı koyu gölge rengi,
+      //   2) sağ-alta kaymış açık renk: sol-üst kenarda koyu şerit kalır,
+      //   3) ortaya zemin rengi: sağ-alt kenarda açık şerit kalır.
       final m = -g;
       final mf = _bulanik(m * bulaniklik);
-      final dis = Rect.fromLTWH(
-        -size.width,
-        -size.height,
-        size.width * 3,
-        size.height * 3,
-      );
-      Path delikli(Offset kayma) => Path()
-        ..fillType = PathFillType.evenOdd
-        ..addRect(dis)
-        ..addRRect(rr.shift(kayma));
       canvas
         ..save()
         ..clipRRect(rr)
-        ..drawPath(
-          delikli(Offset(m, m)),
-          Paint()
-            ..color = Renk.golge
-            ..maskFilter = mf,
-        )
-        ..drawPath(
-          delikli(Offset(-m, -m)),
+        ..drawRRect(rr, Paint()..color = Renk.golge)
+        ..drawRRect(
+          rr.shift(Offset(m, m)),
           Paint()
             ..color = Renk.isik
+            ..maskFilter = mf,
+        )
+        ..drawRRect(
+          rr.deflate(m),
+          Paint()
+            ..color = renk
             ..maskFilter = mf,
         )
         ..restore();

@@ -201,52 +201,80 @@ class _TahtaState extends State<Tahta> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return SizedBox.square(
       dimension: Olcu.tahta,
-      child: KilYuzey(
-        yukseklik: -4,
-        kose: Olcu.tahtaKose,
-        bulaniklik: 2.5,
-        child: AnimatedBuilder(
-          animation: _kayma,
-          builder: (context, _) {
-            final t = Curves.easeInOut.transform(_kayma.value);
-            // Ölenler altta çizilir; birleşen kare onların üstüne oturur.
-            final sirali = _kareler.values.toList()
-              ..sort((a, b) => (a.olu ? 0 : 1) - (b.olu ? 0 : 1));
-            return Stack(
-              clipBehavior: Clip.none,
-              children: [
-                for (var r = 0; r < 4; r++)
-                  for (var c = 0; c < 4; c++)
-                    Positioned(
-                      left: _konum(c),
-                      top: _konum(r),
-                      width: Olcu.kare,
-                      height: Olcu.kare,
-                      child: const KilYuzey(yukseklik: Olcu.cukur),
-                    ),
-                for (final g in sirali)
-                  Positioned(
-                    key: ValueKey(g.id),
-                    left: lerpDouble(_konum(g.eskiSutun), _konum(g.sutun), t),
-                    top: lerpDouble(_konum(g.eskiSatir), _konum(g.satir), t),
-                    width: Olcu.kare,
-                    height: Olcu.kare,
-                    child: RepaintBoundary(
-                      child: KareWidget(
-                        deger: g.deger,
-                        dogdu: g.dogdu,
-                        yogurma: g.yogurma,
-                        mod: g.mod,
-                        modGecikmesi: g.modGecikmesi,
-                        azHareket: widget.azHareket,
+      child: Stack(
+        children: [
+          // Zemin ve 16 çukur hiç değişmez: kendi katmanında bir kez çizilir,
+          // kareler kayarken yeniden çizilmez.
+          const Positioned.fill(child: RepaintBoundary(child: _Zemin())),
+          Positioned.fill(
+            child: AnimatedBuilder(
+              animation: _kayma,
+              builder: (context, _) {
+                final t = Curves.easeInOut.transform(_kayma.value);
+                // Ölenler altta çizilir; birleşen kare onların üstüne oturur.
+                final sirali = _kareler.values.toList()
+                  ..sort((a, b) => (a.olu ? 0 : 1) - (b.olu ? 0 : 1));
+                return Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    for (final g in sirali)
+                      Positioned(
+                        key: ValueKey(g.id),
+                        left: lerpDouble(
+                          _konum(g.eskiSutun),
+                          _konum(g.sutun),
+                          t,
+                        ),
+                        top: lerpDouble(
+                          _konum(g.eskiSatir),
+                          _konum(g.satir),
+                          t,
+                        ),
+                        width: Olcu.kare,
+                        height: Olcu.kare,
+                        child: RepaintBoundary(
+                          child: KareWidget(
+                            deger: g.deger,
+                            dogdu: g.dogdu,
+                            yogurma: g.yogurma,
+                            mod: g.mod,
+                            modGecikmesi: g.modGecikmesi,
+                            azHareket: widget.azHareket,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+/// İçe basık tahta + 16 boş çukur.
+class _Zemin extends StatelessWidget {
+  const _Zemin();
+
+  @override
+  Widget build(BuildContext context) => KilYuzey(
+    yukseklik: -4,
+    kose: Olcu.tahtaKose,
+    bulaniklik: 2.5,
+    child: Stack(
+      children: [
+        for (var r = 0; r < 4; r++)
+          for (var c = 0; c < 4; c++)
+            Positioned(
+              left: _TahtaState._konum(c),
+              top: _TahtaState._konum(r),
+              width: Olcu.kare,
+              height: Olcu.kare,
+              child: const KilYuzey(yukseklik: Olcu.cukur),
+            ),
+      ],
+    ),
+  );
 }
