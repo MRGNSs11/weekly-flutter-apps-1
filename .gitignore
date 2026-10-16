@@ -12,23 +12,16 @@ desktop.ini
 *.iml
 *.swp
 
-# ─── ÖZEL — bunlar Ömer'in kişisel çalışma belgeleri, PUBLIC OLMAZ ───
-# Diskte dururlar, depoya girmezler. Public repoda sadece uygulama kodu ve
-# uygulamaya özel vaka raporu bulunur.
-PLAN_REHBERI.md
-VAKA_REHBERI.md
-GUVENLIK.md
-FIKIRLER.md
-VITRIN_PLANI.md
-tasarim-secenekleri.html
-ikon-secenekleri.html
-*/PLAN.md
-*/linkedin-gonderisi.md
-*/tasarimlar*.html
-*/renk-secenekleri.html
-*/font-secenekleri.html
-LINKEDIN_REHBERI.md
-*/linkedin-karusel.*
+# ─── ÖZEL — Ömer'in çalışma belgeleri, PUBLIC OLMAZ ───
+# Beyaz liste: bütün .md / .html / .pdf dosyaları varsayılan olarak ÖZEL.
+# Public'e yalnız aşağıda "!" ile açılanlar gider. Yeni bir seçenek sayfası
+# (tasarım, ikon, font...) adı ne olursa olsun kendiliğinden dışarıda kalır.
+*.md
+*.html
+*.pdf
+!README.md
+!VAKA.md
+!**/web/index.html
 
 # ─── GÜVENLİK — bunlar asla depoya girmemeli ───
 # Bir uygulamanın kendi .gitignore'u eksik kalırsa buradaki kurallar yakalar.

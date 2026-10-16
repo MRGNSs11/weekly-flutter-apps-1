@@ -61,6 +61,10 @@ can't verify with a command doesn't go in a README.
 | 3 | Real permissions + backup settings | the **merged** Android manifest of a release build |
 | 4 | Repo hygiene | forbidden files, commit emails, working tree |
 
+Checks 1, 2 and every app's `flutter analyze` + `flutter test` (plus the
+Firestore rule tests) also run on GitHub Actions on every push and once a month:
+[![CI](https://github.com/MRGNSs11/weekly-flutter-apps-1/actions/workflows/ci.yml/badge.svg)](https://github.com/MRGNSs11/weekly-flutter-apps-1/actions/workflows/ci.yml)
+
 Check 3 is the one worth explaining. **Writing no permissions in your own
 `AndroidManifest.xml` does not mean the app requests none** — plugins merge
 their own in at build time. One app here declared a single `CAMERA` line and
