@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:oyun_2048/oyun/kurallar.dart';
 import 'package:oyun_2048/oyun/oyun_durumu.dart';
 import 'package:oyun_2048/oyun/oyun_notifier.dart';
-import 'package:oyun_2048/oyun/skor_deposu.dart';
+import 'package:oyun_2048/oyun/kayit_deposu.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<ProviderContainer> kur({
@@ -17,7 +17,7 @@ Future<ProviderContainer> kur({
   final c = ProviderContainer(
     overrides: [
       rastgeleProvider.overrideWithValue(Random(1)),
-      skorDeposuProvider.overrideWithValue(SkorDeposu(prefs)),
+      kayitDeposuProvider.overrideWithValue(KayitDeposu(prefs)),
       if (baslangic != null)
         baslangicDurumuProvider.overrideWithValue(baslangic),
     ],
@@ -108,7 +108,7 @@ void main() {
     'en iyi skor kayıttan okunur, geçilince yazılır, geri al düşürmez',
     () async {
       final c = await kur(
-        kayitli: {SkorDeposu.anahtar: 600},
+        kayitli: {KayitDeposu.enIyiAnahtari: 600},
         baslangic: OyunDurumu.izgaradan([
           [64, 64, 0, 0],
           [0, 0, 0, 0],
@@ -120,7 +120,7 @@ void main() {
       c.read(oyunProvider.notifier).kaydir(Yon.sol); // 500 + 128
       expect(c.read(oyunProvider).enIyi, 628);
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getInt(SkorDeposu.anahtar), 628);
+      expect(prefs.getInt(KayitDeposu.enIyiAnahtari), 628);
       c.read(oyunProvider.notifier).geriAl();
       expect(c.read(oyunProvider).durum.skor, 500);
       expect(c.read(oyunProvider).enIyi, 628);
@@ -190,5 +190,73 @@ void main() {
     n.geriAl();
     n.yeniOyun();
     expect(c.read(oyunProvider).olaySayaci, 3);
+  });
+
+  group('yarım oyun kaydı', () {
+    test('her hamleden sonra yazılır; yeni bir oturum oradan açılır', () async {
+      final c = await kur();
+      final n = c.read(oyunProvider.notifier);
+      birHamle(n);
+      birHamle(n);
+      final simdi = c.read(oyunProvider).durum;
+
+      // Uygulamanın kapanıp açılması: aynı kayıtla yeni bir container.
+      final prefs = await SharedPreferences.getInstance();
+      final c2 = ProviderContainer(
+        overrides: [
+          rastgeleProvider.overrideWithValue(Random(9)),
+          kayitDeposuProvider.overrideWithValue(KayitDeposu(prefs)),
+        ],
+      );
+      addTearDown(c2.dispose);
+      final acilan = c2.read(oyunProvider);
+      expect(acilan.durum.izgara, simdi.izgara);
+      expect(acilan.durum.skor, simdi.skor);
+      expect(acilan.gecmis, isEmpty, reason: 'geri al geçmişi kaydedilmez');
+    });
+
+    test('geri al kaydı da günceller', () async {
+      final c = await kur();
+      final n = c.read(oyunProvider.notifier);
+      final ilk = c.read(oyunProvider).durum;
+      birHamle(n);
+      n.geriAl();
+      final prefs = await SharedPreferences.getInstance();
+      expect(KayitDeposu(prefs).oyunOku()!.izgara, ilk.izgara);
+    });
+
+    test('yeni oyun kaydı siler', () async {
+      final c = await kur();
+      final n = c.read(oyunProvider.notifier);
+      birHamle(n);
+      n.yeniOyun();
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.containsKey(KayitDeposu.oyunAnahtari), isFalse);
+    });
+
+    test('oyun bitince kayıt silinir; geri alınca yeniden yazılır', () async {
+      final c = await kur(
+        baslangic: OyunDurumu.izgaradan([
+          [2, 4, 2, 4],
+          [4, 2, 4, 2],
+          [2, 4, 2, 64],
+          [0, 8, 16, 32],
+        ]),
+      );
+      final n = c.read(oyunProvider.notifier);
+      final prefs = await SharedPreferences.getInstance();
+      n.kaydir(Yon.sol);
+      expect(c.read(oyunProvider).katman, Katman.bitti);
+      expect(prefs.containsKey(KayitDeposu.oyunAnahtari), isFalse);
+      n.geriAl();
+      expect(prefs.containsKey(KayitDeposu.oyunAnahtari), isTrue);
+    });
+
+    test('bozuk kayıtla açılış yeni oyun verir', () async {
+      final c = await kur(kayitli: {KayitDeposu.oyunAnahtari: 'bozuk'});
+      final o = c.read(oyunProvider);
+      expect(o.durum.kareler.length, 2);
+      expect(o.durum.skor, 0);
+    });
   });
 }

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:oyun_2048/oyun/oyun_durumu.dart';
 import 'package:oyun_2048/oyun/oyun_notifier.dart';
-import 'package:oyun_2048/oyun/skor_deposu.dart';
+import 'package:oyun_2048/oyun/kayit_deposu.dart';
 import 'package:oyun_2048/ui/oyun_ekrani.dart';
 import 'package:oyun_2048/ui/tema.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,7 +30,7 @@ Future<void> kur(
     ProviderScope(
       overrides: [
         rastgeleProvider.overrideWithValue(Random(1)),
-        skorDeposuProvider.overrideWithValue(SkorDeposu(prefs)),
+        kayitDeposuProvider.overrideWithValue(KayitDeposu(prefs)),
         baslangicDurumuProvider.overrideWithValue(durum),
       ],
       child: MaterialApp(

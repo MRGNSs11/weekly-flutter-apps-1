@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'oyun/oyun_notifier.dart';
-import 'oyun/skor_deposu.dart';
+import 'oyun/kayit_deposu.dart';
 import 'ui/oyun_ekrani.dart';
 import 'ui/tema.dart';
 
@@ -13,7 +13,7 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   runApp(
     ProviderScope(
-      overrides: [skorDeposuProvider.overrideWithValue(SkorDeposu(prefs))],
+      overrides: [kayitDeposuProvider.overrideWithValue(KayitDeposu(prefs))],
       child: const Uygulama(),
     ),
   );

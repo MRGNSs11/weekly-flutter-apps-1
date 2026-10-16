@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'kurallar.dart' as kural;
 import 'kurallar.dart' show HamleSonucu, Yon;
 import 'oyun_durumu.dart';
-import 'skor_deposu.dart';
+import 'kayit_deposu.dart';
 
 /// Ekranın üstüne açılan katman.
 enum Katman { yok, kazandi, bitti }
@@ -45,8 +45,8 @@ class Oyun {
 final rastgeleProvider = Provider<Random>((ref) => Random());
 
 /// `main` içinde gerçek `SharedPreferences` ile verilir.
-final skorDeposuProvider = Provider<SkorDeposu>(
-  (ref) => throw UnimplementedError('skorDeposuProvider main içinde verilir'),
+final kayitDeposuProvider = Provider<KayitDeposu>(
+  (ref) => throw UnimplementedError('kayitDeposuProvider main içinde verilir'),
 );
 
 /// Testlerde ve entegrasyon testinde belirli bir tahtayla başlamak için.
@@ -58,14 +58,19 @@ class OyunNotifier extends Notifier<Oyun> {
   /// Geri alınabilecek en fazla hamle.
   static const gecmisSiniri = 20;
 
+  KayitDeposu get _depo => ref.read(kayitDeposuProvider);
+
+  /// Açılış sırası: verilen başlangıç (test) → yarım kalan oyun → yeni oyun.
   @override
   Oyun build() {
+    final depo = ref.watch(kayitDeposuProvider);
     final durum =
         ref.watch(baslangicDurumuProvider) ??
+        depo.oyunOku() ??
         kural.yeniOyun(ref.watch(rastgeleProvider));
     return Oyun(
       durum: durum,
-      enIyi: max(ref.watch(skorDeposuProvider).oku(), durum.skor),
+      enIyi: max(depo.enIyiOku(), durum.skor),
       katman: durum.bitti ? Katman.bitti : Katman.yok,
     );
   }
@@ -81,7 +86,8 @@ class OyunNotifier extends Notifier<Oyun> {
 
     final ilkKazanma = !state.durum.kazandi && sonuc.durum.kazandi;
     final enIyi = max(state.enIyi, sonuc.durum.skor);
-    if (enIyi > state.enIyi) ref.read(skorDeposuProvider).yaz(enIyi);
+    if (enIyi > state.enIyi) _depo.enIyiYaz(enIyi);
+    _yarimOyunuKaydet(sonuc.durum);
 
     state = Oyun(
       durum: sonuc.durum,
@@ -100,6 +106,7 @@ class OyunNotifier extends Notifier<Oyun> {
   /// Bir önceki durumu olduğu gibi geri koyar. En iyi skor geri alınmaz.
   void geriAl() {
     if (state.gecmis.isEmpty) return;
+    _yarimOyunuKaydet(state.gecmis.last);
     state = Oyun(
       durum: state.gecmis.last,
       gecmis: List.unmodifiable(
@@ -112,6 +119,7 @@ class OyunNotifier extends Notifier<Oyun> {
   }
 
   void yeniOyun() {
+    _depo.oyunSil();
     state = Oyun(
       durum: kural.yeniOyun(ref.read(rastgeleProvider)),
       enIyi: state.enIyi,
@@ -132,4 +140,8 @@ class OyunNotifier extends Notifier<Oyun> {
       katman: state.durum.bitti ? Katman.bitti : Katman.yok,
     );
   }
+
+  /// Bitmiş oyun kaydedilmez: kayıt silinir, açılışta yeni oyun gelir.
+  void _yarimOyunuKaydet(OyunDurumu d) =>
+      d.bitti ? _depo.oyunSil() : _depo.oyunYaz(d);
 }
