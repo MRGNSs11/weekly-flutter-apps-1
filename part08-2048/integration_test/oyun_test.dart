@@ -9,7 +9,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:oyun_2048/main.dart';
 import 'package:oyun_2048/oyun/oyun_durumu.dart';
 import 'package:oyun_2048/oyun/oyun_notifier.dart';
-import 'package:oyun_2048/oyun/skor_deposu.dart';
+import 'package:oyun_2048/oyun/kayit_deposu.dart';
 import 'package:oyun_2048/ui/oyun_ekrani.dart';
 import 'package:oyun_2048/ui/parcalar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +22,7 @@ Future<void> ac(WidgetTester tester, {OyunDurumu? baslangic}) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        skorDeposuProvider.overrideWithValue(SkorDeposu(prefs)),
+        kayitDeposuProvider.overrideWithValue(KayitDeposu(prefs)),
         rastgeleProvider.overrideWithValue(Random(1)),
         if (baslangic != null)
           baslangicDurumuProvider.overrideWithValue(baslangic),
@@ -49,52 +49,56 @@ void main() {
     await prefs.clear();
   });
 
-  testWidgets(
-    'kaydır, geri al, yeni oyun; en iyi skor yeniden açılışta duruyor',
-    (tester) async {
-      await ac(
-        tester,
-        baslangic: OyunDurumu.izgaradan([
-          [64, 64, 8, 8],
-          [2, 0, 2, 0],
-          [0, 0, 0, 0],
-          [0, 0, 0, 0],
-        ], skor: 1000),
-      );
-      expect(metin(tester, OyunEkrani.skorAnahtari), '1.000');
+  testWidgets('kaydır, geri al, kapat-aç, yeni oyun; kayıtlar yerinde', (
+    tester,
+  ) async {
+    await ac(
+      tester,
+      baslangic: OyunDurumu.izgaradan([
+        [64, 64, 8, 8],
+        [2, 0, 2, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ], skor: 1000),
+    );
+    expect(metin(tester, OyunEkrani.skorAnahtari), '1.000');
 
-      // Sola: 64+64 → 128, 8+8 → 16, 2+2 → 4 = +148
-      await kaydir(tester, const Offset(-300, 0));
-      expect(metin(tester, OyunEkrani.skorAnahtari), '1.148');
-      expect(find.text('128'), findsOneWidget);
+    // Sola: 64+64 → 128, 8+8 → 16, 2+2 → 4 = +148
+    await kaydir(tester, const Offset(-300, 0));
+    expect(metin(tester, OyunEkrani.skorAnahtari), '1.148');
+    expect(find.text('128'), findsOneWidget);
 
-      await tester.tap(find.text('Geri al'));
-      await tester.pumpAndSettle();
-      expect(metin(tester, OyunEkrani.skorAnahtari), '1.000');
-      expect(find.text('64'), findsNWidgets(2));
+    await tester.tap(find.text('Geri al'));
+    await tester.pumpAndSettle();
+    expect(metin(tester, OyunEkrani.skorAnahtari), '1.000');
+    expect(find.text('64'), findsNWidgets(2));
 
-      // Birkaç gerçek hamle daha: her yön.
-      for (final y in const [
-        Offset(-300, 0),
-        Offset(0, 300),
-        Offset(300, 0),
-        Offset(0, -300),
-      ]) {
-        await kaydir(tester, y);
-      }
+    // Birkaç gerçek hamle daha: her yön.
+    for (final y in const [
+      Offset(-300, 0),
+      Offset(0, 300),
+      Offset(300, 0),
+      Offset(0, -300),
+    ]) {
+      await kaydir(tester, y);
+    }
 
-      final prefs = await SharedPreferences.getInstance();
-      final kayitli = prefs.getInt(SkorDeposu.anahtar)!;
-      expect(kayitli, greaterThanOrEqualTo(1148));
+    // Uygulamayı kapatıp aç: yarım oyun olduğu gibi geri gelir.
+    final skorKapanirken = metin(tester, OyunEkrani.skorAnahtari);
+    await ac(tester);
+    expect(metin(tester, OyunEkrani.skorAnahtari), skorKapanirken);
 
-      await tester.tap(find.text('Yeni oyun'));
-      await tester.pumpAndSettle();
-      expect(metin(tester, OyunEkrani.skorAnahtari), '0');
+    final prefs = await SharedPreferences.getInstance();
+    final kayitli = prefs.getInt(KayitDeposu.enIyiAnahtari)!;
+    expect(kayitli, greaterThanOrEqualTo(1148));
 
-      // Uygulamayı kapatıp aç: en iyi skor kayıttan gelir.
-      await ac(tester);
-      expect(find.text(binlik(kayitli)), findsOneWidget);
-      expect(metin(tester, OyunEkrani.skorAnahtari), '0');
-    },
-  );
+    await tester.tap(find.text('Yeni oyun'));
+    await tester.pumpAndSettle();
+    expect(metin(tester, OyunEkrani.skorAnahtari), '0');
+
+    // Yeni oyundan sonra kapatıp aç: yarım oyun silinmiş, en iyi skor duruyor.
+    await ac(tester);
+    expect(find.text(binlik(kayitli)), findsOneWidget);
+    expect(metin(tester, OyunEkrani.skorAnahtari), '0');
+  });
 }
