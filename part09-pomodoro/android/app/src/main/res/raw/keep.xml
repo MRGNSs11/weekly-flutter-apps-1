@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- R8 bildirim ikonunu kullanılmıyor sanıp silmesin: ikon adı koddan metin olarak veriliyor -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_pomodoro" />
