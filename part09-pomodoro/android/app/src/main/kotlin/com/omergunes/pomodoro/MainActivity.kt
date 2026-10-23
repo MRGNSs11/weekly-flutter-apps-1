@@ -44,10 +44,20 @@ class MainActivity : FlutterActivity() {
             }
     }
 
-    /** flutter_local_notifications bildirimden açılışta bu eylemi kullanır. */
+    /**
+     * flutter_local_notifications bildirimden açılışta bu eylemi kullanır.
+     * Eylem dışarıdan da gönderilebilir, bu yüzden tek başına yetmez:
+     * panelde bizim "süre doldu" bildirimimiz gerçekten durmalı.
+     */
     private fun kilitUstu(intent: Intent?) {
-        if (intent?.action == "SELECT_NOTIFICATION") kilitUstuAyarla(true)
+        if (intent?.action == "SELECT_NOTIFICATION" && alarmDuruyor()) kilitUstuAyarla(true)
     }
+
+    private fun alarmDuruyor(): Boolean =
+        getSystemService(NotificationManager::class.java).activeNotifications.any {
+            it.id == 1 && (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
+                it.notification.channelId == "alarm")
+        }
 
     private fun kilitUstuAyarla(acik: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
