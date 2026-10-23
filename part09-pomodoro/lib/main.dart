@@ -1,6 +1,8 @@
 // K2 — iskelet ve risk denemesi. Bu ekran K5'te silinir.
 // Sorulan: (a) panelde geri sayım akıyor mu (b) sıfırda "bitti" sayacın yerine
 // geçiyor mu (c) ikon release'te doğru mu.
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -11,6 +13,10 @@ const _zemin = Color(0xFFE8EDF5);
 const _yazi = Color(0xFF14213D);
 const _ikon = 'ic_stat_pomodoro';
 const _bildirimNo = 1;
+
+/// Android Notification.FLAG_INSISTENT: ses, bildirime dokunulana ya da
+/// panel açılana kadar tekrar eder. Sessiz moda uyar.
+const _israrci = 4;
 
 final _eklenti = FlutterLocalNotificationsPlugin();
 
@@ -143,7 +149,7 @@ class _DenemeEkraniState extends State<DenemeEkrani> {
       title: 'Mola zamanı',
       body: 'Bugün 1 pomodoro',
       androidScheduleMode: mod,
-      notificationDetails: const NotificationDetails(
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           'bitti',
           'Süre bitti',
@@ -152,7 +158,8 @@ class _DenemeEkraniState extends State<DenemeEkrani> {
           importance: Importance.high,
           priority: Priority.high,
           category: AndroidNotificationCategory.reminder,
-          actions: [
+          additionalFlags: Int32List.fromList(const [_israrci]),
+          actions: const [
             AndroidNotificationAction('baslat', 'Başlat'),
             AndroidNotificationAction('atla', 'Atla'),
           ],
