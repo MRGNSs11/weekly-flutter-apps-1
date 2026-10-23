@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../alan/ayarlar.dart';
+import '../bildirim/bildirim_metinleri.dart';
 import '../uygulama/pomodoro_kontrol.dart';
 import 'parcalar/butonlar.dart';
 import 'tema.dart';
@@ -47,26 +48,26 @@ class _AyarlarEkraniState extends State<AyarlarEkrani> {
             _SureAyari(
               baslik: 'Çalışma',
               renk: Renk.vurgu,
-              deger: _a.calismaDk,
+              deger: _a.calismaSn,
               aralik: Ayarlar.calismaAralik,
-              degisti: (v) => setState(() => _a = _a.kopya(calismaDk: v)),
-              bitti: (v) => _kaydet(_a.kopya(calismaDk: v)),
+              degisti: (v) => setState(() => _a = _a.kopya(calismaSn: v)),
+              bitti: (v) => _kaydet(_a.kopya(calismaSn: v)),
             ),
             _SureAyari(
               baslik: 'Kısa mola',
               renk: Renk.mola,
-              deger: _a.kisaMolaDk,
+              deger: _a.kisaMolaSn,
               aralik: Ayarlar.kisaMolaAralik,
-              degisti: (v) => setState(() => _a = _a.kopya(kisaMolaDk: v)),
-              bitti: (v) => _kaydet(_a.kopya(kisaMolaDk: v)),
+              degisti: (v) => setState(() => _a = _a.kopya(kisaMolaSn: v)),
+              bitti: (v) => _kaydet(_a.kopya(kisaMolaSn: v)),
             ),
             _SureAyari(
               baslik: 'Uzun mola',
               renk: Renk.mola,
-              deger: _a.uzunMolaDk,
+              deger: _a.uzunMolaSn,
               aralik: Ayarlar.uzunMolaAralik,
-              degisti: (v) => setState(() => _a = _a.kopya(uzunMolaDk: v)),
-              bitti: (v) => _kaydet(_a.kopya(uzunMolaDk: v)),
+              degisti: (v) => setState(() => _a = _a.kopya(uzunMolaSn: v)),
+              bitti: (v) => _kaydet(_a.kopya(uzunMolaSn: v)),
             ),
             const SizedBox(height: 8),
             _Kart(
@@ -122,6 +123,7 @@ class _Kart extends StatelessWidget {
   );
 }
 
+/// Bir süre: dakika kaydırıcısı + saniye kaydırıcısı (5'er sn).
 class _SureAyari extends StatelessWidget {
   const _SureAyari({
     required this.baslik,
@@ -134,42 +136,86 @@ class _SureAyari extends StatelessWidget {
 
   final String baslik;
   final Color renk;
+
+  /// Saniye.
   final int deger;
   final (int, int) aralik;
   final ValueChanged<int> degisti;
   final ValueChanged<int> bitti;
 
+  int _sinirla(int sn) => sn.clamp(aralik.$1, aralik.$2);
+
   @override
-  Widget build(BuildContext context) => _Kart(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(baslik, style: Yazi.inter(15, 600, renk: Renk.yazi)),
-            const Spacer(),
-            Text(
-              '$deger dk',
-              style: Yazi.inter(
-                15,
-                600,
-                renk: renk,
-              ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+  Widget build(BuildContext context) {
+    final dk = deger ~/ 60;
+    final sn = deger % 60;
+    final enCokDk = aralik.$2 ~/ 60;
+    return _Kart(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(baslik, style: Yazi.inter(15, 600, renk: Renk.yazi)),
+              const Spacer(),
+              Text(
+                sureYazisi(deger),
+                style: Yazi.inter(
+                  15,
+                  600,
+                  renk: renk,
+                ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+              ),
+            ],
+          ),
+          _Satir(
+            ad: 'dk',
+            child: Slider(
+              value: dk.toDouble(),
+              max: enCokDk.toDouble(),
+              divisions: enCokDk,
+              activeColor: renk,
+              label: '$dk dk',
+              semanticFormatterCallback: (v) => '$baslik ${v.round()} dakika',
+              onChanged: (v) => degisti(_sinirla(v.round() * 60 + sn)),
+              onChangeEnd: (v) => bitti(_sinirla(v.round() * 60 + sn)),
             ),
-          ],
+          ),
+          _Satir(
+            ad: 'sn',
+            child: Slider(
+              value: sn.toDouble(),
+              max: 55,
+              divisions: 11,
+              activeColor: renk,
+              label: '$sn sn',
+              semanticFormatterCallback: (v) => '$baslik ${v.round()} saniye',
+              onChanged: (v) => degisti(_sinirla(dk * 60 + v.round())),
+              onChangeEnd: (v) => bitti(_sinirla(dk * 60 + v.round())),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Satir extends StatelessWidget {
+  const _Satir({required this.ad, required this.child});
+  final String ad;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      SizedBox(
+        width: 22,
+        child: Text(
+          ad,
+          style: Yazi.inter(12, 500, renk: Renk.yazi.withValues(alpha: 0.65)),
         ),
-        Slider(
-          value: deger.toDouble(),
-          min: aralik.$1.toDouble(),
-          max: aralik.$2.toDouble(),
-          divisions: aralik.$2 - aralik.$1,
-          activeColor: renk,
-          label: '$deger dk',
-          semanticFormatterCallback: (v) => '$baslik ${v.round()} dakika',
-          onChanged: (v) => degisti(v.round()),
-          onChangeEnd: (v) => bitti(v.round()),
-        ),
-      ],
-    ),
+      ),
+      Expanded(child: child),
+    ],
   );
 }

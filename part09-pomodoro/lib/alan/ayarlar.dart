@@ -1,63 +1,69 @@
 import 'faz.dart';
 
-/// Kullanıcı ayarları (PLAN K5). Değişmez.
+/// Kullanıcı ayarları (PLAN K5). Değişmez. Süreler saniye cinsindendir,
+/// ayarlar ekranında dakika + saniye (5'er) seçilir.
 class Ayarlar {
   const Ayarlar({
-    this.calismaDk = 25,
-    this.kisaMolaDk = 5,
-    this.uzunMolaDk = 15,
+    this.calismaSn = 25 * 60,
+    this.kisaMolaSn = 5 * 60,
+    this.uzunMolaSn = 15 * 60,
     this.ses = true,
   });
 
-  static const calismaAralik = (1, 90);
-  static const kisaMolaAralik = (1, 30);
-  static const uzunMolaAralik = (1, 60);
+  /// En kısa 5 sn; en uzun 90 / 30 / 60 dk.
+  static const calismaAralik = (5, 90 * 60);
+  static const kisaMolaAralik = (5, 30 * 60);
+  static const uzunMolaAralik = (5, 60 * 60);
 
-  final int calismaDk;
-  final int kisaMolaDk;
-  final int uzunMolaDk;
+  final int calismaSn;
+  final int kisaMolaSn;
+  final int uzunMolaSn;
   final bool ses;
 
   Duration sure(Faz faz) => Duration(
-    minutes: switch (faz) {
-      Faz.calisma => calismaDk,
-      Faz.kisaMola => kisaMolaDk,
-      Faz.uzunMola => uzunMolaDk,
+    seconds: switch (faz) {
+      Faz.calisma => calismaSn,
+      Faz.kisaMola => kisaMolaSn,
+      Faz.uzunMola => uzunMolaSn,
     },
   );
 
   Ayarlar kopya({
-    int? calismaDk,
-    int? kisaMolaDk,
-    int? uzunMolaDk,
+    int? calismaSn,
+    int? kisaMolaSn,
+    int? uzunMolaSn,
     bool? ses,
   }) => Ayarlar(
-    calismaDk: _sinirla(calismaDk ?? this.calismaDk, calismaAralik),
-    kisaMolaDk: _sinirla(kisaMolaDk ?? this.kisaMolaDk, kisaMolaAralik),
-    uzunMolaDk: _sinirla(uzunMolaDk ?? this.uzunMolaDk, uzunMolaAralik),
+    calismaSn: _sinirla(calismaSn ?? this.calismaSn, calismaAralik),
+    kisaMolaSn: _sinirla(kisaMolaSn ?? this.kisaMolaSn, kisaMolaAralik),
+    uzunMolaSn: _sinirla(uzunMolaSn ?? this.uzunMolaSn, uzunMolaAralik),
     ses: ses ?? this.ses,
   );
 
   Map<String, Object> toJson() => {
-    'calismaDk': calismaDk,
-    'kisaMolaDk': kisaMolaDk,
-    'uzunMolaDk': uzunMolaDk,
+    'calismaSn': calismaSn,
+    'kisaMolaSn': kisaMolaSn,
+    'uzunMolaSn': uzunMolaSn,
     'ses': ses,
   };
 
-  /// Bozuk ya da eksik veri varsayılana düşer, çökmez.
+  /// Bozuk ya da eksik veri varsayılana düşer, çökmez. Eski sürümün
+  /// dakika alanları (`calismaDk` …) saniyeye çevrilerek okunur.
   factory Ayarlar.fromJson(Object? json) {
     if (json is! Map) return const Ayarlar();
-    int sayi(String k, int v, (int, int) aralik) {
-      final x = json[k];
-      return x is int ? _sinirla(x, aralik) : v;
+    int sure(String ad, int varsayilan, (int, int) aralik) {
+      final sn = json['${ad}Sn'];
+      if (sn is int) return _sinirla(sn, aralik);
+      final dk = json['${ad}Dk'];
+      if (dk is int) return _sinirla(dk * 60, aralik);
+      return varsayilan;
     }
 
     final ses = json['ses'];
     return Ayarlar(
-      calismaDk: sayi('calismaDk', 25, calismaAralik),
-      kisaMolaDk: sayi('kisaMolaDk', 5, kisaMolaAralik),
-      uzunMolaDk: sayi('uzunMolaDk', 15, uzunMolaAralik),
+      calismaSn: sure('calisma', 25 * 60, calismaAralik),
+      kisaMolaSn: sure('kisaMola', 5 * 60, kisaMolaAralik),
+      uzunMolaSn: sure('uzunMola', 15 * 60, uzunMolaAralik),
       ses: ses is bool ? ses : true,
     );
   }
@@ -68,11 +74,11 @@ class Ayarlar {
   @override
   bool operator ==(Object other) =>
       other is Ayarlar &&
-      other.calismaDk == calismaDk &&
-      other.kisaMolaDk == kisaMolaDk &&
-      other.uzunMolaDk == uzunMolaDk &&
+      other.calismaSn == calismaSn &&
+      other.kisaMolaSn == kisaMolaSn &&
+      other.uzunMolaSn == uzunMolaSn &&
       other.ses == ses;
 
   @override
-  int get hashCode => Object.hash(calismaDk, kisaMolaDk, uzunMolaDk, ses);
+  int get hashCode => Object.hash(calismaSn, kisaMolaSn, uzunMolaSn, ses);
 }

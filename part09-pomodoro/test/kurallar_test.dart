@@ -118,13 +118,13 @@ void main() {
 
   test('süre değişikliği çalışan fazı etkilemez', () {
     final b = baslat(bos, a, t0);
-    final yeni = a.kopya(calismaDk: 50);
+    final yeni = a.kopya(calismaSn: 50 * 60);
     expect(kalanSure(b, yeni, t0), const Duration(minutes: 25));
   });
 
   test('ayarlar sınır dışı değeri aralığa çeker', () {
-    final x = a.kopya(calismaDk: 500, kisaMolaDk: 0);
-    expect(x.calismaDk, 90);
-    expect(x.kisaMolaDk, 1);
+    final x = a.kopya(calismaSn: 500 * 60, kisaMolaSn: 0);
+    expect(x.calismaSn, 90 * 60);
+    expect(x.kisaMolaSn, 5);
   });
 }
