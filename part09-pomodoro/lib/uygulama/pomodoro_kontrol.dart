@@ -280,7 +280,7 @@ class PomodoroKontrol extends ChangeNotifier with WidgetsBindingObserver {
     final dk = _surukDk;
     if (dk == null) return;
     _surukDk = null;
-    await ayarlariDegistir(_a.kopya(calismaDk: dk));
+    await ayarlariDegistir(_a.kopya(calismaSn: dk * 60));
   }
 
   /// İlk Başlat'tan sonra izinleri sırayla bir kez sorar (PLAN K6.7, K6.9).
@@ -385,7 +385,4 @@ class PomodoroKontrol extends ChangeNotifier with WidgetsBindingObserver {
 
 /// Ekranın dibi 1 dk, tepesi 90 dk (PLAN B2.6).
 int surukDakika(double seviye) =>
-    (seviye.clamp(0.0, 1.0) * Ayarlar.calismaAralik.$2).round().clamp(
-      Ayarlar.calismaAralik.$1,
-      Ayarlar.calismaAralik.$2,
-    );
+    (seviye.clamp(0.0, 1.0) * 90).round().clamp(1, 90);

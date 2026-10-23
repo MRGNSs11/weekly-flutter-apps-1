@@ -30,6 +30,15 @@ String dakikaSaniye(Duration d) {
   return '${_iki(sn ~/ 60)}:${_iki(sn % 60)}';
 }
 
+/// Ayar süresi: `25 dk`, `1 dk 30 sn`, `45 sn`.
+String sureYazisi(int saniye) {
+  final dk = saniye ~/ 60;
+  final sn = saniye % 60;
+  if (sn == 0) return '$dk dk';
+  if (dk == 0) return '$sn sn';
+  return '$dk dk $sn sn';
+}
+
 /// `Çalışma · 2/4`, molada `Kısa mola` / `Uzun mola`.
 String fazEtiketi(PomodoroDurumu d) => d.faz == Faz.calisma
     ? 'Çalışma · ${(d.donguSayaci + 1).clamp(1, 4)}/4'

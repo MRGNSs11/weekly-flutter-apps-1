@@ -60,6 +60,12 @@ void main() {
     expect(bittiMetni(mola).govde, 'Bugün 2 pomodoro');
   });
 
+  test('ayar süresi dakika ve saniye ile yazılır', () {
+    expect(sureYazisi(25 * 60), '25 dk');
+    expect(sureYazisi(90), '1 dk 30 sn');
+    expect(sureYazisi(45), '45 sn');
+  });
+
   test('tz.UTC saat dilimi verisi yüklenmeden aynı anı verir', () {
     final an = DateTime(2026, 10, 22, 23, 50);
     final z = utcZaman(an);

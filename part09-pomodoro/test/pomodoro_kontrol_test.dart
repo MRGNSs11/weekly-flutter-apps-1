@@ -39,7 +39,7 @@ void main() {
     expect(k.surukle(0.4), 36);
     expect(k.kalan, const Duration(minutes: 36));
     await k.surukBitti();
-    expect(depo.ayarlar.calismaDk, 36);
+    expect(depo.ayarlar.calismaSn, 36 * 60);
     expect(k.surukDk, isNull);
     k.dispose();
   });

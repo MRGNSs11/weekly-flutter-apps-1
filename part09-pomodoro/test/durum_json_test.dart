@@ -21,9 +21,9 @@ void main() {
 
   test('ayarlar gidiş-dönüş aynı', () {
     const a = Ayarlar(
-      calismaDk: 50,
-      kisaMolaDk: 10,
-      uzunMolaDk: 30,
+      calismaSn: 50 * 60 + 15,
+      kisaMolaSn: 10 * 60,
+      uzunMolaSn: 30,
       ses: false,
     );
     expect(Ayarlar.fromJson(a.toJson()), a);
@@ -42,6 +42,8 @@ void main() {
       const PomodoroDurumu(faz: Faz.kisaMola),
     );
     expect(Ayarlar.fromJson({'calismaDk': 'x', 'ses': 3}), const Ayarlar());
-    expect(Ayarlar.fromJson({'calismaDk': 999}).calismaDk, 90);
+    expect(Ayarlar.fromJson({'calismaSn': 99999}).calismaSn, 90 * 60);
+    // Eski sürümün dakika kaydı saniyeye çevrilir.
+    expect(Ayarlar.fromJson({'calismaDk': 40}).calismaSn, 40 * 60);
   });
 }

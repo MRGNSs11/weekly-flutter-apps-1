@@ -16,7 +16,7 @@ class AlarmEkrani extends StatelessWidget {
   Widget build(BuildContext context) {
     final d = kontrol.durum;
     final renk = Renk.faz(d.faz);
-    final dk = kontrol.ayarlar.sure(d.faz).inMinutes;
+    final sure = sureYazisi(kontrol.ayarlar.sure(d.faz).inSeconds);
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.transparent,
@@ -48,7 +48,7 @@ class AlarmEkrani extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Sıradaki: ${fazAdi[d.faz]} · $dk dk · Bugün ${kontrol.bugun}',
+                  'Sıradaki: ${fazAdi[d.faz]} · $sure · Bugün ${kontrol.bugun}',
                   textAlign: TextAlign.center,
                   style: Yazi.inter(15, 500, renk: Colors.white70),
                 ),
