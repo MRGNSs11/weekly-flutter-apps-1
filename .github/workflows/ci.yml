@@ -33,6 +33,7 @@ jobs:
           - part06-ortak-liste
           - part07-deprem-haritasi
           - part08-2048
+          - part09-pomodoro
     defaults:
       run:
         working-directory: ${{ matrix.app }}
