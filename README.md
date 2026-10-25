@@ -19,6 +19,7 @@ by design: **every line of code here is public.**
 | 06 | **Shared List** | Firebase: anonymous auth, real-time Firestore sync between two phones, and **security rules proven by 21 emulator tests** (the join code is verified server-side) | [Read](part06-ortak-liste/VAKA.md) | [Source](part06-ortak-liste) |
 | 07 | **Earthquake Map** | Map + live open data (AFAD) + a **draggable seismogram drawn from the data** with `CustomPainter`: every quake is a peak, drag back 7 days and the map follows. flutter_map + OpenStreetMap, no API key | [Read](part07-deprem-haritasi/VAKA.md) | [Source](part07-deprem-haritasi) |
 | 08 | **2048** | State management with Riverpod over an **immutable** game state: undo is just the previous object, no reverse logic. Unit, widget and on-device integration tests; a neumorphic look drawn by a single painter | [Read](part08-2048/VAKA.md) | [Source](part08-2048) |
+| 09 | **Pomodoro** | Local notifications without a background service: a **system chronometer** counts down in the shade, action buttons work while the app is closed (background isolate), and a scheduled full-screen alarm wakes the lock screen. The UI fills up as time passes, drawn with `CustomPainter` | [Read](part09-pomodoro/VAKA.md) | [Source](part09-pomodoro) |
 
 *More apps land here as they ship.*
 
