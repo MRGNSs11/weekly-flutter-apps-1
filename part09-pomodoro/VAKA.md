@@ -6,6 +6,10 @@ pomodoro sayacı.
 
 **Kod:** [github.com/MRGNSs11/weekly-flutter-apps-1](https://github.com/MRGNSs11/weekly-flutter-apps-1/tree/main/part09-pomodoro) · **Yığın:** Flutter, flutter_local_notifications, shared_preferences, CustomPainter
 
+![Çalışma](screenshots/01-calisma.png)
+![Süre doldu](screenshots/03-alarm.png)
+![Panel](screenshots/04-panel.png)
+
 ---
 
 ## 01 — Ne yaptım

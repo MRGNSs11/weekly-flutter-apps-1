@@ -10,6 +10,11 @@ reklam yok. "Her hafta 1 uygulama" serisinin dokuzuncu parçası.
 uygulama kapalıyken çalışan bildirim butonları ve tam zamanında gelen,
 kilit ekranında açılan bir alarm.
 
+![Çalışma: ekran alttan doluyor](screenshots/01-calisma.png)
+![Mola: ekran dolu başlıyor, boşalıyor](screenshots/02-mola.png)
+![Süre doldu: alarm ekranı](screenshots/03-alarm.png)
+![Panelde sayaç ve butonlar](screenshots/04-panel.png)
+
 ## Çalıştırma
 
 Anahtar, hesap ya da ayar dosyası gerekmiyor:
