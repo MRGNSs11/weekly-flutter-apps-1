@@ -178,7 +178,7 @@ class _RehberKatmaniState extends State<RehberKatmani>
                           child: Text(
                             widget.rehber.adimNo + 1 < rehberAdimlari.length
                                 ? 'Sonraki →'
-                                : 'Bitir ✓',
+                                : 'Bitir',
                             style: yazi(
                               13,
                               kalinlik: FontWeight.w700,

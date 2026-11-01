@@ -43,7 +43,7 @@ const rehberAdimlari = [
     RehberEkrani.duzenleyici,
     RehberHareketi.dokun,
     'Görev kutusu',
-    "☑ satıra görev kutusu ekler. Enter'a basınca liste kendiliğinden devam eder.",
+    "Bu düğme satıra görev kutusu ekler. Enter'a basınca liste kendiliğinden devam eder.",
   ),
   RehberAdimi(
     _kutu,

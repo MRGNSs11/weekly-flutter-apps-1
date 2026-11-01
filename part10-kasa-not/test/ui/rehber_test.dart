@@ -65,7 +65,7 @@ void main() {
     }
     await t.pump();
     await t.pump();
-    expect(find.text('Bitir ✓'), findsOneWidget);
+    expect(find.text('Bitir'), findsOneWidget);
     await k.kapat(t);
   });
 

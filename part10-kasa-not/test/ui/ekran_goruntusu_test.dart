@@ -22,6 +22,8 @@ void main() {
     bool ac = false,
     Duration? ara,
   }) async {
+    // Test ortamı gölgeleri siyah çizgi çizer; görüntü için gerçek gölge.
+    debugDisableShadows = false;
     t.view.physicalSize = const Size(1080, 2340);
     t.view.devicePixelRatio = 3;
     addTearDown(t.view.reset);
@@ -44,6 +46,7 @@ void main() {
       find.byType(MaterialApp),
       matchesGoldenFile('goruntu/$ad.png'),
     );
+    debugDisableShadows = true;
     await k.kapat(t);
   }
 
@@ -80,6 +83,8 @@ void main() {
   );
 
   Future<void> duzenleyici(WidgetTester t, String ad, Brightness p) async {
+    // Test ortamı gölgeleri siyah çizgi çizer; görüntü için gerçek gölge.
+    debugDisableShadows = false;
     t.view.physicalSize = const Size(1080, 2340);
     t.view.devicePixelRatio = 3;
     addTearDown(t.view.reset);
@@ -95,7 +100,7 @@ void main() {
 Pazardan *taze* olanı al.
 
 ```
-toplam ≈ 180 ₺
+toplam ≈ 180 TL
 ```''';
     await t.pumpWidget(
       MaterialApp(
@@ -114,6 +119,7 @@ toplam ≈ 180 ₺
       find.byType(MaterialApp),
       matchesGoldenFile('goruntu/$ad.png'),
     );
+    debugDisableShadows = true;
     await k.kapat(t);
   }
 
@@ -129,6 +135,8 @@ toplam ≈ 180 ₺
   );
 
   Future<void> rehber(WidgetTester t, String ad, int adim, Brightness p) async {
+    // Test ortamı gölgeleri siyah çizgi çizer; görüntü için gerçek gölge.
+    debugDisableShadows = false;
     t.view.physicalSize = const Size(1080, 2340);
     t.view.devicePixelRatio = 3;
     addTearDown(t.view.reset);
@@ -147,7 +155,17 @@ toplam ≈ 180 ₺
             ],
           ),
         ),
-        home: (k.ekran(parlaklik: p) as MaterialApp).home,
+        home: adim == 1 || adim == 2
+            ? DuzenleyiciEkrani(
+                not: null,
+                ilkMetin:
+                    '# Market listesi\n- [x] Süt\n- [ ] Ekmek\n- [ ] Domates',
+                notlar: k.notlar,
+                kasa: k.kasa,
+                rehber: k.rehber.hedefler,
+                ornek: true,
+              )
+            : (k.ekran(parlaklik: p) as MaterialApp).home,
       ),
     );
     k.rehber.baslat();
@@ -160,6 +178,7 @@ toplam ≈ 180 ₺
       find.byType(MaterialApp),
       matchesGoldenFile('goruntu/$ad.png'),
     );
+    debugDisableShadows = true;
     await k.kapat(t);
   }
 
@@ -173,4 +192,12 @@ toplam ≈ 180 ₺
     (t) => rehber(t, 'k6-rehber-4', 3, Brightness.dark),
     skip: !_ekran,
   );
+
+  for (var n = 0; n < 6; n++) {
+    testWidgets(
+      'karusel rehber ${n + 1}',
+      (t) => rehber(t, 'karusel-rehber-${n + 1}', n, Brightness.light),
+      skip: !_ekran,
+    );
+  }
 }
