@@ -8,6 +8,7 @@ import 'package:kasa_not/ui/liste_ekrani.dart';
 import 'package:kasa_not/ui/tema.dart';
 import 'package:kasa_not/uygulama/kasa_kontrol.dart';
 import 'package:kasa_not/uygulama/notlar_kontrol.dart';
+import 'package:kasa_not/uygulama/rehber_kontrol.dart';
 import 'package:kasa_not/uygulama/tema_kontrol.dart';
 import 'package:kasa_not/veri/not_deposu.dart';
 import 'package:kasa_not/veri/veritabani.dart';
@@ -43,6 +44,7 @@ class Kurulum {
   late KasaKontrol kasa;
   late NotlarKontrol notlar;
   late TemaKontrol tema;
+  late RehberKontrol rehber;
 
   /// Örnek notlar + 3 kilitli not; kasa kapalı başlar.
   Future<void> hazirla(WidgetTester t) async {
@@ -70,6 +72,7 @@ class Kurulum {
       }
       notlar = NotlarKontrol(depo, kasa);
       tema = TemaKontrol(db);
+      rehber = RehberKontrol(db);
       await Future<void>.delayed(const Duration(milliseconds: 50));
     });
   }
@@ -81,6 +84,7 @@ class Kurulum {
       notlar: notlar,
       kasa: kasa,
       tema: tema,
+      rehber: rehber,
       notuAc: (_, _) {},
     ),
   );

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:kasa_not/ui/duzenleyici_ekrani.dart';
+import 'package:kasa_not/ui/rehber_katmani.dart';
 import 'package:kasa_not/ui/tema.dart';
 
 import 'yardim.dart';
@@ -124,6 +125,52 @@ toplam ≈ 180 ₺
   testWidgets(
     'düzenleyici karanlık',
     (t) => duzenleyici(t, 'k5-duzenleyici-karanlik', Brightness.dark),
+    skip: !_ekran,
+  );
+
+  Future<void> rehber(WidgetTester t, String ad, int adim, Brightness p) async {
+    t.view.physicalSize = const Size(1080, 2340);
+    t.view.devicePixelRatio = 3;
+    addTearDown(t.view.reset);
+    final k = Kurulum();
+    await k.hazirla(t);
+    await t.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: temaYap(p),
+        builder: (c, cocuk) => ListenableBuilder(
+          listenable: k.rehber,
+          builder: (c, _) => Stack(
+            children: [
+              cocuk!,
+              if (k.rehber.aktif) RehberKatmani(rehber: k.rehber),
+            ],
+          ),
+        ),
+        home: (k.ekran(parlaklik: p) as MaterialApp).home,
+      ),
+    );
+    k.rehber.baslat();
+    for (var i = 0; i < adim; i++) {
+      k.rehber.ileri();
+    }
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 1200));
+    await expectLater(
+      find.byType(MaterialApp),
+      matchesGoldenFile('goruntu/$ad.png'),
+    );
+    await k.kapat(t);
+  }
+
+  testWidgets(
+    'rehber 1',
+    (t) => rehber(t, 'k6-rehber-1', 0, Brightness.light),
+    skip: !_ekran,
+  );
+  testWidgets(
+    'rehber 4',
+    (t) => rehber(t, 'k6-rehber-4', 3, Brightness.dark),
     skip: !_ekran,
   );
 }

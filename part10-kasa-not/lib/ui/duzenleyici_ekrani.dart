@@ -9,6 +9,7 @@ import '../alan/gorev.dart';
 import '../alan/not.dart';
 import '../uygulama/kasa_kontrol.dart';
 import '../uygulama/notlar_kontrol.dart';
+import '../uygulama/rehber_kontrol.dart';
 import 'parcalar/arac_cubugu.dart';
 import 'parcalar/renkli_kaynak.dart';
 import 'tema.dart';
@@ -27,12 +28,18 @@ class DuzenleyiciEkrani extends StatefulWidget {
     required this.ilkMetin,
     required this.notlar,
     required this.kasa,
+    this.rehber,
+    this.ornek = false,
   });
 
   final Not? not;
   final String ilkMetin;
   final NotlarKontrol notlar;
   final KasaKontrol kasa;
+  final RehberHedefleri? rehber;
+
+  /// Rehberin açtığı örnek: hiçbir şey kaydedilmez, kilit kapalı.
+  final bool ornek;
 
   @override
   State<DuzenleyiciEkrani> createState() => _DuzenleyiciEkraniState();
@@ -100,6 +107,7 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
   Future<void> _kaydet() => _sira = _sira.then((_) => _kaydetIc());
 
   Future<void> _kaydetIc() async {
+    if (widget.ornek) return;
     _zamanlayici?.cancel();
     final metin = _kaynak.text;
     if (metin == _kayitli) return;
@@ -197,7 +205,7 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
                 _UstBar(
                   kayit: _kayit,
                   kilitli: _kilitli,
-                  kilitEtkin: kasaVar,
+                  kilitEtkin: kasaVar && !widget.ornek,
                   onKilit: _kilitDegistir,
                 ),
                 _Etiket('KAYNAK'),
@@ -247,12 +255,16 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
                     ),
                     child: ValueListenableBuilder(
                       valueListenable: _kaynak,
-                      builder: (context, deger, _) =>
-                          _Onizleme(metin: deger.text, onGorev: _gorev),
+                      builder: (context, deger, _) => _Onizleme(
+                        metin: deger.text,
+                        onGorev: _gorev,
+                        ilkBosKutu: widget.rehber?.onizlemeKutusu,
+                      ),
                     ),
                   ),
                 ),
                 AracCubugu(
+                  gorevAnahtari: widget.rehber?.gorevDugmesi,
                   onGorev: () =>
                       _arac((m, s) => satirOneki(m, s.baseOffset, '- [ ] ')),
                   onMadde: () =>
@@ -344,14 +356,20 @@ class _Etiket extends StatelessWidget {
 /// Canlı önizleme. Görev kutuları çizim sırasıyla numaralanır; dokununca
 /// kaynakta aynı sıradaki `- [ ]` değişir (`gorevDegistir`).
 class _Onizleme extends StatelessWidget {
-  const _Onizleme({required this.metin, required this.onGorev});
+  const _Onizleme({
+    required this.metin,
+    required this.onGorev,
+    this.ilkBosKutu,
+  });
   final String metin;
   final void Function(int) onGorev;
+  final Key? ilkBosKutu;
 
   @override
   Widget build(BuildContext context) {
     final r = Renkler.of(context);
     var sira = 0;
+    var bosKutuVerildi = false;
     final govde = yazi(14, renk: r.metin, satir: 1.45);
     return Markdown(
       data: metin,
@@ -359,7 +377,10 @@ class _Onizleme extends StatelessWidget {
       softLineBreak: true,
       checkboxBuilder: (isaretli) {
         final n = sira++;
+        final anahtar = !isaretli && !bosKutuVerildi ? ilkBosKutu : null;
+        if (anahtar != null) bosKutuVerildi = true;
         return GestureDetector(
+          key: anahtar,
           behavior: HitTestBehavior.opaque,
           onTap: () => onGorev(n),
           child: Padding(

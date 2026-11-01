@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../alan/not.dart';
 import '../uygulama/kasa_kontrol.dart';
 import '../uygulama/notlar_kontrol.dart';
+import '../uygulama/rehber_kontrol.dart';
 import '../uygulama/tema_kontrol.dart';
 import 'parcalar/kasa_seridi.dart';
 import 'parcalar/not_karti.dart';
@@ -17,12 +18,14 @@ class ListeEkrani extends StatelessWidget {
     required this.notlar,
     required this.kasa,
     required this.tema,
+    required this.rehber,
     required this.notuAc,
   });
 
   final NotlarKontrol notlar;
   final KasaKontrol kasa;
   final TemaKontrol tema;
+  final RehberKontrol rehber;
 
   /// Düzenleyiciyi açar; `null` yeni not demek.
   final void Function(BuildContext, Not?) notuAc;
@@ -48,7 +51,7 @@ class ListeEkrani extends StatelessWidget {
                 CustomScrollView(
                   slivers: [
                     SliverToBoxAdapter(
-                      child: _Ust(notlar: notlar, tema: tema),
+                      child: _Ust(notlar: notlar, tema: tema, rehber: rehber),
                     ),
                     if (notlar.yuklendi && notlar.gorunen.isEmpty)
                       SliverToBoxAdapter(
@@ -64,6 +67,7 @@ class ListeEkrani extends StatelessWidget {
                   right: 16,
                   bottom: 96 + MediaQuery.paddingOf(context).bottom,
                   child: FloatingActionButton(
+                    key: rehber.hedefler.yeniNot,
                     onPressed: () => notuAc(context, null),
                     backgroundColor: r.vurgu,
                     foregroundColor: Colors.white,
@@ -76,6 +80,7 @@ class ListeEkrani extends StatelessWidget {
                   right: 12,
                   bottom: 14 + MediaQuery.paddingOf(context).bottom,
                   child: KasaSeridi(
+                    key: rehber.hedefler.kasaSeridi,
                     kasa: kasa,
                     kilitliSayisi: notlar.kilitliSayisi,
                     onAc: () {
@@ -151,9 +156,10 @@ class ListeEkrani extends StatelessWidget {
 }
 
 class _Ust extends StatelessWidget {
-  const _Ust({required this.notlar, required this.tema});
+  const _Ust({required this.notlar, required this.tema, required this.rehber});
   final NotlarKontrol notlar;
   final TemaKontrol tema;
+  final RehberKontrol rehber;
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +176,12 @@ class _Ust extends StatelessWidget {
                   'Notlar',
                   style: yazi(28, kalinlik: FontWeight.w700, renk: r.metin),
                 ),
+              ),
+              IconButton(
+                key: rehber.hedefler.soru,
+                tooltip: 'Rehber',
+                onPressed: rehber.baslat,
+                icon: Icon(Icons.help_outline_rounded, color: r.metin),
               ),
               TemaDugmesi(tema: tema),
             ],
@@ -211,20 +223,25 @@ class _Izgara extends StatelessWidget {
     final notlar = ekran.notlar.gorunen;
     final sol = <Widget>[], sag = <Widget>[];
     var solH = 0.0, sagH = 0.0;
+    // Rehberin "basılı tut" adımı ilk açık notu gösterir.
+    final ilkAcik = notlar.where((n) => !n.kilitli).firstOrNull?.id;
     for (final n in notlar) {
       final metin = n.kilitli ? ekran.kasa.cozulmus(n.id) : n.icerik;
       final kart = Padding(
         padding: const EdgeInsets.only(bottom: 8),
-        child: NotKarti(
-          key: ValueKey(n.id),
-          metin: metin,
-          kilitli: n.kilitli,
-          sabit: n.sabit,
-          onTap: () => ekran.notuAc(context, n),
-          onLongPress: () {
-            HapticFeedback.mediumImpact();
-            ekran._menu(context, n);
-          },
+        child: KeyedSubtree(
+          key: n.id == ilkAcik ? ekran.rehber.hedefler.ilkKart : null,
+          child: NotKarti(
+            key: ValueKey(n.id),
+            metin: metin,
+            kilitli: n.kilitli,
+            sabit: n.sabit,
+            onTap: () => ekran.notuAc(context, n),
+            onLongPress: () {
+              HapticFeedback.mediumImpact();
+              ekran._menu(context, n);
+            },
+          ),
         ),
       );
       // Yükseklik tahmini: satır sayısı (kilitli kapalı kart sabit kısa).

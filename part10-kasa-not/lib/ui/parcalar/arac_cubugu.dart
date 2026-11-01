@@ -12,15 +12,20 @@ class AracCubugu extends StatelessWidget {
     required this.onKalin,
     required this.onEgik,
     required this.onKod,
+    this.gorevAnahtari,
   });
 
   final VoidCallback onGorev, onMadde, onBaslik, onKalin, onEgik, onKod;
+
+  /// Rehberin ışık tuttuğu ☑ düğmesi.
+  final Key? gorevAnahtari;
 
   @override
   Widget build(BuildContext context) {
     final r = Renkler.of(context);
     Widget dugme(String ipucu, Widget ikon, VoidCallback f) => Expanded(
       child: Tooltip(
+        key: ipucu == 'Görev kutusu' ? gorevAnahtari : null,
         message: ipucu,
         child: InkWell(
           onTap: f,

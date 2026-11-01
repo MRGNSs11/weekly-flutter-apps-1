@@ -4,9 +4,11 @@ import 'alan/not.dart';
 import 'kasa/yerel_kasa_servisi.dart';
 import 'ui/duzenleyici_ekrani.dart';
 import 'ui/liste_ekrani.dart';
+import 'ui/rehber_katmani.dart';
 import 'ui/tema.dart';
 import 'uygulama/kasa_kontrol.dart';
 import 'uygulama/notlar_kontrol.dart';
+import 'uygulama/rehber_kontrol.dart';
 import 'uygulama/tema_kontrol.dart';
 import 'veri/not_deposu.dart';
 import 'veri/veritabani.dart';
@@ -17,6 +19,7 @@ Future<void> main() async {
   final depo = NotDeposu(db);
   final tema = TemaKontrol(db);
   await tema.yukle();
+  final rehber = RehberKontrol(db);
   final kasa = KasaKontrol(
     servis: YerelKasaServisi(),
     gizlilik: KanalGizlilik(),
@@ -28,6 +31,7 @@ Future<void> main() async {
       kasa: kasa,
       notlar: NotlarKontrol(depo, kasa),
       tema: tema,
+      rehber: rehber,
     ),
   );
 }
@@ -38,11 +42,13 @@ class KasaNotUygulamasi extends StatefulWidget {
     required this.kasa,
     required this.notlar,
     required this.tema,
+    required this.rehber,
   });
 
   final KasaKontrol kasa;
   final NotlarKontrol notlar;
   final TemaKontrol tema;
+  final RehberKontrol rehber;
 
   @override
   State<KasaNotUygulamasi> createState() => _KasaNotUygulamasiState();
@@ -58,6 +64,36 @@ class _KasaNotUygulamasiState extends State<KasaNotUygulamasi> {
     _yasam = AppLifecycleListener(onStateChange: widget.kasa.yasamDegisti);
     // Kasa kapanınca açık kilitli not ekranı listeye döner.
     widget.kasa.addListener(_kasaDegisti);
+    widget.rehber.addListener(_rehberDegisti);
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => widget.rehber.ilkAcilis(),
+    );
+  }
+
+  // Rehberin 2–3. adımı örnek bir düzenleyicide anlatılır; kaydetmez.
+  bool _ornekAcik = false;
+
+  void _rehberDegisti() {
+    final r = widget.rehber;
+    final duzenleyicide = r.aktif && r.adim.ekran == RehberEkrani.duzenleyici;
+    if (duzenleyicide && !_ornekAcik) {
+      _ornekAcik = true;
+      _gezgin.currentState?.push(
+        MaterialPageRoute<void>(
+          builder: (_) => DuzenleyiciEkrani(
+            not: null,
+            ilkMetin: '# Market listesi\n- [x] Süt\n- [ ] Ekmek\n- [ ] Domates',
+            notlar: widget.notlar,
+            kasa: widget.kasa,
+            rehber: r.hedefler,
+            ornek: true,
+          ),
+        ),
+      );
+    } else if (!duzenleyicide && _ornekAcik) {
+      _ornekAcik = false;
+      _gezgin.currentState?.pop();
+    }
   }
 
   bool _kilitliNotAcik = false;
@@ -73,6 +109,7 @@ class _KasaNotUygulamasiState extends State<KasaNotUygulamasi> {
   void dispose() {
     _yasam.dispose();
     widget.kasa.removeListener(_kasaDegisti);
+    widget.rehber.removeListener(_rehberDegisti);
     super.dispose();
   }
 
@@ -99,7 +136,7 @@ class _KasaNotUygulamasiState extends State<KasaNotUygulamasi> {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-    listenable: widget.tema,
+    listenable: Listenable.merge([widget.tema, widget.rehber]),
     builder: (context, _) => MaterialApp(
       navigatorKey: _gezgin,
       title: 'Kasa Not',
@@ -107,10 +144,17 @@ class _KasaNotUygulamasiState extends State<KasaNotUygulamasi> {
       theme: temaYap(Brightness.light),
       darkTheme: temaYap(Brightness.dark),
       themeMode: widget.tema.mod,
+      builder: (context, cocuk) => Stack(
+        children: [
+          cocuk!,
+          if (widget.rehber.aktif) RehberKatmani(rehber: widget.rehber),
+        ],
+      ),
       home: ListeEkrani(
         notlar: widget.notlar,
         kasa: widget.kasa,
         tema: widget.tema,
+        rehber: widget.rehber,
         notuAc: _notuAc,
       ),
     ),
