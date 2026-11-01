@@ -92,4 +92,26 @@ void main() {
     });
     await k.kapat(t);
   });
+
+  testWidgets('☑ düğmesi satıra görev öneki koyar', (t) async {
+    final k = await ac(t, metin: 'Ekmek');
+    await t.tap(find.byTooltip('Görev kutusu'));
+    await t.pump();
+    final c = t.widget<TextField>(find.byType(TextField)).controller!;
+    expect(c.text, '- [ ] Ekmek');
+    await k.kapat(t);
+  });
+
+  testWidgets('görev satırında Enter yeni boş görev açar', (t) async {
+    final k = await ac(t, metin: '- [ ] Süt');
+    final c = t.widget<TextField>(find.byType(TextField)).controller!;
+    c.value = const TextEditingValue(
+      text: '- [ ] Süt\n',
+      selection: TextSelection.collapsed(offset: 10),
+    );
+    await t.pump();
+    expect(c.text, '- [ ] Süt\n- [ ] ');
+    expect(c.selection.baseOffset, c.text.length);
+    await k.kapat(t);
+  });
 }

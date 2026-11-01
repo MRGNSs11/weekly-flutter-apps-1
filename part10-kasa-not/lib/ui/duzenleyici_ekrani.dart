@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
+import '../alan/bicim.dart';
 import '../alan/gorev.dart';
 import '../alan/not.dart';
 import '../uygulama/kasa_kontrol.dart';
 import '../uygulama/notlar_kontrol.dart';
+import 'parcalar/arac_cubugu.dart';
 import 'parcalar/renkli_kaynak.dart';
 import 'tema.dart';
 
@@ -71,11 +73,21 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
     _zamanlayici?.cancel();
     widget.kasa.kapanmadanOnceCikar(_kaydet);
     _yasam.dispose();
+    _odak.dispose();
     _kaynak.dispose();
     super.dispose();
   }
 
+  late String _onceki = widget.ilkMetin;
+
   void _degisti() {
+    final eski = _onceki;
+    _onceki = _kaynak.text;
+    final secim = _kaynak.selection;
+    if (secim.isValid && secim.isCollapsed) {
+      final d = listeDevam(eski, _kaynak.text, secim.baseOffset);
+      if (d != null) return _uygula(d); // tekrar _degisti'ye girer
+    }
     if (_kaynak.text == _kayitli) return;
     setState(() => _kayit = _Kayit.bekliyor);
     _zamanlayici?.cancel();
@@ -131,6 +143,24 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
     }
   }
 
+  void _uygula(Duzen d) {
+    _kaynak.value = TextEditingValue(
+      text: d.metin,
+      selection: TextSelection.collapsed(offset: d.imlec),
+    );
+  }
+
+  final _odak = FocusNode();
+
+  void _arac(Duzen Function(String metin, TextSelection s) islem) {
+    final s = _kaynak.selection.isValid
+        ? _kaynak.selection
+        : TextSelection.collapsed(offset: _kaynak.text.length);
+    HapticFeedback.selectionClick();
+    _uygula(islem(_kaynak.text, s));
+    _odak.requestFocus();
+  }
+
   void _gorev(int n) {
     final yeni = gorevDegistir(_kaynak.text, n);
     if (yeni == _kaynak.text) return;
@@ -181,6 +211,7 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
                     ),
                     child: TextField(
                       controller: _kaynak,
+                      focusNode: _odak,
                       autofocus: widget.not == null,
                       maxLines: null,
                       expands: true,
@@ -208,7 +239,7 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
                 _Etiket('ÖNİZLEME'),
                 Expanded(
                   child: Container(
-                    margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                    margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                     decoration: BoxDecoration(
                       color: r.kart,
                       borderRadius: BorderRadius.circular(16),
@@ -220,6 +251,19 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
                           _Onizleme(metin: deger.text, onGorev: _gorev),
                     ),
                   ),
+                ),
+                AracCubugu(
+                  onGorev: () =>
+                      _arac((m, s) => satirOneki(m, s.baseOffset, '- [ ] ')),
+                  onMadde: () =>
+                      _arac((m, s) => satirOneki(m, s.baseOffset, '- ')),
+                  onBaslik: () =>
+                      _arac((m, s) => satirOneki(m, s.baseOffset, '# ')),
+                  onKalin: () =>
+                      _arac((m, s) => sarmala(m, s.start, s.end, '**')),
+                  onEgik: () =>
+                      _arac((m, s) => sarmala(m, s.start, s.end, '*')),
+                  onKod: () => _arac((m, s) => sarmala(m, s.start, s.end, '`')),
                 ),
               ],
             ),
