@@ -220,7 +220,7 @@ class _DuzenleyiciEkraniState extends State<DuzenleyiciEkrani> {
                     child: TextField(
                       controller: _kaynak,
                       focusNode: _odak,
-                      autofocus: widget.not == null,
+                      autofocus: widget.not == null && !widget.ornek,
                       maxLines: null,
                       expands: true,
                       keyboardType: TextInputType.multiline,

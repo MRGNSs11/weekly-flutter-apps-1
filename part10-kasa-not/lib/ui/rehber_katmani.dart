@@ -51,6 +51,14 @@ class _RehberKatmaniState extends State<RehberKatmani>
       if (kutu != null && kutu.hasSize && benim != null && kutu.attached) {
         final sol = benim.globalToLocal(kutu.localToGlobal(Offset.zero));
         yeni = sol & kutu.size;
+        // Küçük hedefin (görev kutusu) ışığı görünsün: en az 48×48.
+        if (yeni.width < 48 || yeni.height < 48) {
+          yeni = Rect.fromCenter(
+            center: yeni.center,
+            width: yeni.width < 48 ? 48 : yeni.width,
+            height: yeni.height < 48 ? 48 : yeni.height,
+          );
+        }
       }
       if (yeni != _hedef) setState(() => _hedef = yeni);
       _olc();
@@ -105,7 +113,11 @@ class _RehberKatmaniState extends State<RehberKatmani>
                   : (t > .55 && t < .7);
               return Positioned(
                 left: (h.center.dx + 6).clamp(0, boyut.width - 48),
-                top: h.center.dy + (h.height / 2).clamp(0, 18) - 6,
+                // Alttaki hedefte el gezinme çubuğuna taşmasın.
+                top: (h.center.dy + (h.height / 2).clamp(0, 18) - 6).clamp(
+                  0,
+                  boyut.height - MediaQuery.paddingOf(context).bottom - 50,
+                ),
                 child: IgnorePointer(
                   child: Transform.scale(
                     scale: bas ? .82 : 1,
