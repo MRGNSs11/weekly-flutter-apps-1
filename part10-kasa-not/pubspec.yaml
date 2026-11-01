@@ -1,5 +1,5 @@
 name: kasa_not
-description: "A new Flutter project."
+description: "Kilitli notları parmak izine bağlı anahtarla şifreleyen Markdown not defteri."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -65,6 +65,15 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  # Değişken fontlar (kalınlık ekseni); ağdan çekilmez, uygulamaya gömülü.
+  fonts:
+    - family: DMSans
+      fonts:
+        - asset: assets/fonts/DMSans.ttf
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
