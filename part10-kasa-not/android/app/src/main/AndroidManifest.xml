@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="Kasa Not"
+        android:label="Notlar"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:dataExtractionRules="@xml/veri_aktarim_kurallari"

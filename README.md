@@ -20,7 +20,7 @@ by design: **every line of code here is public.**
 | 07 | **Earthquake Map** | Map + live open data (AFAD) + a **draggable seismogram drawn from the data** with `CustomPainter`: every quake is a peak, drag back 7 days and the map follows. flutter_map + OpenStreetMap, no API key | [Read](part07-deprem-haritasi/VAKA.md) | [Source](part07-deprem-haritasi) |
 | 08 | **2048** | State management with Riverpod over an **immutable** game state: undo is just the previous object, no reverse logic. Unit, widget and on-device integration tests; a neumorphic look drawn by a single painter | [Read](part08-2048/VAKA.md) | [Source](part08-2048) |
 | 09 | **Pomodoro** | Local notifications without a background service: a **system chronometer** counts down in the shade, action buttons work while the app is closed (background isolate), and a scheduled full-screen alarm wakes the lock screen. The UI fills up as time passes, drawn with `CustomPainter` | [Read](part09-pomodoro/VAKA.md) | [Source](part09-pomodoro) |
-| 10 | **Kasa Not** | Biometric lock where the fingerprint unlocks the **key**, not just the screen: locked notes are AES-256-GCM encrypted, the key lives in Android Keystore bound to user authentication. Markdown editor with live preview, a frosted-glass UI and a spotlight onboarding tour | [Read](part10-kasa-not/VAKA.md) | [Source](part10-kasa-not) |
+| 10 | **Notes (Notlar)** | Biometric lock where the fingerprint unlocks the **key**, not just the screen: locked notes are AES-256-GCM encrypted, the key lives in Android Keystore bound to user authentication. Markdown editor with live preview, a frosted-glass UI and a spotlight onboarding tour | [Read](part10-kasa-not/VAKA.md) | [Source](part10-kasa-not) |
 
 *More apps land here as they ship.*
 

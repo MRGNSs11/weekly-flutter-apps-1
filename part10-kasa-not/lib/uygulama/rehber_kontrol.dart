@@ -64,7 +64,7 @@ const rehberAdimlari = [
     RehberEkrani.liste,
     RehberHareketi.dokun,
     'Kasayı aç',
-    'Alttaki şeride dokun, parmak izini okut. Uygulamadan çıkınca kasa kendiliğinden kapanır.',
+    'Alttaki şeride dokun, parmak izini okut. Uygulamadan çıkınca kasa kendiliğinden kilitlenir.',
   ),
   RehberAdimi(
     _soru,

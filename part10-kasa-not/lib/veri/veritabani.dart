@@ -61,7 +61,7 @@ class Veritabani extends _$Veritabani {
 }
 
 const ornekNotlar = [
-  "# Kasa Not'a hoş geldin\n\nBir notu **basılı tut** → **Kilitle**. "
+  "# Notlar'a hoş geldin\n\nBir notu **basılı tut** → **Kilitle**. "
       'Kilitli notlar camın arkasına geçer, parmak izinle açılır.\n\n'
       'Uygulamadan çıkınca kasa kendiliğinden kapanır.',
   '# Market listesi\n- [x] Süt\n- [ ] Ekmek\n- [ ] Domates **(2 kg)**\n\n'

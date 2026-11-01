@@ -1,4 +1,4 @@
-# Kasa Not
+# Notlar
 ### Part 10 · Her Hafta 1 Uygulama
 
 Not alan biri için, özel notları parmak izinin arkasında tutan bir Markdown

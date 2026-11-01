@@ -1,4 +1,4 @@
-# Part 10 — Kasa Not
+# Part 10 — Notlar
 
 Normal bir Markdown not defteri; istediğin notu kilitleyince not buzlu camın
 arkasına geçiyor ve yalnız parmak izinle açılıyor. Yazarken üstte kaynak, altta
@@ -33,7 +33,7 @@ En kolay yol, kasayı açarken `local_auth` ile "parmak izi doğru mu?" diye
 sormak ve evet gelirse notları göstermek. Bu bir kapı: notlar diskte yine düz
 metin, kapı yalnız ekranı koruyor.
 
-Kasa Not'ta parmak izi doğrudan **anahtarı** açıyor:
+Notlar'da parmak izi doğrudan **anahtarı** açıyor:
 
 1. İlk kilitlemede 32 baytlık rastgele bir anahtar üretiliyor ve
    `flutter_secure_storage` ile Android Keystore'a, kullanıcı doğrulamasına

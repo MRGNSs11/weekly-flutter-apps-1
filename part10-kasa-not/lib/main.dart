@@ -139,7 +139,7 @@ class _KasaNotUygulamasiState extends State<KasaNotUygulamasi> {
     listenable: Listenable.merge([widget.tema, widget.rehber]),
     builder: (context, _) => MaterialApp(
       navigatorKey: _gezgin,
-      title: 'Kasa Not',
+      title: 'Notlar',
       debugShowCheckedModeBanner: false,
       theme: temaYap(Brightness.light),
       darkTheme: temaYap(Brightness.dark),
