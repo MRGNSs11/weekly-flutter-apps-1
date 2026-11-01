@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import '../alan/not.dart';
 import '../uygulama/kasa_kontrol.dart';
 import '../uygulama/notlar_kontrol.dart';
+import '../uygulama/tema_kontrol.dart';
 import 'parcalar/kasa_seridi.dart';
 import 'parcalar/not_karti.dart';
+import 'parcalar/tema_dugmesi.dart';
 import 'tema.dart';
 
 /// Y3 Buğulu Cam: kilitli notlar ızgarada yerinde, camın arkasında.
@@ -14,11 +16,13 @@ class ListeEkrani extends StatelessWidget {
     super.key,
     required this.notlar,
     required this.kasa,
+    required this.tema,
     required this.notuAc,
   });
 
   final NotlarKontrol notlar;
   final KasaKontrol kasa;
+  final TemaKontrol tema;
 
   /// Düzenleyiciyi açar; `null` yeni not demek.
   final void Function(BuildContext, Not?) notuAc;
@@ -38,12 +42,14 @@ class ListeEkrani extends StatelessWidget {
         child: SafeArea(
           bottom: false,
           child: ListenableBuilder(
-            listenable: Listenable.merge([notlar, kasa]),
+            listenable: Listenable.merge([notlar, kasa, tema]),
             builder: (context, _) => Stack(
               children: [
                 CustomScrollView(
                   slivers: [
-                    SliverToBoxAdapter(child: _Ust(notlar: notlar)),
+                    SliverToBoxAdapter(
+                      child: _Ust(notlar: notlar, tema: tema),
+                    ),
                     if (notlar.yuklendi && notlar.gorunen.isEmpty)
                       SliverToBoxAdapter(
                         child: _Bos(arama: notlar.sorgu.isNotEmpty),
@@ -145,8 +151,9 @@ class ListeEkrani extends StatelessWidget {
 }
 
 class _Ust extends StatelessWidget {
-  const _Ust({required this.notlar});
+  const _Ust({required this.notlar, required this.tema});
   final NotlarKontrol notlar;
+  final TemaKontrol tema;
 
   @override
   Widget build(BuildContext context) {
@@ -156,9 +163,16 @@ class _Ust extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Notlar',
-            style: yazi(28, kalinlik: FontWeight.w700, renk: r.metin),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Notlar',
+                  style: yazi(28, kalinlik: FontWeight.w700, renk: r.metin),
+                ),
+              ),
+              TemaDugmesi(tema: tema),
+            ],
           ),
           const SizedBox(height: 8),
           TextField(

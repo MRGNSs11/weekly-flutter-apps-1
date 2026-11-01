@@ -458,15 +458,225 @@ class NotlarCompanion extends UpdateCompanion<NotSatiri> {
   }
 }
 
+class $AyarlarTable extends Ayarlar with TableInfo<$AyarlarTable, Ayar> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AyarlarTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _anahtarMeta = const VerificationMeta(
+    'anahtar',
+  );
+  @override
+  late final GeneratedColumn<String> anahtar = GeneratedColumn<String>(
+    'anahtar',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _degerMeta = const VerificationMeta('deger');
+  @override
+  late final GeneratedColumn<String> deger = GeneratedColumn<String>(
+    'deger',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [anahtar, deger];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ayarlar';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Ayar> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('anahtar')) {
+      context.handle(
+        _anahtarMeta,
+        anahtar.isAcceptableOrUnknown(data['anahtar']!, _anahtarMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_anahtarMeta);
+    }
+    if (data.containsKey('deger')) {
+      context.handle(
+        _degerMeta,
+        deger.isAcceptableOrUnknown(data['deger']!, _degerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_degerMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {anahtar};
+  @override
+  Ayar map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Ayar(
+      anahtar: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}anahtar'],
+      )!,
+      deger: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deger'],
+      )!,
+    );
+  }
+
+  @override
+  $AyarlarTable createAlias(String alias) {
+    return $AyarlarTable(attachedDatabase, alias);
+  }
+}
+
+class Ayar extends DataClass implements Insertable<Ayar> {
+  final String anahtar;
+  final String deger;
+  const Ayar({required this.anahtar, required this.deger});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['anahtar'] = Variable<String>(anahtar);
+    map['deger'] = Variable<String>(deger);
+    return map;
+  }
+
+  AyarlarCompanion toCompanion(bool nullToAbsent) {
+    return AyarlarCompanion(anahtar: Value(anahtar), deger: Value(deger));
+  }
+
+  factory Ayar.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Ayar(
+      anahtar: serializer.fromJson<String>(json['anahtar']),
+      deger: serializer.fromJson<String>(json['deger']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'anahtar': serializer.toJson<String>(anahtar),
+      'deger': serializer.toJson<String>(deger),
+    };
+  }
+
+  Ayar copyWith({String? anahtar, String? deger}) =>
+      Ayar(anahtar: anahtar ?? this.anahtar, deger: deger ?? this.deger);
+  Ayar copyWithCompanion(AyarlarCompanion data) {
+    return Ayar(
+      anahtar: data.anahtar.present ? data.anahtar.value : this.anahtar,
+      deger: data.deger.present ? data.deger.value : this.deger,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Ayar(')
+          ..write('anahtar: $anahtar, ')
+          ..write('deger: $deger')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(anahtar, deger);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Ayar &&
+          other.anahtar == this.anahtar &&
+          other.deger == this.deger);
+}
+
+class AyarlarCompanion extends UpdateCompanion<Ayar> {
+  final Value<String> anahtar;
+  final Value<String> deger;
+  final Value<int> rowid;
+  const AyarlarCompanion({
+    this.anahtar = const Value.absent(),
+    this.deger = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AyarlarCompanion.insert({
+    required String anahtar,
+    required String deger,
+    this.rowid = const Value.absent(),
+  }) : anahtar = Value(anahtar),
+       deger = Value(deger);
+  static Insertable<Ayar> custom({
+    Expression<String>? anahtar,
+    Expression<String>? deger,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (anahtar != null) 'anahtar': anahtar,
+      if (deger != null) 'deger': deger,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AyarlarCompanion copyWith({
+    Value<String>? anahtar,
+    Value<String>? deger,
+    Value<int>? rowid,
+  }) {
+    return AyarlarCompanion(
+      anahtar: anahtar ?? this.anahtar,
+      deger: deger ?? this.deger,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (anahtar.present) {
+      map['anahtar'] = Variable<String>(anahtar.value);
+    }
+    if (deger.present) {
+      map['deger'] = Variable<String>(deger.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AyarlarCompanion(')
+          ..write('anahtar: $anahtar, ')
+          ..write('deger: $deger, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$Veritabani extends GeneratedDatabase {
   _$Veritabani(QueryExecutor e) : super(e);
   $VeritabaniManager get managers => $VeritabaniManager(this);
   late final $NotlarTable notlar = $NotlarTable(this);
+  late final $AyarlarTable ayarlar = $AyarlarTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [notlar];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [notlar, ayarlar];
 }
 
 typedef $$NotlarTableCreateCompanionBuilder =
@@ -705,10 +915,158 @@ typedef $$NotlarTableProcessedTableManager =
       NotSatiri,
       PrefetchHooks Function()
     >;
+typedef $$AyarlarTableCreateCompanionBuilder =
+    AyarlarCompanion Function({
+      required String anahtar,
+      required String deger,
+      Value<int> rowid,
+    });
+typedef $$AyarlarTableUpdateCompanionBuilder =
+    AyarlarCompanion Function({
+      Value<String> anahtar,
+      Value<String> deger,
+      Value<int> rowid,
+    });
+
+class $$AyarlarTableFilterComposer
+    extends Composer<_$Veritabani, $AyarlarTable> {
+  $$AyarlarTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get anahtar => $composableBuilder(
+    column: $table.anahtar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deger => $composableBuilder(
+    column: $table.deger,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AyarlarTableOrderingComposer
+    extends Composer<_$Veritabani, $AyarlarTable> {
+  $$AyarlarTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get anahtar => $composableBuilder(
+    column: $table.anahtar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deger => $composableBuilder(
+    column: $table.deger,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AyarlarTableAnnotationComposer
+    extends Composer<_$Veritabani, $AyarlarTable> {
+  $$AyarlarTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get anahtar =>
+      $composableBuilder(column: $table.anahtar, builder: (column) => column);
+
+  GeneratedColumn<String> get deger =>
+      $composableBuilder(column: $table.deger, builder: (column) => column);
+}
+
+class $$AyarlarTableTableManager
+    extends
+        RootTableManager<
+          _$Veritabani,
+          $AyarlarTable,
+          Ayar,
+          $$AyarlarTableFilterComposer,
+          $$AyarlarTableOrderingComposer,
+          $$AyarlarTableAnnotationComposer,
+          $$AyarlarTableCreateCompanionBuilder,
+          $$AyarlarTableUpdateCompanionBuilder,
+          (Ayar, BaseReferences<_$Veritabani, $AyarlarTable, Ayar>),
+          Ayar,
+          PrefetchHooks Function()
+        > {
+  $$AyarlarTableTableManager(_$Veritabani db, $AyarlarTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AyarlarTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AyarlarTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AyarlarTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> anahtar = const Value.absent(),
+                Value<String> deger = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AyarlarCompanion(
+                anahtar: anahtar,
+                deger: deger,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String anahtar,
+                required String deger,
+                Value<int> rowid = const Value.absent(),
+              }) => AyarlarCompanion.insert(
+                anahtar: anahtar,
+                deger: deger,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$AyarlarTable, Ayar>(table),
+                  BaseReferences<_$Veritabani, $AyarlarTable, Ayar>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AyarlarTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Veritabani,
+      $AyarlarTable,
+      Ayar,
+      $$AyarlarTableFilterComposer,
+      $$AyarlarTableOrderingComposer,
+      $$AyarlarTableAnnotationComposer,
+      $$AyarlarTableCreateCompanionBuilder,
+      $$AyarlarTableUpdateCompanionBuilder,
+      (Ayar, BaseReferences<_$Veritabani, $AyarlarTable, Ayar>),
+      Ayar,
+      PrefetchHooks Function()
+    >;
 
 class $VeritabaniManager {
   final _$Veritabani _db;
   $VeritabaniManager(this._db);
   $$NotlarTableTableManager get notlar =>
       $$NotlarTableTableManager(_db, _db.notlar);
+  $$AyarlarTableTableManager get ayarlar =>
+      $$AyarlarTableTableManager(_db, _db.ayarlar);
 }

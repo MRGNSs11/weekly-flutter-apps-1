@@ -15,7 +15,17 @@ class Notlar extends Table {
   DateTimeColumn get guncelleme => dateTime()();
 }
 
-@DriftDatabase(tables: [Notlar])
+/// Küçük tercihler (tema). Ayrı paket yerine aynı veritabanı.
+@DataClassName('Ayar')
+class Ayarlar extends Table {
+  TextColumn get anahtar => text()();
+  TextColumn get deger => text()();
+
+  @override
+  Set<Column> get primaryKey => {anahtar};
+}
+
+@DriftDatabase(tables: [Notlar, Ayarlar])
 class Veritabani extends _$Veritabani {
   Veritabani() : _ornekler = true, super(driftDatabase(name: 'kasa_not'));
   Veritabani.test(super.e) : _ornekler = false;
@@ -23,12 +33,15 @@ class Veritabani extends _$Veritabani {
   final bool _ornekler;
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   /// İlk kurulumda (veritabanı yeni oluşunca) örnek notlar eklenir; kullanıcı
   /// hepsini silerse geri gelmez.
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, eski, yeni) async {
+      if (eski < 2) await m.createTable(ayarlar);
+    },
     onCreate: (m) async {
       await m.createAll();
       if (!_ornekler) return;
@@ -56,3 +69,14 @@ const ornekNotlar = [
   '# Markdown kopya kâğıdı\n**kalın** · *eğik* · `kod`\n- madde\n- [ ] görev\n'
       '```\nkod bloğu\n```',
 ];
+
+extension AyarIslemleri on Veritabani {
+  Future<String?> ayarOku(String anahtar) async => (await (select(
+    ayarlar,
+  )..where((t) => t.anahtar.equals(anahtar))).getSingleOrNull())?.deger;
+
+  Future<void> ayarYaz(String anahtar, String deger) =>
+      into(ayarlar).insertOnConflictUpdate(
+        AyarlarCompanion.insert(anahtar: anahtar, deger: deger),
+      );
+}

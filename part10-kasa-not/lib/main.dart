@@ -2,24 +2,34 @@ import 'package:flutter/material.dart';
 
 import 'alan/not.dart';
 import 'kasa/yerel_kasa_servisi.dart';
-import 'ui/gecici_duzenleyici.dart';
+import 'ui/duzenleyici_ekrani.dart';
 import 'ui/liste_ekrani.dart';
 import 'ui/tema.dart';
 import 'uygulama/kasa_kontrol.dart';
 import 'uygulama/notlar_kontrol.dart';
+import 'uygulama/tema_kontrol.dart';
 import 'veri/not_deposu.dart';
 import 'veri/veritabani.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final depo = NotDeposu(Veritabani());
+  final db = Veritabani();
+  final depo = NotDeposu(db);
+  final tema = TemaKontrol(db);
+  await tema.yukle();
   final kasa = KasaKontrol(
     servis: YerelKasaServisi(),
     gizlilik: KanalGizlilik(),
     depo: depo,
   );
   await kasa.baslat();
-  runApp(KasaNotUygulamasi(kasa: kasa, notlar: NotlarKontrol(depo, kasa)));
+  runApp(
+    KasaNotUygulamasi(
+      kasa: kasa,
+      notlar: NotlarKontrol(depo, kasa),
+      tema: tema,
+    ),
+  );
 }
 
 class KasaNotUygulamasi extends StatefulWidget {
@@ -27,10 +37,12 @@ class KasaNotUygulamasi extends StatefulWidget {
     super.key,
     required this.kasa,
     required this.notlar,
+    required this.tema,
   });
 
   final KasaKontrol kasa;
   final NotlarKontrol notlar;
+  final TemaKontrol tema;
 
   @override
   State<KasaNotUygulamasi> createState() => _KasaNotUygulamasiState();
@@ -74,7 +86,7 @@ class _KasaNotUygulamasiState extends State<KasaNotUygulamasi> {
     _kilitliNotAcik = not?.kilitli ?? false;
     await _gezgin.currentState!.push(
       MaterialPageRoute<void>(
-        builder: (_) => GeciciDuzenleyici(
+        builder: (_) => DuzenleyiciEkrani(
           not: not,
           ilkMetin: metin,
           notlar: widget.notlar,
@@ -86,17 +98,21 @@ class _KasaNotUygulamasiState extends State<KasaNotUygulamasi> {
   }
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    navigatorKey: _gezgin,
-    title: 'Kasa Not',
-    debugShowCheckedModeBanner: false,
-    theme: temaYap(Brightness.light),
-    darkTheme: temaYap(Brightness.dark),
-    themeMode: ThemeMode.system,
-    home: ListeEkrani(
-      notlar: widget.notlar,
-      kasa: widget.kasa,
-      notuAc: _notuAc,
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: widget.tema,
+    builder: (context, _) => MaterialApp(
+      navigatorKey: _gezgin,
+      title: 'Kasa Not',
+      debugShowCheckedModeBanner: false,
+      theme: temaYap(Brightness.light),
+      darkTheme: temaYap(Brightness.dark),
+      themeMode: widget.tema.mod,
+      home: ListeEkrani(
+        notlar: widget.notlar,
+        kasa: widget.kasa,
+        tema: widget.tema,
+        notuAc: _notuAc,
+      ),
     ),
   );
 }

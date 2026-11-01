@@ -8,6 +8,7 @@ import 'package:kasa_not/ui/liste_ekrani.dart';
 import 'package:kasa_not/ui/tema.dart';
 import 'package:kasa_not/uygulama/kasa_kontrol.dart';
 import 'package:kasa_not/uygulama/notlar_kontrol.dart';
+import 'package:kasa_not/uygulama/tema_kontrol.dart';
 import 'package:kasa_not/veri/not_deposu.dart';
 import 'package:kasa_not/veri/veritabani.dart';
 
@@ -41,6 +42,7 @@ class Kurulum {
   final servis = SahteKasaServisi();
   late KasaKontrol kasa;
   late NotlarKontrol notlar;
+  late TemaKontrol tema;
 
   /// Örnek notlar + 3 kilitli not; kasa kapalı başlar.
   Future<void> hazirla(WidgetTester t) async {
@@ -67,6 +69,7 @@ class Kurulum {
         await depo.ekle(m);
       }
       notlar = NotlarKontrol(depo, kasa);
+      tema = TemaKontrol(db);
       await Future<void>.delayed(const Duration(milliseconds: 50));
     });
   }
@@ -74,7 +77,12 @@ class Kurulum {
   Widget ekran({Brightness parlaklik = Brightness.light}) => MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: temaYap(parlaklik),
-    home: ListeEkrani(notlar: notlar, kasa: kasa, notuAc: (_, _) {}),
+    home: ListeEkrani(
+      notlar: notlar,
+      kasa: kasa,
+      tema: tema,
+      notuAc: (_, _) {},
+    ),
   );
 
   Future<void> kapat(WidgetTester t) => t

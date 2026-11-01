@@ -4,6 +4,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:kasa_not/ui/duzenleyici_ekrani.dart';
+import 'package:kasa_not/ui/tema.dart';
+
 import 'yardim.dart';
 
 const _ekran = bool.fromEnvironment('EKRAN');
@@ -72,6 +75,55 @@ void main() {
   testWidgets(
     'karanlık açık',
     (t) => cek(t, 'k4-karanlik-acik', Brightness.dark, ac: true),
+    skip: !_ekran,
+  );
+
+  Future<void> duzenleyici(WidgetTester t, String ad, Brightness p) async {
+    t.view.physicalSize = const Size(1080, 2340);
+    t.view.devicePixelRatio = 3;
+    addTearDown(t.view.reset);
+    final k = Kurulum();
+    await k.hazirla(t);
+    const metin = '''
+# Market listesi
+
+- [x] Süt
+- [ ] Ekmek
+- [ ] Domates **(2 kg)**
+
+Pazardan *taze* olanı al.
+
+```
+toplam ≈ 180 ₺
+```''';
+    await t.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: temaYap(p),
+        home: DuzenleyiciEkrani(
+          not: null,
+          ilkMetin: metin,
+          notlar: k.notlar,
+          kasa: k.kasa,
+        ),
+      ),
+    );
+    await t.pump();
+    await expectLater(
+      find.byType(MaterialApp),
+      matchesGoldenFile('goruntu/$ad.png'),
+    );
+    await k.kapat(t);
+  }
+
+  testWidgets(
+    'düzenleyici aydınlık',
+    (t) => duzenleyici(t, 'k5-duzenleyici-aydinlik', Brightness.light),
+    skip: !_ekran,
+  );
+  testWidgets(
+    'düzenleyici karanlık',
+    (t) => duzenleyici(t, 'k5-duzenleyici-karanlik', Brightness.dark),
     skip: !_ekran,
   );
 }
