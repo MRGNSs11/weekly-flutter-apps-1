@@ -66,11 +66,21 @@ void main() {
     await k.kapat(t);
   });
 
-  testWidgets('izin reddi: açıklama + Ayarları aç + Tekrar sor', (t) async {
+  testWidgets('izin yok: önce bizim açıklama, Devam → Android → ret', (
+    t,
+  ) async {
     final k = Kurulum()..mik.izin = false;
     await t.pumpWidget(k.uygulama);
     await t.pump();
     await dokun(t, 'Kaydet');
+    expect(find.text('Önce bir izin'), findsOneWidget);
+    expect(find.text('Şimdi değil'), findsOneWidget);
+    await t.runAsync(() async {
+      await t.tap(find.text('Devam'));
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+    });
+    await t.pump();
+    expect(k.mik.izinIstendi, isTrue);
     expect(find.text('Mikrofon izni gerekli'), findsOneWidget);
     expect(find.text('Tekrar sor'), findsOneWidget);
     await t.tap(find.text('Ayarları aç'));

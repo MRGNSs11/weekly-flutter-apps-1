@@ -113,8 +113,8 @@ class _KayitEkraniState extends State<KayitEkrani>
                   fit: StackFit.expand,
                   children: [
                     Bulut(hizli: asama == Asama.kayit),
-                    if (asama == Asama.izinYok)
-                      _IzinYok(kontrol: k)
+                    if (asama == Asama.izinYok || asama == Asama.onIzin)
+                      _IzinEkrani(kontrol: k, ilk: asama == Asama.onIzin)
                     else
                       Opacity(
                         opacity: 1 - v,
@@ -562,11 +562,13 @@ class _Tutamac extends StatelessWidget {
   );
 }
 
-/// Mikrofon izni reddedildi (B2.4-5).
-class _IzinYok extends StatelessWidget {
-  const _IzinYok({required this.kontrol});
+/// [ilk]: Android penceresinden önce bizim açıklamamız (B2.4-6).
+/// Değilse: mikrofon izni reddedildi (B2.4-5).
+class _IzinEkrani extends StatelessWidget {
+  const _IzinEkrani({required this.kontrol, required this.ilk});
 
   final KayitKontrol kontrol;
+  final bool ilk;
 
   @override
   Widget build(BuildContext context) => SafeArea(
@@ -575,16 +577,28 @@ class _IzinYok extends StatelessWidget {
       children: [
         const _Baslik(asama: Asama.izinYok),
         const SizedBox(height: 50),
-        SizedBox(height: 110, child: CustomPaint(painter: _KesikCizgi())),
+        SizedBox(
+          height: 110,
+          child: ilk
+              ? const SesCizgisi(degerler: [])
+              : CustomPaint(painter: _KesikCizgi()),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
-              Text('Mikrofon izni gerekli', style: yazi(22, 500)),
+              Text(
+                ilk ? 'Önce bir izin' : 'Mikrofon izni gerekli',
+                style: yazi(22, 500),
+              ),
               const SizedBox(height: 8),
               Text(
-                'Ses kaydı için mikrofona erişmem lazım. Kayıtlar yalnız bu '
-                'telefonda kalır, hiçbir yere gönderilmez.',
+                ilk
+                    ? 'Ses kaydedebilmem için mikrofona erişmem lazım. Birazdan '
+                          'çıkan pencerede izin ver. Kayıtlar yalnız bu telefonda '
+                          'kalır, hiçbir yere gönderilmez.'
+                    : 'Ses kaydı için mikrofona erişmem lazım. Kayıtlar yalnız '
+                          'bu telefonda kalır, hiçbir yere gönderilmez.',
                 textAlign: TextAlign.center,
                 style: yazi(14, 300, opaklik: .85, satir: 1.5),
               ),
@@ -594,14 +608,14 @@ class _IzinYok extends StatelessWidget {
                 shape: const StadiumBorder(),
                 child: InkWell(
                   customBorder: const StadiumBorder(),
-                  onTap: kontrol.ayarlariAc,
+                  onTap: ilk ? kontrol.izinIsteVeBasla : kontrol.ayarlariAc,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 26,
                       vertical: 12,
                     ),
                     child: Text(
-                      'Ayarları aç',
+                      ilk ? 'Devam' : 'Ayarları aç',
                       style: yazi(15, 500, renk: Renk.bulutTaban),
                     ),
                   ),
@@ -609,8 +623,11 @@ class _IzinYok extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               TextButton(
-                onPressed: kontrol.tekrarSor,
-                child: Text('Tekrar sor', style: yazi(13, 400, opaklik: .7)),
+                onPressed: ilk ? kontrol.simdiDegil : kontrol.tekrarSor,
+                child: Text(
+                  ilk ? 'Şimdi değil' : 'Tekrar sor',
+                  style: yazi(13, 400, opaklik: .7),
+                ),
               ),
             ],
           ),

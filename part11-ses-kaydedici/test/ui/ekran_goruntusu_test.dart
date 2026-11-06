@@ -106,7 +106,15 @@ void main() {
   );
   testWidgets(
     'izin yok',
-    (t) => cek(t, 'k4-izin', (k) => k.kontrol.kaydet(), izinYok: true),
+    (t) => cek(t, 'k4-izin', (k) async {
+      await k.kontrol.kaydet();
+      await k.kontrol.izinIsteVeBasla();
+    }, izinYok: true),
+    skip: !_ekran,
+  );
+  testWidgets(
+    'ön izin',
+    (t) => cek(t, 'k6-onizin', (k) => k.kontrol.kaydet(), izinYok: true),
     skip: !_ekran,
   );
 }

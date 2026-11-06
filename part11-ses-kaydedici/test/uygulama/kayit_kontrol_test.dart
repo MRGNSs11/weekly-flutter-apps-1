@@ -39,17 +39,60 @@ void main() {
 
   test('başta hazır', () => expect(k.asama, Asama.hazir));
 
-  test('izin yoksa izinYok; kayıt başlamaz, servis açılmaz', () async {
+  test(
+    'izin yoksa önce ön açıklama; Android penceresi henüz sorulmaz',
+    () async {
+      mik.izin = false;
+      await k.kaydet();
+      expect(k.asama, Asama.onIzin);
+      expect(mik.izinIstendi, isFalse);
+      expect(mik.cagrilar, isEmpty);
+      expect(sistem.cagrilar, isEmpty);
+    },
+  );
+
+  test('ön açıklamada Devam + izin verildi → kayıt hemen başlar', () async {
     mik.izin = false;
     await k.kaydet();
-    expect(k.asama, Asama.izinYok);
-    expect(mik.cagrilar, isEmpty);
-    expect(sistem.cagrilar, isEmpty);
+    mik.izin = true;
+    await k.izinIsteVeBasla();
+    expect(mik.izinIstendi, isTrue);
+    expect(k.asama, Asama.kayit);
+    expect(mik.cagrilar, ['baslat']);
+  });
+
+  test(
+    'ön açıklamada Devam + ret → izinYok; sonraki Kaydet doğrudan izinYok',
+    () async {
+      mik.izin = false;
+      await k.kaydet();
+      await k.izinIsteVeBasla();
+      expect(k.asama, Asama.izinYok);
+      expect(mik.cagrilar, isEmpty);
+      await k.tekrarSor();
+      expect(k.asama, Asama.izinYok);
+      await k.kaydet();
+      expect(k.asama, Asama.izinYok);
+    },
+  );
+
+  test('Şimdi değil → hazır', () async {
+    mik.izin = false;
+    await k.kaydet();
+    k.simdiDegil();
+    expect(k.asama, Asama.hazir);
+  });
+
+  test('izin varsa ön açıklama görünmez', () async {
+    await k.kaydet();
+    expect(k.asama, Asama.kayit);
+    expect(mik.izinIstendi, isFalse);
   });
 
   test('ayarlardan dönünce izin verildiyse hazır (sormadan yoklar)', () async {
     mik.izin = false;
     await k.kaydet();
+    await k.izinIsteVeBasla();
     mik.izinIstendi = false;
     mik.izin = true;
     await k.izniYokla();
@@ -60,6 +103,7 @@ void main() {
   test('tekrar sor reddedilirse izinYok kalır', () async {
     mik.izin = false;
     await k.kaydet();
+    await k.izinIsteVeBasla();
     await k.tekrarSor();
     expect(k.asama, Asama.izinYok);
   });

@@ -7,7 +7,7 @@ import '../alan/seviye.dart';
 import '../veri/kayit_deposu.dart';
 import 'kaydedici.dart';
 
-enum Asama { hazir, izinYok, kayit, duraklatildi, kaydediliyor }
+enum Asama { hazir, onIzin, izinYok, kayit, duraklatildi, kaydediliyor }
 
 /// Kayıt ekranının beyni: kaydet → duraklat/devam → durdur (depoya yaz)
 /// ya da iptal (dosya silinir, depoya yazılmaz).
@@ -48,12 +48,37 @@ class KayitKontrol extends ChangeNotifier {
 
   bool get kayitta => _asama == Asama.kayit || _asama == Asama.duraklatildi;
 
+  /// Bu oturumda Android penceresinde reddedildi mi? Öyleyse ön açıklama
+  /// atlanır, doğrudan "Mikrofon izni gerekli" ekranı (B2.4-6).
+  bool _reddedildi = false;
+
+  /// İzin yoksa önce bizim açıklamamız (B2.4-6), varsa kayıt başlar.
   Future<void> kaydet() async {
     if (_asama != Asama.hazir && _asama != Asama.izinYok) return;
-    if (!await _kaydedici.izinVar()) {
-      _degis(Asama.izinYok);
+    if (!await _kaydedici.izinVar(iste: false)) {
+      _degis(_reddedildi ? Asama.izinYok : Asama.onIzin);
       return;
     }
+    await _baslat();
+  }
+
+  /// Ön açıklamada "Devam": Android penceresi; verilirse kayıt hemen başlar.
+  Future<void> izinIsteVeBasla() async {
+    if (_asama != Asama.onIzin) return;
+    if (await _kaydedici.izinVar()) {
+      await _baslat();
+    } else {
+      _reddedildi = true;
+      _degis(Asama.izinYok);
+    }
+  }
+
+  /// Ön açıklamada "Şimdi değil".
+  void simdiDegil() {
+    if (_asama == Asama.onIzin) _degis(Asama.hazir);
+  }
+
+  Future<void> _baslat() async {
     // Bildirim izni olmasa da kayıt sürer; yalnız "Kaydediliyor" görünmez.
     await _sistem.bildirimIzniIste();
 
