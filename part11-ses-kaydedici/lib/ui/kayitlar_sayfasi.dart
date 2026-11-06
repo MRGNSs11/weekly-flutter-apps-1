@@ -318,10 +318,20 @@ class _OynaticiKartState extends State<OynaticiKart> {
                   ),
                 ),
               ),
-              _Hap(
-                metin: 'Sil',
-                etiket: 'Sil',
-                onTap: () => l.sil(widget.kayit),
+              Row(
+                children: [
+                  _Hap(
+                    metin: 'Paylaş',
+                    etiket: 'Paylaş',
+                    onTap: () => l.paylas(widget.kayit),
+                  ),
+                  const SizedBox(width: 6),
+                  _Hap(
+                    metin: 'Sil',
+                    etiket: 'Sil',
+                    onTap: () => l.sil(widget.kayit),
+                  ),
+                ],
               ),
             ],
           ),

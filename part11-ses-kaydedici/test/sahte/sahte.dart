@@ -68,6 +68,11 @@ class SahteSistem implements Sistem {
 
   @override
   Future<void> ayarlariAc() async => cagrilar.add('ayarlariAc');
+
+  void Function()? bildirimdenDurdur;
+
+  @override
+  void bildirimdenDurdurDinle(void Function() f) => bildirimdenDurdur = f;
 }
 
 /// Bellek içi depo: ekran testlerinde gerçek veritabanı sahte saatle

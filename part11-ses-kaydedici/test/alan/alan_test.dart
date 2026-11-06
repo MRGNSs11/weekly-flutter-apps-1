@@ -111,6 +111,11 @@ void main() {
         'Dün 23:59',
       );
     });
+    test('paylaşım adı: dosya adında olamayan karakterler', () {
+      expect(paylasimAdi('6 Kas 14:32'), '6 Kas 14.32.ogg');
+      expect(paylasimAdi('Fizik/ders "6"?'), 'Fizik-ders -6--.ogg');
+      expect(paylasimAdi('  '), 'kayit.ogg');
+    });
     test('yeniden adlandırma', () {
       expect(temizAd('  Fizik   dersi  ', 'eski'), 'Fizik dersi');
       expect(temizAd('   ', 'eski'), 'eski');

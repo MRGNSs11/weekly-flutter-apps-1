@@ -19,7 +19,9 @@ class KayitKontrol extends ChangeNotifier {
     required this._klasor,
     required this._boyutOku,
     DateTime Function()? saat,
-  }) : _saat = saat ?? DateTime.now;
+  }) : _saat = saat ?? DateTime.now {
+    _sistem.bildirimdenDurdurDinle(durdur);
+  }
 
   final Kaydedici _kaydedici;
   final Sistem _sistem;

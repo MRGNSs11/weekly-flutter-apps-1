@@ -24,6 +24,16 @@ String dosyaAdi(DateTime t) =>
     'kayit_${t.year}${_iki(t.month)}${_iki(t.day)}'
     '_${_iki(t.hour)}${_iki(t.minute)}${_iki(t.second)}.ogg';
 
+/// Paylaşılan dosyanın adı: kaydın adı, dosya adında olamayan karakterler
+/// (`6 Kas 14:32` → `6 Kas 14.32.ogg`) değiştirilir.
+String paylasimAdi(String ad) {
+  final temiz = ad
+      .replaceAll(':', '.')
+      .replaceAll(RegExp(r'[\\/*?"<>|]'), '-')
+      .trim();
+  return '${temiz.isEmpty ? 'kayit' : temiz}.ogg';
+}
+
 /// Listedeki alt satır: `Bugün 10:05`, `Dün 18:20`, `5 Kas 18:20`.
 /// Geçen yıldan kalanlarda yıl da yazılır: `5 Kas 2025`.
 String tarihEtiketi(DateTime t, DateTime simdi) {

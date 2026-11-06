@@ -45,11 +45,13 @@ class Kurulum {
   final depo = SahteDepo();
   final calar = SahteCalar();
   final silinenDosyalar = <String>[];
+  final paylasilanlar = <String>[];
   late final KayitKontrol kontrol;
   late final ListeKontrol liste = ListeKontrol(
     depo: depo,
     calar: calar,
     dosyaSil: (yol) async => silinenDosyalar.add(yol),
+    paylasici: (k) async => paylasilanlar.add(k.ad),
     geriAlSuresi: const Duration(seconds: 5),
   );
 

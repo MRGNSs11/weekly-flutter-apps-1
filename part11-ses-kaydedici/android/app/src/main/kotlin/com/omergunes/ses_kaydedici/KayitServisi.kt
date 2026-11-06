@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -20,6 +21,12 @@ class KayitServisi : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // Bildirimdeki "Durdur": kaydı Dart tarafı bitirir (dosya + liste),
+        // o da kanal üzerinden bu servisi kapatır.
+        if (intent?.action == DURDUR) {
+            durdurIstendi?.invoke()
+            return START_NOT_STICKY
+        }
         val yonetici = getSystemService(NotificationManager::class.java)
         yonetici.createNotificationChannel(
             NotificationChannel(KANAL, "Kayıt", NotificationManager.IMPORTANCE_LOW)
@@ -29,11 +36,23 @@ class KayitServisi : Service() {
             Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             PendingIntent.FLAG_IMMUTABLE,
         )
+        val durdur = PendingIntent.getService(
+            this, 1,
+            Intent(this, KayitServisi::class.java).setAction(DURDUR),
+            PendingIntent.FLAG_IMMUTABLE,
+        )
         val bildirim = Notification.Builder(this, KANAL)
             .setContentTitle("Kaydediliyor")
             .setSmallIcon(android.R.drawable.ic_btn_speak_now)
             .setContentIntent(ac)
             .setOngoing(true)
+            .addAction(
+                Notification.Action.Builder(
+                    Icon.createWithResource(this, android.R.drawable.ic_media_pause),
+                    "Durdur",
+                    durdur,
+                ).build(),
+            )
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -60,5 +79,9 @@ class KayitServisi : Service() {
     companion object {
         const val KANAL = "kayit"
         const val BILDIRIM_NO = 1
+        const val DURDUR = "com.omergunes.ses_kaydedici.DURDUR"
+
+        /** MainActivity bağlar: bildirimden durdurma isteğini Dart'a iletir. */
+        var durdurIstendi: (() -> Unit)? = null
     }
 }

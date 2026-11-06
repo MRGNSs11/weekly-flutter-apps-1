@@ -104,6 +104,14 @@ void main() {
     await k.kapat(t);
   });
 
+  testWidgets('Paylaş → seçili kayıt paylaşılır', (t) async {
+    final k = await ac(t);
+    await sayfayiAc(t);
+    await dokun(t, find.bySemanticsLabel('Paylaş'));
+    expect(k.paylasilanlar, ['Fizik dersi']);
+    await k.kapat(t);
+  });
+
   testWidgets('boş liste', (t) async {
     final k = await ac(t, ornek: false);
     await sayfayiAc(t);

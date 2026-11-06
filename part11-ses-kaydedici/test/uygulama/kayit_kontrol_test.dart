@@ -192,6 +192,23 @@ void main() {
     expect(await depo.izle().first, isEmpty);
   });
 
+  test('bildirimdeki Durdur kaydı bitirip listeye ekler', () async {
+    await k.kaydet();
+    sistem.bildirimdenDurdur!();
+    await bekle();
+    await bekle();
+    expect(k.asama, Asama.hazir);
+    expect(await depo.izle().first, hasLength(1));
+    expect(sistem.servisAcik, isFalse);
+  });
+
+  test('kayıt yokken bildirimden durdur bir şey yapmaz', () async {
+    sistem.bildirimdenDurdur!();
+    await bekle();
+    expect(k.asama, Asama.hazir);
+    expect(mik.cagrilar, isEmpty);
+  });
+
   test('kayıttayken ikinci kaydet bir şey yapmaz', () async {
     await k.kaydet();
     await k.kaydet();

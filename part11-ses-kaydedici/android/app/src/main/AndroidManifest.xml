@@ -1,10 +1,14 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- RECORD_AUDIO record paketinden gelir. Ekran kapalıyken kayıt için
          mikrofon tipi ön plan servisi + CPU uyumasın diye kısmi uyanık tutma. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- just_audio (ExoPlayer) ağ türünü okumak için ister; yalnız telefondaki
+         dosyayı çaldığımız için gereksiz. İzin yoksa ExoPlayer "bilinmiyor" sayar. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
     <application
         android:label="Ses Kaydedici"
         android:allowBackup="false"

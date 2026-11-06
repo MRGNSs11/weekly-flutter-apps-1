@@ -15,6 +15,7 @@ class ListeKontrol extends ChangeNotifier {
     required this._depo,
     required this._calar,
     required this._dosyaSil,
+    required this._paylasici,
     this.geriAlSuresi = const Duration(seconds: 5),
   }) {
     _listeAbone = _depo.izle().listen(_listeGeldi);
@@ -32,6 +33,9 @@ class ListeKontrol extends ChangeNotifier {
   final KayitDeposu _depo;
   final Calar _calar;
   final Future<void> Function(String) _dosyaSil;
+
+  /// Android paylaş menüsü (testte sahte).
+  final Future<void> Function(Kayit) _paylasici;
   final Duration geriAlSuresi;
 
   late final StreamSubscription<List<Kayit>> _listeAbone;
@@ -139,6 +143,9 @@ class ListeKontrol extends ChangeNotifier {
       // Dosya zaten yoksa sorun değil.
     }
   }
+
+  /// Yalnız kullanıcı basınca dosya uygulamadan çıkar (B5).
+  Future<void> paylas(Kayit k) => _paylasici(k);
 
   /// Kayıt başlarken çalan susar.
   Future<void> durdur() async {

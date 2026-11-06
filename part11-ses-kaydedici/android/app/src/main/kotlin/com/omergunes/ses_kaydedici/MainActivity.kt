@@ -13,36 +13,44 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "seskaydedici/servis")
-            .setMethodCallHandler { call, result ->
-                when (call.method) {
-                    // Servis yalnız uygulama ekrandayken başlatılabilir (Android 12+).
-                    "baslat" -> {
-                        startForegroundService(Intent(this, KayitServisi::class.java))
-                        result.success(true)
-                    }
-                    "durdur" -> {
-                        stopService(Intent(this, KayitServisi::class.java))
-                        result.success(true)
-                    }
-                    "bildirimIzniVar" -> result.success(bildirimIzniVar())
-                    "bildirimIzniIste" -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !bildirimIzniVar()) {
-                            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 7)
-                        }
-                        result.success(null)
-                    }
-                    // Mikrofon izni kalıcı reddedilince tek yol: uygulamanın ayar sayfası.
-                    "ayarlariAc" -> {
-                        startActivity(
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                .setData(Uri.fromParts("package", packageName, null)),
-                        )
-                        result.success(null)
-                    }
-                    else -> result.notImplemented()
+        val kanal = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "seskaydedici/servis")
+        KayitServisi.durdurIstendi = {
+            runOnUiThread { kanal.invokeMethod("bildirimdenDurdur", null) }
+        }
+        kanal.setMethodCallHandler { call, result ->
+            when (call.method) {
+                // Servis yalnız uygulama ekrandayken başlatılabilir (Android 12+).
+                "baslat" -> {
+                    startForegroundService(Intent(this, KayitServisi::class.java))
+                    result.success(true)
                 }
+                "durdur" -> {
+                    stopService(Intent(this, KayitServisi::class.java))
+                    result.success(true)
+                }
+                "bildirimIzniVar" -> result.success(bildirimIzniVar())
+                "bildirimIzniIste" -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !bildirimIzniVar()) {
+                        requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 7)
+                    }
+                    result.success(null)
+                }
+                // Mikrofon izni kalıcı reddedilince tek yol: uygulamanın ayar sayfası.
+                "ayarlariAc" -> {
+                    startActivity(
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            .setData(Uri.fromParts("package", packageName, null)),
+                    )
+                    result.success(null)
+                }
+                else -> result.notImplemented()
             }
+        }
+    }
+
+    override fun onDestroy() {
+        KayitServisi.durdurIstendi = null
+        super.onDestroy()
     }
 
     private fun bildirimIzniVar(): Boolean =

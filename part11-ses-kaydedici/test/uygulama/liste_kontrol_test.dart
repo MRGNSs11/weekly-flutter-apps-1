@@ -12,6 +12,7 @@ void main() {
   late KayitDeposu depo;
   late SahteCalar calar;
   late List<String> silinenDosyalar;
+  late List<String> paylasilanlar;
   late ListeKontrol l;
   var saat = DateTime(2026, 11, 6, 10);
 
@@ -21,10 +22,12 @@ void main() {
     depo = KayitDeposu(db, saat: () => saat);
     calar = SahteCalar();
     silinenDosyalar = [];
+    paylasilanlar = [];
     l = ListeKontrol(
       depo: depo,
       calar: calar,
       dosyaSil: (y) async => silinenDosyalar.add(y),
+      paylasici: (k) async => paylasilanlar.add(k.ad),
       geriAlSuresi: const Duration(milliseconds: 60),
     );
   });
@@ -172,6 +175,13 @@ void main() {
     await l.sil(l.kayitlar.first);
     expect(silinenDosyalar, ['/k/b.ogg']);
     expect(l.silinen!.ad, 'a');
+  });
+
+  test('paylaş seçili kaydı paylaşıcıya verir', () async {
+    await ekle('Fizik dersi', saat);
+    await bekle();
+    await l.paylas(l.kayitlar.single);
+    expect(paylasilanlar, ['Fizik dersi']);
   });
 
   test('kayıt başlarken çalan susar', () async {

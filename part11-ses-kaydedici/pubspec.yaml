@@ -39,6 +39,7 @@ dependencies:
   path_provider: ^2.1.6
   drift: 2.35.3
   drift_flutter: 0.3.1
+  share_plus: 13.3.0
 
 dev_dependencies:
   flutter_test:

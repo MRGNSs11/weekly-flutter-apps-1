@@ -81,6 +81,9 @@ abstract interface class Sistem {
   Future<void> servisDurdur();
   Future<void> bildirimIzniIste();
   Future<void> ayarlariAc();
+
+  /// "Kaydediliyor" bildirimindeki Durdur'a basılınca [f] çağrılır.
+  void bildirimdenDurdurDinle(void Function() f);
 }
 
 class KanalSistemi implements Sistem {
@@ -97,4 +100,10 @@ class KanalSistemi implements Sistem {
 
   @override
   Future<void> ayarlariAc() => _kanal.invokeMethod('ayarlariAc');
+
+  @override
+  void bildirimdenDurdurDinle(void Function() f) =>
+      _kanal.setMethodCallHandler((c) async {
+        if (c.method == 'bildirimdenDurdur') f();
+      });
 }
