@@ -1,0 +1,64 @@
+// Taslakla karşılaştırma görüntüleri. CI'da çalışmaz (golden'lar işletim
+// sistemine göre değişir). Üretmek için:
+//   flutter test --dart-define=EKRAN=true --update-goldens test/ui/ekran_goruntusu_test.dart
+import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'yardim.dart';
+
+const _ekran = bool.fromEnvironment('EKRAN');
+
+void main() {
+  setUpAll(fontlariYukle);
+
+  Future<void> cek(
+    WidgetTester t,
+    String ad,
+    Future<void> Function(Kurulum k) hazirla, {
+    bool izinYok = false,
+  }) async {
+    // A56: 1080×2340, yoğunluk 3 → 360×780.
+    t.view.physicalSize = const Size(1080, 2340);
+    t.view.devicePixelRatio = 3;
+    t.view.padding = const FakeViewPadding(top: 72, bottom: 48);
+    addTearDown(t.view.reset);
+    final k = Kurulum()..mik.izin = !izinYok;
+    await t.pumpWidget(k.uygulama);
+    await t.runAsync(() => hazirla(k));
+    await t.pump();
+    await t.pump(const Duration(milliseconds: 600));
+    await expectLater(
+      find.byType(MaterialApp),
+      matchesGoldenFile('goruntu/$ad.png'),
+    );
+    await k.kapat(t);
+  }
+
+  Future<void> konus(Kurulum k) async {
+    await k.kontrol.kaydet();
+    // Konuşmaya benzer: dalgalı, arada sessiz.
+    for (var i = 0; i < 40; i++) {
+      final db = -32 + 26 * math.sin(i * .9) * math.cos(i * .23);
+      k.mik.seviye.add(i % 13 > 10 ? -58 : db);
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+  }
+
+  testWidgets('hazır', (t) => cek(t, 'k4-hazir', (_) async {}), skip: !_ekran);
+  testWidgets('kayıt', (t) => cek(t, 'k4-kayit', konus), skip: !_ekran);
+  testWidgets(
+    'duraklatıldı',
+    (t) => cek(t, 'k4-duraklatildi', (k) async {
+      await konus(k);
+      await k.kontrol.duraklat();
+    }),
+    skip: !_ekran,
+  );
+  testWidgets(
+    'izin yok',
+    (t) => cek(t, 'k4-izin', (k) => k.kontrol.kaydet(), izinYok: true),
+    skip: !_ekran,
+  );
+}
