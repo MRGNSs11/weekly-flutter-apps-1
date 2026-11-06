@@ -18,6 +18,7 @@ void main() {
     String ad,
     Future<void> Function(Kurulum k) hazirla, {
     bool izinYok = false,
+    Future<void> Function(WidgetTester t, Kurulum k)? sayfa,
   }) async {
     // A56: 1080×2340, yoğunluk 3 → 360×780.
     t.view.physicalSize = const Size(1080, 2340);
@@ -28,6 +29,17 @@ void main() {
     await t.pumpWidget(k.uygulama);
     await t.runAsync(() => hazirla(k));
     await t.pump();
+    if (sayfa != null) {
+      await t.tap(find.bySemanticsLabel('Kayıtları aç'));
+      await t.pump();
+      await t.pump(const Duration(milliseconds: 400));
+      await t.runAsync(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+        await sayfa(t, k);
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+      });
+      await t.pump();
+    }
     await t.pump(const Duration(milliseconds: 600));
     await expectLater(
       find.byType(MaterialApp),
@@ -54,6 +66,42 @@ void main() {
       await konus(k);
       await k.kontrol.duraklat();
     }),
+    skip: !_ekran,
+  );
+  testWidgets(
+    'kayıtlar + oynatıcı',
+    (t) => cek(
+      t,
+      'k5-liste',
+      (k) => k.ornekler(),
+      sayfa: (t, k) async {
+        await k.liste.sar(const Duration(seconds: 112));
+        await k.liste.oynatDuraklat();
+      },
+    ),
+    skip: !_ekran,
+  );
+  testWidgets(
+    'ad + hız + geri al',
+    (t) => cek(
+      t,
+      'k5-ek',
+      (k) => k.ornekler(),
+      sayfa: (t, k) async {
+        await k.liste.sar(const Duration(seconds: 112));
+        await k.liste.hizDegistir();
+        await k.liste.sil(
+          k.liste.kayitlar.firstWhere((x) => x.ad == 'Market listesi'),
+        );
+        await k.liste.oynatDuraklat();
+        await k.liste.adDegistir('Fizik dersi — hafta 6');
+      },
+    ),
+    skip: !_ekran,
+  );
+  testWidgets(
+    'boş liste',
+    (t) => cek(t, 'k5-bos', (_) async {}, sayfa: (t, k) async {}),
     skip: !_ekran,
   );
   testWidgets(

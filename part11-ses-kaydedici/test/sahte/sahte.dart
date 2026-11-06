@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ses_kaydedici/alan/kayit.dart';
+import 'package:ses_kaydedici/uygulama/calar.dart';
 import 'package:ses_kaydedici/uygulama/kaydedici.dart';
 import 'package:ses_kaydedici/veri/kayit_deposu.dart';
 
@@ -108,5 +109,91 @@ class SahteDepo implements KayitDeposu {
   }
 
   @override
+  Future<void> adDegistir(int id, String ad) async {
+    final i = _kayitlar.indexWhere((k) => k.id == id);
+    final k = _kayitlar[i];
+    _kayitlar[i] = Kayit(
+      id: k.id,
+      ad: ad,
+      dosyaYolu: k.dosyaYolu,
+      sure: k.sure,
+      boyutBayt: k.boyutBayt,
+      olusturma: k.olusturma,
+      dalga: k.dalga,
+    );
+    _akis.add(List.of(_kayitlar));
+  }
+
+  @override
+  Future<Kayit?> sil(int id) async {
+    final i = _kayitlar.indexWhere((k) => k.id == id);
+    if (i == -1) return null;
+    final k = _kayitlar.removeAt(i);
+    _akis.add(List.of(_kayitlar));
+    return k;
+  }
+
+  @override
+  Future<void> geriEkle(Kayit k) async {
+    _kayitlar
+      ..add(k)
+      ..sort((a, b) => b.olusturma.compareTo(a.olusturma));
+    _akis.add(List.of(_kayitlar));
+  }
+
+  @override
   dynamic noSuchMethod(Invocation i) => super.noSuchMethod(i);
+}
+
+/// Hoparlörsüz çalar: konumu test kendisi gönderir.
+class SahteCalar implements Calar {
+  final List<String> cagrilar = [];
+  Duration? sure = const Duration(minutes: 4, seconds: 48);
+  double sonHiz = 1;
+  final konumAkisi = StreamController<Duration>.broadcast();
+  final caliyorAkisi = StreamController<bool>.broadcast();
+  final bittiAkisi = StreamController<void>.broadcast();
+
+  @override
+  Future<Duration?> yukle(String yol) async {
+    cagrilar.add('yukle $yol');
+    return sure;
+  }
+
+  @override
+  Future<void> oynat() async {
+    cagrilar.add('oynat');
+    caliyorAkisi.add(true);
+  }
+
+  @override
+  Future<void> duraklat() async {
+    cagrilar.add('duraklat');
+    caliyorAkisi.add(false);
+  }
+
+  @override
+  Future<void> sar(Duration konum) async =>
+      cagrilar.add('sar ${konum.inSeconds}');
+
+  @override
+  Future<void> hiz(double h) async => sonHiz = h;
+
+  @override
+  Future<void> durdur() async {
+    cagrilar.add('durdur');
+    caliyorAkisi.add(false);
+  }
+
+  @override
+  Stream<Duration> konum() => konumAkisi.stream;
+
+  @override
+  Stream<bool> caliyor() => caliyorAkisi.stream;
+
+  @override
+  Stream<void> bitti() => bittiAkisi.stream;
+
+  @override
+  Future<void> kapat() async {}
 }

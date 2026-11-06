@@ -1,86 +1,200 @@
-import 'dart:async';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../alan/boyut.dart';
 import '../alan/sure.dart';
 import '../uygulama/kayit_kontrol.dart';
+import '../uygulama/liste_kontrol.dart';
 import 'bulut.dart';
+import 'kayitlar_sayfasi.dart';
 import 'ses_cizgisi.dart';
 import 'tema.dart';
 
-/// Y6 kayıt ekranı: hazır · kayıt · duraklatıldı · izin yok.
-/// Ölçüler taslağın `.y6` CSS'inden (telefon içi 272 px genişlik).
+/// Y6 kayıt ekranı: hazır · kayıt · duraklatıldı · izin yok; alttan
+/// "Kayıtlar" sayfası. Ölçüler taslağın `.y6` CSS'inden (telefon içi 272 px).
 class KayitEkrani extends StatefulWidget {
   const KayitEkrani({
     super.key,
     required this.kontrol,
-    required this.kayitSayisi,
+    required this.liste,
+    this.simdi,
   });
 
   final KayitKontrol kontrol;
-  final Stream<int> kayitSayisi;
+  final ListeKontrol liste;
+  final DateTime Function()? simdi;
 
   @override
   State<KayitEkrani> createState() => _KayitEkraniState();
 }
 
-class _KayitEkraniState extends State<KayitEkrani> {
+class _KayitEkraniState extends State<KayitEkrani>
+    with SingleTickerProviderStateMixin {
   late final AppLifecycleListener _yasam;
-  late final StreamSubscription<int> _sayiAbone;
-
-  /// Akış bir kez dinlenir; ekran kayıt/hazır arasında değişince
-  /// şerit yeniden kurulsa da yeniden abone olunmaz.
-  final _sayi = ValueNotifier(0);
+  late final _sayfa = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 320),
+  );
 
   KayitKontrol get k => widget.kontrol;
+  double _sayfaBoyu = 1;
 
   @override
   void initState() {
     super.initState();
     // Ayarlardan izin verip dönünce ekran kendiliğinden hazıra geçer.
     _yasam = AppLifecycleListener(onResume: k.izniYokla);
-    _sayiAbone = widget.kayitSayisi.listen((n) => _sayi.value = n);
   }
 
   @override
   void dispose() {
     _yasam.dispose();
-    _sayiAbone.cancel();
-    _sayi.dispose();
+    _sayfa.dispose();
     super.dispose();
+  }
+
+  bool get _kilitli => k.kayitta || k.asama == Asama.kaydediliyor;
+
+  void _ac() {
+    if (_kilitli) return;
+    _sayfa.animateTo(1, curve: Curves.easeOutCubic);
+    widget.liste.acildi();
+  }
+
+  void _kapat() => _sayfa.animateBack(0, curve: Curves.easeOutCubic);
+
+  void _surukle(DragUpdateDetails d) {
+    if (_kilitli) return;
+    _sayfa.value -= (d.primaryDelta ?? 0) / _sayfaBoyu;
+  }
+
+  void _birak(DragEndDetails d) {
+    if (_kilitli) return;
+    final hiz = d.primaryVelocity ?? 0;
+    if (hiz < -300 || (hiz.abs() <= 300 && _sayfa.value > .5)) {
+      _ac();
+    } else {
+      _kapat();
+    }
+  }
+
+  Future<void> _kaydet() async {
+    await widget.liste.durdur();
+    await k.kaydet();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListenableBuilder(
-        listenable: k,
-        builder: (context, _) {
-          final asama = k.asama;
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              Bulut(hizli: asama == Asama.kayit),
-              if (asama == Asama.izinYok)
-                _IzinYok(kontrol: k)
-              else
-                _Kayit(kontrol: k, kayitSayisi: _sayi),
-            ],
-          );
-        },
-      ),
+    final ust = MediaQuery.paddingOf(context).top;
+    return LayoutBuilder(
+      builder: (context, kutu) {
+        // Taslak: sayfanın üstü telefonun 150 px aşağısında (durum çubuğu dahil).
+        final sayfaUst = ust + 126;
+        _sayfaBoyu = kutu.maxHeight - sayfaUst;
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (cikti, _) {
+            if (cikti) return;
+            if (_sayfa.value > 0) {
+              _kapat();
+            } else {
+              SystemNavigator.pop();
+            }
+          },
+          child: Scaffold(
+            body: ListenableBuilder(
+              listenable: Listenable.merge([k, _sayfa]),
+              builder: (context, _) {
+                final asama = k.asama;
+                final v = _sayfa.value;
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Bulut(hizli: asama == Asama.kayit),
+                    if (asama == Asama.izinYok)
+                      _IzinYok(kontrol: k)
+                    else
+                      Opacity(
+                        opacity: 1 - v,
+                        child: _Kayit(
+                          kontrol: k,
+                          liste: widget.liste,
+                          kaydet: _kaydet,
+                          ac: _ac,
+                          surukle: _surukle,
+                          birak: _birak,
+                        ),
+                      ),
+                    if (v > 0) ...[
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: _kapat,
+                        onVerticalDragUpdate: _surukle,
+                        onVerticalDragEnd: _birak,
+                      ),
+                      Positioned(
+                        top: ust + 16,
+                        left: 22,
+                        right: 22,
+                        child: Opacity(
+                          opacity: v,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Ses Kaydedici',
+                                style: yazi(13, 500, opaklik: .9),
+                              ),
+                              Text(
+                                sureYaz(k.sure),
+                                style: yazi(13, 500, opaklik: .9),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: sayfaUst + (1 - v) * _sayfaBoyu,
+                        left: 0,
+                        right: 0,
+                        height: _sayfaBoyu,
+                        child: KayitlarSayfasi(
+                          liste: widget.liste,
+                          surukle: _surukle,
+                          birak: _birak,
+                          simdi: widget.simdi,
+                        ),
+                      ),
+                    ],
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
 class _Kayit extends StatelessWidget {
-  const _Kayit({required this.kontrol, required this.kayitSayisi});
+  const _Kayit({
+    required this.kontrol,
+    required this.liste,
+    required this.kaydet,
+    required this.ac,
+    required this.surukle,
+    required this.birak,
+  });
 
   final KayitKontrol kontrol;
-  final ValueListenable<int> kayitSayisi;
+  final ListeKontrol liste;
+  final VoidCallback kaydet;
+  final VoidCallback ac;
+  final GestureDragUpdateCallback surukle;
+  final GestureDragEndCallback birak;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +261,7 @@ class _Kayit extends StatelessWidget {
           child: Center(
             child: _KayitDugmesi(
               kayitta: kayitta,
-              onTap: kayitta ? kontrol.durdur : kontrol.kaydet,
+              onTap: kayitta ? kontrol.durdur : kaydet,
             ),
           ),
         ),
@@ -191,7 +305,13 @@ class _Kayit extends StatelessWidget {
           left: 0,
           right: 0,
           bottom: 0,
-          child: _Tutamac(sayi: kayitSayisi, alt: alt),
+          child: _Tutamac(
+            liste: liste,
+            alt: alt,
+            ac: ac,
+            surukle: surukle,
+            birak: birak,
+          ),
         ),
       ],
     );
@@ -372,13 +492,35 @@ class _IkiCubuk extends StatelessWidget {
 
 /// Alttaki "Kayıtlar" şeridi (K5'te yukarı çekilince liste açılır).
 class _Tutamac extends StatelessWidget {
-  const _Tutamac({required this.sayi, required this.alt});
+  const _Tutamac({
+    required this.liste,
+    required this.alt,
+    required this.ac,
+    required this.surukle,
+    required this.birak,
+  });
 
-  final ValueListenable<int> sayi;
+  final ListeKontrol liste;
   final double alt;
+  final VoidCallback ac;
+  final GestureDragUpdateCallback surukle;
+  final GestureDragEndCallback birak;
 
   @override
-  Widget build(BuildContext context) => ClipRRect(
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: 'Kayıtları aç',
+    excludeSemantics: true,
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: ac,
+      onVerticalDragUpdate: surukle,
+      onVerticalDragEnd: birak,
+      child: _govde(),
+    ),
+  );
+
+  Widget _govde() => ClipRRect(
     borderRadius: const BorderRadius.vertical(top: Radius.circular(26)),
     child: BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
@@ -404,10 +546,12 @@ class _Tutamac extends StatelessWidget {
               children: [
                 Text('Kayıtlar', style: yazi(14, 500)),
                 const Spacer(),
-                ValueListenableBuilder(
-                  valueListenable: sayi,
-                  builder: (context, n, _) =>
-                      Text('$n ↑', style: yazi(13, 400, opaklik: .7)),
+                ListenableBuilder(
+                  listenable: liste,
+                  builder: (context, _) => Text(
+                    '${liste.kayitlar.length} ↑',
+                    style: yazi(13, 400, opaklik: .7),
+                  ),
                 ),
               ],
             ),

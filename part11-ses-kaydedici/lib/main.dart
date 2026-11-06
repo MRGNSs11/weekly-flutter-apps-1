@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'uygulama/calar.dart';
 import 'uygulama/kaydedici.dart';
 import 'uygulama/kayit_kontrol.dart';
+import 'uygulama/liste_kontrol.dart';
 import 'ui/kayit_ekrani.dart';
 import 'ui/tema.dart';
 import 'veri/kayit_deposu.dart';
@@ -31,7 +33,12 @@ void main() {
     klasor: _kayitKlasoru,
     boyutOku: (yol) => File(yol).length(),
   );
-  runApp(SesKaydedici(kontrol: kontrol, depo: depo));
+  final liste = ListeKontrol(
+    depo: depo,
+    calar: JustAudioCalar(),
+    dosyaSil: (yol) => File(yol).delete(),
+  );
+  runApp(SesKaydedici(kontrol: kontrol, liste: liste));
 }
 
 /// Ses dosyaları uygulamanın kendi klasöründe (yedeklenmez, B5).
@@ -44,19 +51,24 @@ Future<String> _kayitKlasoru() async {
 }
 
 class SesKaydedici extends StatelessWidget {
-  const SesKaydedici({super.key, required this.kontrol, required this.depo});
+  const SesKaydedici({
+    super.key,
+    required this.kontrol,
+    required this.liste,
+    this.simdi,
+  });
 
   final KayitKontrol kontrol;
-  final KayitDeposu depo;
+  final ListeKontrol liste;
+
+  /// Tarih yazısı için (testte sabit).
+  final DateTime Function()? simdi;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Ses Kaydedici',
     debugShowCheckedModeBanner: false,
     theme: tema(),
-    home: KayitEkrani(
-      kontrol: kontrol,
-      kayitSayisi: depo.izle().map((l) => l.length),
-    ),
+    home: KayitEkrani(kontrol: kontrol, liste: liste, simdi: simdi),
   );
 }
