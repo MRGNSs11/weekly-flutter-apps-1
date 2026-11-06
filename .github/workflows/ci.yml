@@ -35,6 +35,7 @@ jobs:
           - part08-2048
           - part09-pomodoro
           - part10-kasa-not
+          - part11-ses-kaydedici
     defaults:
       run:
         working-directory: ${{ matrix.app }}

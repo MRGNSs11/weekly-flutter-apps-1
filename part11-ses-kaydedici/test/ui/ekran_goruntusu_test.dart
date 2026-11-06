@@ -25,7 +25,7 @@ void main() {
     t.view.devicePixelRatio = 3;
     t.view.padding = const FakeViewPadding(top: 72, bottom: 48);
     addTearDown(t.view.reset);
-    final k = Kurulum()..mik.izin = !izinYok;
+    final k = Kurulum(kronometre: _SabitSure())..mik.izin = !izinYok;
     await t.pumpWidget(k.uygulama);
     await t.runAsync(() => hazirla(k));
     await t.pump();
@@ -49,6 +49,7 @@ void main() {
   }
 
   Future<void> konus(Kurulum k) async {
+    await k.ornekler();
     await k.kontrol.kaydet();
     // Konuşmaya benzer: dalgalı, arada sessiz.
     for (var i = 0; i < 40; i++) {
@@ -58,7 +59,11 @@ void main() {
     await Future<void>.delayed(const Duration(milliseconds: 20));
   }
 
-  testWidgets('hazır', (t) => cek(t, 'k4-hazir', (_) async {}), skip: !_ekran);
+  testWidgets(
+    'hazır',
+    (t) => cek(t, 'k4-hazir', (k) => k.ornekler()),
+    skip: !_ekran,
+  );
   testWidgets('kayıt', (t) => cek(t, 'k4-kayit', konus), skip: !_ekran);
   testWidgets(
     'duraklatıldı',
@@ -117,4 +122,26 @@ void main() {
     (t) => cek(t, 'k6-onizin', (k) => k.kontrol.kaydet(), izinYok: true),
     skip: !_ekran,
   );
+}
+
+/// Görüntülerde süre gerçekçi dursun (testte zaman akmıyor).
+class _SabitSure extends Stopwatch {
+  @override
+  Duration get elapsed => isRunning || _baslatildi
+      ? const Duration(minutes: 1, seconds: 24)
+      : Duration.zero;
+
+  bool _baslatildi = false;
+
+  @override
+  void start() {
+    _baslatildi = true;
+    super.start();
+  }
+
+  @override
+  void reset() {
+    _baslatildi = false;
+    super.reset();
+  }
 }

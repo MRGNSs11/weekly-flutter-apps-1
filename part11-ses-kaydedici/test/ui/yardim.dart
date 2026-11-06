@@ -29,8 +29,9 @@ Future<void> fontlariYukle() async {
 
 /// Sahte mikrofon + bellek içi depo ile uygulamanın kendisi.
 class Kurulum {
-  Kurulum() {
+  Kurulum({Stopwatch? kronometre}) {
     kontrol = KayitKontrol(
+      kronometre: kronometre,
       kaydedici: mik,
       sistem: sistem,
       depo: depo,

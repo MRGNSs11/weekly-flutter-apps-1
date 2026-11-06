@@ -19,7 +19,9 @@ class KayitKontrol extends ChangeNotifier {
     required this._klasor,
     required this._boyutOku,
     DateTime Function()? saat,
-  }) : _saat = saat ?? DateTime.now {
+    @visibleForTesting Stopwatch? kronometre,
+  }) : _saat = saat ?? DateTime.now,
+       _kronometre = kronometre ?? Stopwatch() {
     _sistem.bildirimdenDurdurDinle(durdur);
   }
 
@@ -30,7 +32,7 @@ class KayitKontrol extends ChangeNotifier {
   final Future<int> Function(String) _boyutOku;
   final DateTime Function() _saat;
 
-  final _kronometre = Stopwatch();
+  final Stopwatch _kronometre;
   final List<double> _ornekler = [];
   StreamSubscription<double>? _seviyeAbone;
   StreamSubscription<KaydediciDurumu>? _durumAbone;

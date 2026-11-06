@@ -21,6 +21,7 @@ by design: **every line of code here is public.**
 | 08 | **2048** | State management with Riverpod over an **immutable** game state: undo is just the previous object, no reverse logic. Unit, widget and on-device integration tests; a neumorphic look drawn by a single painter | [Read](part08-2048/VAKA.md) | [Source](part08-2048) |
 | 09 | **Pomodoro** | Local notifications without a background service: a **system chronometer** counts down in the shade, action buttons work while the app is closed (background isolate), and a scheduled full-screen alarm wakes the lock screen. The UI fills up as time passes, drawn with `CustomPainter` | [Read](part09-pomodoro/VAKA.md) | [Source](part09-pomodoro) |
 | 10 | **Notes (Notlar)** | Biometric lock where the fingerprint unlocks the **key**, not just the screen: locked notes are AES-256-GCM encrypted, the key lives in Android Keystore bound to user authentication. Markdown editor with live preview, a frosted-glass UI and a spotlight onboarding tour | [Read](part10-kasa-not/VAKA.md) | [Source](part10-kasa-not) |
+| 11 | **Voice Recorder (Ses Kaydedici)** | Microphone recording with a live level stream, and **recording with the screen off** through a hand-written Kotlin foreground service of type `microphone` (stop from the notification, auto-pause on a phone call). The waveform is **kept while recording**, not decoded from the file afterwards, so playback can seek by tapping it instantly | [Read](part11-ses-kaydedici/VAKA.md) | [Source](part11-ses-kaydedici) |
 
 *More apps land here as they ship.*
 
