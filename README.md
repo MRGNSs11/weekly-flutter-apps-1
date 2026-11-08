@@ -23,7 +23,9 @@ by design: **every line of code here is public.**
 | 10 | **Notes (Notlar)** | Biometric lock where the fingerprint unlocks the **key**, not just the screen: locked notes are AES-256-GCM encrypted, the key lives in Android Keystore bound to user authentication. Markdown editor with live preview, a frosted-glass UI and a spotlight onboarding tour | [Read](part10-kasa-not/VAKA.md) | [Source](part10-kasa-not) |
 | 11 | **Voice Recorder (Ses Kaydedici)** | Microphone recording with a live level stream, and **recording with the screen off** through a hand-written Kotlin foreground service of type `microphone` (stop from the notification, auto-pause on a phone call). The waveform is **kept while recording**, not decoded from the file afterwards, so playback can seek by tapping it instantly | [Read](part11-ses-kaydedici/VAKA.md) | [Source](part11-ses-kaydedici) |
 
-*More apps land here as they ship.*
+*Part 11 is the last app for now. It was a great journey for me. In this
+series I focused on small apps that could be finished in a week; from now on
+I am starting bigger, more professional projects that take longer.*
 
 ---
 

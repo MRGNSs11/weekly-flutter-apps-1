@@ -1,8 +1,8 @@
 # Ses Kaydedici
 ### Part 11 · Her Hafta 1 Uygulama
 
-Fikrini, dersi ya da toplantıyı hızlıca kaydetmek isteyen biri için tek
-düğmeli, internetsiz bir ses kaydedici.
+Fikrini, dersi ya da toplantıyı hızlıca kaydetmek isteyen biri için bir ses
+kaydedici.
 
 **Kod:** [github.com/MRGNSs11/weekly-flutter-apps-1](https://github.com/MRGNSs11/weekly-flutter-apps-1/tree/main/part11-ses-kaydedici) · **Yığın:** Flutter, record, just_audio, Drift, share_plus, Kotlin (ön plan servisi)
 
@@ -38,7 +38,7 @@ uygulamanın mikrofonu kullanmasına ancak mikrofon tipinde bir ön plan servisi
 varsa izin veriyor. Kayıt paketi bu servisi kurmuyor; onu Kotlin'de kendim
 yazdım ([`KayitServisi.kt`](android/app/src/main/kotlin/com/omergunes/ses_kaydedici/KayitServisi.kt)).
 Servis "Kaydediliyor" bildirimini tutuyor, bildirimdeki Durdur düğmesi kanal
-üzerinden Dart'taki kaydı bitiriyor. Telefon gelince mikrofon duraklıyor,
+üzerinden Dart'taki kaydı bitiriyor. Telefon araması gelince mikrofon duraklıyor,
 ekran da "Duraklatıldı"ya geçiyor.
 
 ## 04 — Aldığım karar
@@ -75,7 +75,7 @@ başlamadan önce tek ekranlık bir deneme uygulamasıyla bunları gerçek telef
 **Paketin kaynağını okumak, belgesini okumaktan çok şey söylüyor.** Deneme
 uygulamasından önce kayıt paketinin Android kodunu okudum. Belgede yazmayan
 iki şey çıktı: Opus kaydı Android 10 ister (en düşük sürümü yükselttim) ve
-telefon gelince kayıt kendiliğinden devam etmez, duraklar. İkincisini ekrana
+telefon araması gelince kayıt kendiliğinden devam etmez, duraklar. İkincisini ekrana
 "Duraklatıldı" olarak yansıttım; bilmeseydim kullanıcı kaydın sürdüğünü sanardı.
 
 ---

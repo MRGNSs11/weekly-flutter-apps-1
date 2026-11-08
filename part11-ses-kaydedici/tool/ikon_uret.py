@@ -1,7 +1,7 @@
-"""Uygulama ikonunu üretir: ikon-secenekleri.html → #1 Çizgi ve nokta.
+"""Uygulama ikonunu üretir: logo-secenekleri.html → #2 Çubuk dalga.
 
-Mor bulut zemin (üç radyal gradyan, uygulamadaki gibi), ortada turuncu kayıt
-noktası, iki yanında sönümlenen beyaz ses çizgisi. Katmanlar PNG: zemin +
+Mor bulut zemin (üç radyal gradyan, uygulamadaki gibi), önde beş dikey ses
+çubuğu; ortadaki turuncu. Katmanlar PNG: zemin +
 ön plan + tek renk (Android 13 temalı ikon). Eski sürümler için birleşik
 ic_launcher.png.
 
@@ -47,14 +47,21 @@ def zemin():
     return im.resize((T, T), Image.BICUBIC)
 
 
-def dalga_noktalari(x0=24, x1=84, y=54, genlik=13):
-    """Ortada sakin (nokta orada), iki yana doğru dalgalanıp sönen çizgi."""
-    n = 1200
+# Logo 100 birimlik kutuda çizildi; güvenli alana (ortadaki 72) oturtulur.
+CUBUKLAR = [  # (x, üst y, alt y) — logo-secenekleri.html #2 ile aynı
+    (24, 44, 56), (37, 33, 67), (50, 24, 76), (63, 36, 64), (76, 45, 55),
+]
+KALINLIK = 7.5 * 0.72
+
+
+def _logo(v):
+    return (18 + v * 0.72) * OLCEK
+
+
+def cubuk_noktalari(x, y0, y1):
+    n = 400
     for i in range(n + 1):
-        t = i / n
-        u = abs(t - 0.5) * 2
-        zarf = math.sin(u * math.pi) if u > 0.12 else 0
-        yield ((x0 + (x1 - x0) * t) * OLCEK, (y + genlik * zarf * math.sin(t * 19)) * OLCEK)
+        yield _logo(x), _logo(y0 + (y1 - y0) * i / n)
 
 
 def _cizgi(d, noktalar, kalinlik, renk):
@@ -66,16 +73,10 @@ def _cizgi(d, noktalar, kalinlik, renk):
 
 def on_plan(tek_renk=False):
     im = Image.new("RGBA", (T, T), (0, 0, 0, 0))
-    noktalar = list(dalga_noktalari())
-    if not tek_renk:
-        hale = Image.new("RGBA", (T, T), (0, 0, 0, 0))
-        _cizgi(ImageDraw.Draw(hale), noktalar, 7, LILA[:3] + (89,))
-        im.alpha_composite(hale)
     d = ImageDraw.Draw(im)
-    _cizgi(d, noktalar, 3.2, LILA)
-    r = 7.5 * OLCEK
-    d.ellipse((54 * OLCEK - r, 54 * OLCEK - r, 54 * OLCEK + r, 54 * OLCEK + r),
-              fill=LILA if tek_renk else TURUNCU)
+    for i, (x, y0, y1) in enumerate(CUBUKLAR):
+        renk = TURUNCU if i == 2 and not tek_renk else LILA
+        _cizgi(d, cubuk_noktalari(x, y0, y1), KALINLIK, renk)
     return im
 
 

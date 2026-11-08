@@ -1,6 +1,6 @@
 # Part 11 — Ses Kaydedici
 
-Tek düğmeli, internetsiz bir ses kaydedici. Kaydederken ses tek bir beyaz
+Kaydederken ses tek bir beyaz
 çizgi olarak titriyor, arkada mor bir bulut akıyor. Ekran kapalıyken de kayıt
 sürüyor. Kayıtlar alttan çekilen sayfada; dinlerken dalgaya dokunup istediğin
 yere atlıyorsun. "Her hafta 1 uygulama" serisinin on birinci parçası.
@@ -121,7 +121,7 @@ flutter test      # 80 test
 | Dosya | Ne sınanıyor | Test |
 |---|---|---|
 | `alan_test.dart` | dBFS çevirme, dalga sıkıştırma (kısa patlama kaybolmuyor), 1 bayt saklama, süre biçimi, dokunma → an, adlar, Bugün/Dün, boyut, hız döngüsü | 23 |
-| `kayit_kontrol_test.dart` | Ön izin akışı, kaydet/duraklat/devam/durdur/iptal, telefon gelince duraklama, bildirimden durdur, başlamayan kayıtta servisin kapanması | 20 |
+| `kayit_kontrol_test.dart` | Ön izin akışı, kaydet/duraklat/devam/durdur/iptal, telefon araması gelince duraklama, bildirimden durdur, başlamayan kayıtta servisin kapanması | 20 |
 | `liste_kontrol_test.dart` | Seçim, çal/duraklat, sar, hız, sona gelince başa dönme, yeniden adlandır, sil + Geri al, süre dolunca dosyanın silinmesi, paylaş | 13 |
 | `kayitlar_sayfasi_test.dart` | Sayfanın açılıp kapanması, dalgaya dokununca doğru ana sarma, hız hapı, sil + Geri al, ad düzenleme, boş liste, kayıtta sayfanın açılmaması | 10 |
 | `kayit_deposu_test.dart` | Ekle, sıralama, 1 saatlik dalga, ad değiştir, sil ve aynı kimlikle geri getir | 8 |
